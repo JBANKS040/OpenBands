@@ -1,9 +1,9 @@
 [package]
-name = "stealthnote_jwt"
+name = "zklevels"
 type = "bin"
-authors = ["saleel"]
+authors = ["Stratos"]
 compiler_version = ">=1.0.0"
-version = "0.3.0"
+version = "0.0.1"
 
 [dependencies]
-jwt = { tag = "main", git = "https://github.com/saleel/noir-jwt" }
+jwt = { tag = "v0.4.4", git = "https://github.com/zkemail/noir-jwt" }

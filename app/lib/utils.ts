@@ -1,86 +1,78 @@
-import {
-  uniqueNamesGenerator,
-  Config,
-  adjectives,
-  animals,
-} from "unique-names-generator";
-
-export function getLogoUrl(domain: string) {
-  return `https://img.logo.dev/${domain}?token=pk_SqdEexoxR3akcyJz7PneXg`;
-}
-
-export function generateNameFromPubkey(pubkey: string): string {
-  // Generate a deterministic seed from the pubkey using a simple hash function
-  const seed = simpleHash(pubkey);
-
-  const customConfig: Config = {
-    dictionaries: [adjectives, animals],
-    separator: " ",
-    length: 2,
-    seed: seed,
-    style: "capital",
-  };
-
-  return uniqueNamesGenerator(customConfig);
-}
-
-function simpleHash(str: string): number {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash; // Convert to 32-bit integer
-  }
-  return Math.abs(hash);
-}
-
-export async function pubkeyModulusFromJWK(jwk: JsonWebKey) {
-  // Parse pubkeyJWK
-  const publicKey = await crypto.subtle.importKey(
-    "jwk",
-    jwk,
-    {
-      name: "RSASSA-PKCS1-v1_5",
-      hash: "SHA-256",
-    },
-    true,
-    ["verify"]
-  );
-
-  const publicKeyJWK = await crypto.subtle.exportKey("jwk", publicKey);
-  const modulusBigInt = BigInt(
-    "0x" + Buffer.from(publicKeyJWK.n as string, "base64").toString("hex")
-  );
-
-  return modulusBigInt;
-}
-
-export function bytesToBigInt(bytes: Uint8Array) {
-  let result = BigInt(0);
+/**
+ * Convert a byte array to a BigInt
+ * @param bytes - The byte array to convert
+ * @returns The BigInt representation of the byte array
+ */
+export function bytesToBigInt(bytes: Uint8Array): bigint {
+  let value = BigInt(0);
   for (let i = 0; i < bytes.length; i++) {
-    result = (result << BigInt(8)) + BigInt(bytes[i]);
+    value = (value << BigInt(8)) | BigInt(bytes[i]);
   }
-  return result;
+  return value;
 }
 
-export function bigIntToBytes(bigInt: bigint, length: number) {
+/**
+ * Convert a BigInt to a byte array
+ * @param value - The BigInt to convert
+ * @param length - The length of the byte array
+ * @returns The byte array representation of the BigInt
+ */
+export function bigIntToBytes(value: bigint, length: number): Uint8Array {
   const bytes = new Uint8Array(length);
   for (let i = 0; i < length; i++) {
-    bytes[length - 1 - i] = Number(bigInt >> BigInt(i * 8) & BigInt(0xff));
+    bytes[length - 1 - i] = Number((value >> BigInt(8 * i)) & BigInt(255));
   }
   return bytes;
 }
 
-export function splitBigIntToLimbs(
-  bigInt: bigint,
-  byteLength: number,
-  numLimbs: number
-): bigint[] {
-  const chunks: bigint[] = [];
-  const mask = (1n << BigInt(byteLength)) - 1n;
+/**
+ * Convert a BigInt to an array of limbs
+ * @param value - The BigInt to convert
+ * @param limbSize - The size of each limb in bits
+ * @param numLimbs - The number of limbs
+ * @returns An array of BigInt limbs
+ */
+export function splitBigIntToLimbs(value: bigint, limbSize: number, numLimbs: number): bigint[] {
+  const limbs: bigint[] = [];
+  const mask = (BigInt(1) << BigInt(limbSize)) - BigInt(1);
+
   for (let i = 0; i < numLimbs; i++) {
-    const chunk = (bigInt / (1n << (BigInt(i) * BigInt(byteLength)))) & mask;
-    chunks.push(chunk);
+    limbs.push((value >> BigInt(i * limbSize)) & mask);
   }
-  return chunks;
+
+  return limbs;
 }
+
+/**
+ * Convert a JsonWebKey to a BigInt modulus
+ * @param jwk - The JsonWebKey to convert
+ * @returns The BigInt modulus
+ */
+export async function pubkeyModulusFromJWK(jwk: JsonWebKey): Promise<bigint> {
+  if (!jwk.n) {
+    throw new Error("JWK does not contain modulus");
+  }
+
+  // Convert base64url to base64
+  const base64 = jwk.n.replace(/-/g, "+").replace(/_/g, "/");
+  // Add padding if needed
+  const paddedBase64 = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
+  // Convert base64 to bytes
+  const bytes = Uint8Array.from(atob(paddedBase64), (c) => c.charCodeAt(0));
+  // Convert bytes to BigInt
+  return bytesToBigInt(bytes);
+}
+
+/**
+ * Generate a random string of specified length
+ * @param length - The length of the string
+ * @returns A random string
+ */
+export function generateRandomString(length: number): string {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+} 

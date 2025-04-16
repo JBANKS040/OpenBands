@@ -1,7 +1,10 @@
+#!/bin/bash
+
 # Extract version from Nargo.toml
 VERSION=$(grep '^version = ' Nargo.toml | cut -d '"' -f 2)
 echo "Circuit version: $VERSION"
 
+# Clean previous build
 rm -rf target
 
 echo "Compiling circuit..."
@@ -11,18 +14,19 @@ if ! nargo compile; then
 fi
 
 echo "Gate count:"
-bb gates -b target/stealthnote_jwt.json | jq  '.functions[0].circuit_size'
+bb gates -b target/zklevels.json | jq '.functions[0].circuit_size'
 
 # Create version-specific directory
-mkdir -p "../app/assets/jwt-$VERSION"
+mkdir -p "../app/assets/levels-$VERSION"
+mkdir -p "target/vk"
 
-echo "Copying circuit.json to app/assets/jwt-$VERSION..."
-cp target/stealthnote_jwt.json "../app/assets/jwt-$VERSION/circuit.json"
+echo "Copying circuit.json to app/assets/levels-$VERSION..."
+cp target/zklevels.json "../app/assets/levels-$VERSION/circuit.json"
 
-echo "Generating vkey..."
-bb write_vk_ultra_honk -b ./target/stealthnote_jwt.json -o ./target/vk
+echo "Generating verification key..."
+bb write_vk -b ./target/zklevels.json -o ./target/vk
 
-echo "Generating vkey.json to app/assets/$VERSION..."
-node -e "const fs = require('fs'); fs.writeFileSync('../app/assets/jwt-$VERSION/circuit-vkey.json', JSON.stringify(Array.from(Uint8Array.from(fs.readFileSync('./target/vk')))));"
+echo "Generating vkey.json to app/assets/levels-$VERSION..."
+node -e "const fs = require('fs'); fs.writeFileSync('../app/assets/levels-$VERSION/circuit-vkey.json', JSON.stringify(Array.from(Uint8Array.from(fs.readFileSync('./target/vk/vk')))));"
 
-echo "Done"
+echo "Done" 

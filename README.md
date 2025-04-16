@@ -1,24 +1,41 @@
-# StealthNote
-
-StealthNote is a platform to anonymously post messages while proving you belong to an organization -
-without revealing who you are.
-
-We use [Zero Knowledge Proofs](https://en.wikipedia.org/wiki/Zero-knowledge_proof) to prove that you have a valid Google Workspace account from your organization, while keeping your email address and other details private.
-
-The messages you post cannot be &quot;provably&quot; linked to you.
-
-Try it out at [stealthnote.xyz](https://stealthnote.xyz).
+# zkLevels
 
 
+zkLevels is a Levels/Glassdoor style app where users can sign in with their gmail work account and prove affiliation with a company without disclosing their identity.
 
-## Contributing
+After sign in the user has the possibility to disclose the position at the company and the respective salary for this position.
 
-This project is open source and is licenced under the MIT License. Feel free to fork the repository and build similar applications.
-
-If you find any bugs or have any suggestions, please raise an issue. Do not raise a PR without raising an issue first, as the code is not in a position to accept major contributions yet.
-
+We will work with zkJWT and Noir language to write the circuits.
+We will generate a offchain verifier to verify proofs. 
 
 
-## Notes
+Ressources:
+https://saleel.xyz/blog/stealthnote/
+https://github.com/zkemail/noir-jwt
 
-Built with [Noir](https://www.noir-lang.org/). *Inspired by [Blind](https://www.teamblind.com/), [Nozee](https://www.nozee.xyz/).*
+
+Some questions I asked the founder of Stealthnote and ideas we might use for our zkLevels:
+
+> so I can use Stealthnote github as reference right?
+yes, Stealthnote is a bit complex in the sense that it is somewhat generic to accept any proof of anonymity group; but you should be able to use some snippets.
+Using jwt-library might be more convenient
+
+> So the message and jwt are binded?
+yes, but there is another level of indirection where you are binding the public key of a temporarily generated keypair instead
+and then use that ephemeral key to sign messages
+
+this way you generate on ZK proof and can post any number of messages
+
+> The proof would include these inputs: position, salary and jwt?
+yes; not sure if you need keypair abstraction like above as one person only needs to post once
+1:02 PM
+
+> But where does verification happen? Whats the pro and cons of not deploying on a blockchain?
+
+I am saving the messages to a centralized server in a postgres database
+So there is a liveness/censorship assumption on the server - i.e server can remove some messages, but it cannot create fake messages from any company (as the proof is verifiable by users in the frontend)
+
+A smart contract verifying proof and storing/emiting event is great as its censorship resistant and always live; something i might do in the future, if this turns in to some serious whistleblowing app
+
+the cons are the gas cost and UX; someone has to pay for the tx cost, and it might not be fun if we ask users to pay; if I pay for all messages with some account abstraction, there is a potential DDOS attack vector on my faucet
+

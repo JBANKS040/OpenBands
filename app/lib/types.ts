@@ -1,14 +1,33 @@
 /**
- * Represents an anonymous group where members can post messages without revealing their identity
- * Example: people in a company
+ * Represents a company where users can post salary information without revealing their identity
  */
-export interface AnonGroup {
-  /** Unique identifier for the group (e.g: company domain) */
+export interface Company {
+  /** Unique identifier for the company (e.g: company domain) */
   id: string;
-  /** Display name of the group */
+  /** Display name of the company */
   title: string;
-  /** URL to the group's logo image */
+  /** URL to the company's logo image */
   logoUrl: string;
+}
+
+/**
+ * Represents a salary entry posted by a company employee
+ */
+export interface SalaryEntry {
+  /** Unique identifier for the salary entry */
+  id: string;
+  /** ID of the company the corresponding user belongs to */
+  companyId: string;
+  /** Name of the provider that generated the proof that the user (user's ephemeral pubkey) belongs to the company */
+  companyProvider: string;
+  /** Position at the company */
+  position: string;
+  /** Salary at the company */
+  salary: string;
+  /** Unix timestamp when the entry was created */
+  timestamp: Date;
+  /** Number of likes entry received */
+  likes: number;
 }
 
 /**
@@ -24,73 +43,60 @@ export interface EphemeralKey {
 }
 
 /**
- * Provider interface for generating and verifying ZK proofs of AnonGroup membership
- * Example: Google, Slack (for "people in a company")
+ * Provider interface for generating and verifying ZK proofs of company membership
+ * Example: Google (for "people in a company")
  */
-export interface AnonGroupProvider {
+export interface CompanyProvider {
   /** Get the provider's unique identifier */
   name(): string;
 
-  /** Slug is a key that represents the type of the AnonGroup identifier (to be used in URLs). Example: "domain" */
+  /** Slug is a key that represents the type of the company identifier (to be used in URLs). Example: "domain" */
   getSlug(): string;
 
   /**
-   * Generate a ZK proof that the current user is a member of an AnonGroup
-   * @param ephemeralPubkeyHash - Hash of the ephemeral pubkey, expiry and salt
-   * @returns Returns the AnonGroup and membership proof, along with additional args that may be needed for verification
+   * Generate a ZK proof that the current user is a member of a company
+   * @param ephemeralKey - The ephemeral key pair generated for the user
+   * @param position - The position at the company
+   * @param salary - The salary at the company
+   * @returns Returns the company and membership proof, along with additional args that may be needed for verification
    */
-  generateProof(ephemeralKey: EphemeralKey): Promise<{
+  generateProof(
+    ephemeralKey: EphemeralKey,
+    position: string,
+    salary: string
+  ): Promise<{
     proof: Uint8Array;
-    anonGroup: AnonGroup;
+    company: Company;
     proofArgs: object;
   }>;
 
   /**
-   * Verify a ZK proof of group membership
+   * Verify a ZK proof of company membership
    * @param proof - The ZK proof to verify
+   * @param companyId - ID of the company that the proof claims membership in
    * @param ephemeralPubkey - Pubkey modulus of the ephemeral key that was used when generating the proof
-   * @param anonGroup - AnonGroup that the proof claims membership in
+   * @param ephemeralPubkeyExpiry - Expiry of the ephemeral pubkey
    * @param proofArgs - Additional args that was returned when the proof was generated
    * @returns Promise resolving to true if the proof is valid
    */
   verifyProof(
     proof: Uint8Array,
-    anonGroupId: string,
+    companyId: string,
     ephemeralPubkey: bigint,
     ephemeralPubkeyExpiry: Date,
     proofArgs: object
   ): Promise<boolean>;
 
   /**
-   * Get the AnonGroup by its unique identifier
-   * @param groupId - Unique identifier for the AnonGroup
-   * @returns Promise resolving to the AnonGroup
+   * Get the company by its unique identifier
+   * @param companyId - Unique identifier for the company
+   * @returns Promise resolving to the company
    */
-  getAnonGroup(groupId: string): AnonGroup;
+  getCompany(companyId: string): Company;
 }
 
-/**
- * Represents a message posted by an AnonGroup member
- */
-export interface Message {
-  /** Unique identifier for the message */
-  id: string;
-  /** ID of the AnonGroup the corresponding user belongs to */
-  anonGroupId: string;
-  /** Name of the provider that generated the proof that the user (user's ephemeral pubkey) belongs to the AnonGroup */
-  anonGroupProvider: string;
-  /** Content of the message */
-  text: string;
-  /** Unix timestamp when the message was created */
-  timestamp: Date;
-  /** Whether this message is only visible to other members of the same AnonGroup */
-  internal: boolean;
-  /** Number of likes message received */
-  likes: number;
-}
-
-export interface SignedMessage extends Message {
-  /** Ed25519 signature of the message - signed by the user's ephemeral private key (in hex format) */
+export interface SignedSalaryEntry extends SalaryEntry {
+  /** Ed25519 signature of the entry - signed by the user's ephemeral private key (in hex format) */
   signature: bigint;
   /** Ed25519 pubkey that can verify the signature */
   ephemeralPubkey: bigint;
@@ -98,8 +104,8 @@ export interface SignedMessage extends Message {
   ephemeralPubkeyExpiry: Date;
 }
 
-export interface SignedMessageWithProof extends SignedMessage {
-  /** ZK proof that the sender belongs to the AnonGroup */
+export interface SignedSalaryEntryWithProof extends SignedSalaryEntry {
+  /** ZK proof that the sender belongs to the company */
   proof: Uint8Array;
   /** Additional args that was returned when the proof was generated */
   proofArgs: object;
@@ -107,10 +113,23 @@ export interface SignedMessageWithProof extends SignedMessage {
 
 export const LocalStorageKeys = {
   EphemeralKey: "ephemeralKey",
-  CurrentGroupId: "currentGroupId",
+  CurrentCompanyId: "currentCompanyId",
   CurrentProvider: "currentProvider",
   GoogleOAuthState: "googleOAuthState",
   GoogleOAuthNonce: "googleOAuthNonce",
+  MicrosoftOAuthState: "microsoftOAuthState",
+  MicrosoftOAuthNonce: "microsoftOAuthNonce",
   DarkMode: "darkMode",
   HasSeenWelcomeMessage: "hasSeenWelcomeMessage",
 };
+
+export interface OAuthProvider {
+  id: string;
+  name: string;
+  clientId: string;
+  clientSecret: string;
+  authorizationUrl: string;
+  tokenUrl: string;
+  userInfoUrl: string;
+  scope: string;
+} 

@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+}
+
+@layer components {
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition-colors;
+  }
+
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply btn bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+  }
+
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+
+  .btn-secondary {
+    @apply btn border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:ring-blue-500;
+  }
+
+  .btn-disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-lg p-8;
+  }
+
+  .card-header {
+    @apply flex justify-between items-center mb-8;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-gray-700 mb-2;
+  }
+
+  .form-input {
+    @apply block w-full px-4 py-3 border border-gray-200 rounded-lg bg-white transition-all duration-200 ease-in-out;
+  }
+
+  .form-input:focus {
+    @apply outline-none border-gray-300 ring-0;
+  }
+}
+
+/* Base styles */
+body {
+  @apply bg-gray-50 text-gray-900 min-h-screen;
+}
+
+#__next {
+  @apply min-h-screen;
+}
+
+/* Container */
+.container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Form styles */
+.form-group {
+  @apply space-y-2;
+}
+
+/* Proof display */
+.proof-display {
+  @apply mt-8 p-4 bg-gray-50 rounded-xl overflow-auto font-mono text-sm;
+}
+
+/* Success message */
+.success-message {
+  @apply mt-4 p-4 bg-green-50 text-green-800 rounded-lg text-center font-medium;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+} 
