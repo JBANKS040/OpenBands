@@ -1,41 +1,20 @@
-# zkLevels
+# OpenBands
 
+OpenBands is a platform that enables anonymous salary transparency while cryptographically proving company affiliation - without revealing individual identities.
 
-zkLevels is a Levels/Glassdoor style app where users can sign in with their gmail work account and prove affiliation with a company without disclosing their identity.
+We use Zero Knowledge Proofs to verify that users have valid Google Workspace accounts from their claimed organizations, while keeping email addresses and personal details completely private. This allows employees to share salary information without fear of retaliation or identification.
 
-After sign in the user has the possibility to disclose the position at the company and the respective salary for this position.
+The salary submissions cannot be linked back to individual employees, yet are cryptographically verified to come from legitimate company email addresses.
 
-We will work with zkJWT and Noir language to write the circuits.
-We will generate a offchain verifier to verify proofs. 
+Try it out at open-bands.vercel.app
 
+## How It Works
 
-Ressources:
-https://saleel.xyz/blog/stealthnote/
-https://github.com/zkemail/noir-jwt
-
-
-Some questions I asked the founder of Stealthnote and ideas we might use for our zkLevels:
-
-> so I can use Stealthnote github as reference right?
-yes, Stealthnote is a bit complex in the sense that it is somewhat generic to accept any proof of anonymity group; but you should be able to use some snippets.
-Using jwt-library might be more convenient
-
-> So the message and jwt are binded?
-yes, but there is another level of indirection where you are binding the public key of a temporarily generated keypair instead
-and then use that ephemeral key to sign messages
-
-this way you generate on ZK proof and can post any number of messages
-
-> The proof would include these inputs: position, salary and jwt?
-yes; not sure if you need keypair abstraction like above as one person only needs to post once
-1:02 PM
-
-> But where does verification happen? Whats the pro and cons of not deploying on a blockchain?
-
-I am saving the messages to a centralized server in a postgres database
-So there is a liveness/censorship assumption on the server - i.e server can remove some messages, but it cannot create fake messages from any company (as the proof is verifiable by users in the frontend)
-
-A smart contract verifying proof and storing/emiting event is great as its censorship resistant and always live; something i might do in the future, if this turns in to some serious whistleblowing app
-
-the cons are the gas cost and UX; someone has to pay for the tx cost, and it might not be fun if we ask users to pay; if I pay for all messages with some account abstraction, there is a potential DDOS attack vector on my faucet
+1. **Authentication**: Sign in with your work Google account
+2. **Proof Generation**: We generate a zero-knowledge proof that:
+   - Verifies your Google JWT is valid
+   - Proves you have an email from the claimed company domain
+   - Commits/binds to your position and salary
+3. **Privacy**: Your email address and identity are never revealed or stored (client side proof generation)
+4. **Verification**: Anyone can verify that submissions come from legitimate company employees
 
