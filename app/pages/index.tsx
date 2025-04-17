@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { jwtDecode } from "jwt-decode";
 import { OPENBANDS_CIRCUIT_HELPER } from "../lib/circuits/openbands";
@@ -154,14 +154,17 @@ export default function Home() {
     }
   };
 
-  const verifyProof = async (submissionIndex: number) => {
-    const updatedSubmissions = [...recentSubmissions];
-    updatedSubmissions[submissionIndex] = {
-      ...updatedSubmissions[submissionIndex],
-      isVerifying: true,
-      verificationResult: null
-    };
-    setRecentSubmissions(updatedSubmissions);
+  const verifyProof = useCallback(async (submissionIndex: number) => {
+    setRecentSubmissions(prevSubmissions => {
+      const updatedSubmissions = [...prevSubmissions];
+      updatedSubmissions[submissionIndex] = {
+        ...updatedSubmissions[submissionIndex],
+        isVerifying: true,
+        verificationResult: null
+      };
+      return updatedSubmissions;
+    });
+    
     setError(null);
 
     try {
@@ -178,24 +181,30 @@ export default function Home() {
         }
       );
 
-      updatedSubmissions[submissionIndex] = {
-        ...updatedSubmissions[submissionIndex],
-        isVerifying: false,
-        verificationResult: result
-      };
-      setRecentSubmissions(updatedSubmissions);
+      setRecentSubmissions(prevSubmissions => {
+        const updatedSubmissions = [...prevSubmissions];
+        updatedSubmissions[submissionIndex] = {
+          ...updatedSubmissions[submissionIndex],
+          isVerifying: false,
+          verificationResult: result
+        };
+        return updatedSubmissions;
+      });
     } catch (err) {
       console.error("Error verifying proof:", err);
       setError(err instanceof Error ? err.message : "Failed to verify proof");
       
-      updatedSubmissions[submissionIndex] = {
-        ...updatedSubmissions[submissionIndex],
-        isVerifying: false,
-        verificationResult: false
-      };
-      setRecentSubmissions(updatedSubmissions);
+      setRecentSubmissions(prevSubmissions => {
+        const updatedSubmissions = [...prevSubmissions];
+        updatedSubmissions[submissionIndex] = {
+          ...updatedSubmissions[submissionIndex],
+          isVerifying: false,
+          verificationResult: false
+        };
+        return updatedSubmissions;
+      });
     }
-  };
+  }, [recentSubmissions]);
 
   if (!session) {
     return (
@@ -304,7 +313,10 @@ export default function Home() {
       {/* Recent Submissions */}
       <div className="space-y-4">
         {recentSubmissions.map((submission, index) => (
-          <div key={index} className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+          <div 
+            key={`${submission.domain}-${submission.position}-${submission.timestamp}-${index}`}
+            className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow"
+          >
             <div className="flex justify-between items-start mb-4">
               <div>
                 <div className="text-lg font-medium text-gray-900">Someone from {submission.domain}</div>
@@ -326,9 +338,27 @@ export default function Home() {
               </button>
             </div>
 
-            {submission.isVerifying !== undefined && submission.verificationResult !== null && (
-              <div className={`mt-2 p-2 rounded-md text-sm ${submission.verificationResult ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
-                {submission.verificationResult ? "✓ Verified" : "✗ Verification failed"}
+            {submission.isVerifying !== undefined && (
+              <div className={`mt-2 p-2 rounded-md text-sm ${
+                submission.isVerifying 
+                  ? 'bg-gray-50 text-gray-800'
+                  : submission.verificationResult 
+                    ? 'bg-green-50 text-green-800' 
+                    : 'bg-red-50 text-red-800'
+              }`}>
+                {submission.isVerifying ? (
+                  <div className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Verifying...
+                  </div>
+                ) : (
+                  submission.verificationResult !== null
+                    ? (submission.verificationResult ? "✓ Verified" : "✗ Verification failed")
+                    : null
+                )}
               </div>
             )}
 
