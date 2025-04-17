@@ -14,19 +14,19 @@ if ! nargo compile; then
 fi
 
 echo "Gate count:"
-bb gates -b target/zklevels.json | jq '.functions[0].circuit_size'
+bb gates -b target/openbands.json | jq '.functions[0].circuit_size'
 
 # Create version-specific directory
-mkdir -p "../app/assets/levels-$VERSION"
+mkdir -p "../app/assets/openbands-$VERSION"
 mkdir -p "target/vk"
 
-echo "Copying circuit.json to app/assets/levels-$VERSION..."
-cp target/zklevels.json "../app/assets/levels-$VERSION/circuit.json"
+echo "Copying circuit.json to app/assets/openbands-$VERSION..."
+cp target/openbands.json "../app/assets/openbands-$VERSION/circuit.json"
 
 echo "Generating verification key..."
-bb write_vk -b ./target/zklevels.json -o ./target/vk
+bb write_vk -b ./target/openbands.json -o ./target/vk
 
-echo "Generating vkey.json to app/assets/levels-$VERSION..."
+echo "Generating vkey.json to app/assets/openbands-$VERSION..."
 node -e "const fs = require('fs'); fs.writeFileSync('../app/assets/levels-$VERSION/circuit-vkey.json', JSON.stringify(Array.from(Uint8Array.from(fs.readFileSync('./target/vk/vk')))));"
 
 echo "Done" 
