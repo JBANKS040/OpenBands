@@ -7,7 +7,7 @@ const MAX_DOMAIN_LENGTH = 64;
 const MAX_POSITION_LENGTH = 128;
 const MAX_SALARY_LENGTH = 32;
 
-export const ZKLEVELS_CIRCUIT_HELPER = {
+export const OPENBANDS_CIRCUIT_HELPER = {
   generateProof: async ({
     idToken,
     jwtPubkey,

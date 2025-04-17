@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { jwtDecode } from "jwt-decode";
-import { ZKLEVELS_CIRCUIT_HELPER } from "../lib/circuits/zklevels";
+import { OPENBANDS_CIRCUIT_HELPER } from "../lib/circuits/openbands";
 import { pubkeyModulusFromJWK } from "../lib/utils";
 import { supabase, Submission } from "../lib/supabase";
 
@@ -26,6 +26,8 @@ interface ProofDetails {
   salary: string;
   jwtPubKey: JsonWebKey;
   timestamp?: number;
+  verificationResult?: boolean | null;
+  isVerifying?: boolean;
 }
 
 async function getGooglePublicKey(kid: string): Promise<JsonWebKey> {
@@ -47,8 +49,6 @@ export default function Home() {
   const [proofGenerated, setProofGenerated] = useState(false);
   const [proofDetails, setProofDetails] = useState<ProofDetails | null>(null);
   const [loading, setLoading] = useState(false);
-  const [verifying, setVerifying] = useState(false);
-  const [verificationResult, setVerificationResult] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [recentSubmissions, setRecentSubmissions] = useState<ProofDetails[]>([]);
 
@@ -106,7 +106,7 @@ export default function Home() {
 
       const jwtPubkey = await getGooglePublicKey(kid);
 
-      const generatedProof = await ZKLEVELS_CIRCUIT_HELPER.generateProof({
+      const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({
         idToken: token,
         jwtPubkey,
         domain,
@@ -138,7 +138,6 @@ export default function Home() {
 
       setProofDetails(newProofDetails);
       setProofGenerated(true);
-      setVerificationResult(null);
       
       // Refresh submissions
       await fetchSubmissions();
@@ -155,13 +154,21 @@ export default function Home() {
     }
   };
 
-  const verifyProof = async (proofToVerify: ProofDetails) => {
-    setVerifying(true);
+  const verifyProof = async (submissionIndex: number) => {
+    const updatedSubmissions = [...recentSubmissions];
+    updatedSubmissions[submissionIndex] = {
+      ...updatedSubmissions[submissionIndex],
+      isVerifying: true,
+      verificationResult: null
+    };
+    setRecentSubmissions(updatedSubmissions);
     setError(null);
+
     try {
+      const proofToVerify = recentSubmissions[submissionIndex];
       const modulus = await pubkeyModulusFromJWK(proofToVerify.jwtPubKey);
       
-      const result = await ZKLEVELS_CIRCUIT_HELPER.verifyProof(
+      const result = await OPENBANDS_CIRCUIT_HELPER.verifyProof(
         proofToVerify.proof,
         {
           domain: proofToVerify.domain,
@@ -170,13 +177,23 @@ export default function Home() {
           jwtPubKey: modulus
         }
       );
-      setVerificationResult(result);
+
+      updatedSubmissions[submissionIndex] = {
+        ...updatedSubmissions[submissionIndex],
+        isVerifying: false,
+        verificationResult: result
+      };
+      setRecentSubmissions(updatedSubmissions);
     } catch (err) {
       console.error("Error verifying proof:", err);
       setError(err instanceof Error ? err.message : "Failed to verify proof");
-      setVerificationResult(false);
-    } finally {
-      setVerifying(false);
+      
+      updatedSubmissions[submissionIndex] = {
+        ...updatedSubmissions[submissionIndex],
+        isVerifying: false,
+        verificationResult: false
+      };
+      setRecentSubmissions(updatedSubmissions);
     }
   };
 
@@ -301,17 +318,17 @@ export default function Home() {
                 </div>
               </div>
               <button
-                onClick={() => verifyProof(submission)}
-                disabled={verifying}
-                className={`px-4 py-2 border border-gray-300 rounded-md text-sm font-medium shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${verifying ? 'opacity-50 cursor-not-allowed' : ''}`}
+                onClick={() => verifyProof(index)}
+                disabled={submission.isVerifying}
+                className={`px-4 py-2 border border-gray-300 rounded-md text-sm font-medium shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${submission.isVerifying ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                {verifying ? 'Verifying...' : 'Verify'}
+                {submission.isVerifying ? 'Verifying...' : 'Verify'}
               </button>
             </div>
 
-            {verificationResult !== null && (
-              <div className={`mt-2 p-2 rounded-md text-sm ${verificationResult ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
-                {verificationResult ? "✓ Verified" : "✗ Verification failed"}
+            {submission.isVerifying !== undefined && submission.verificationResult !== null && (
+              <div className={`mt-2 p-2 rounded-md text-sm ${submission.verificationResult ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
+                {submission.verificationResult ? "✓ Verified" : "✗ Verification failed"}
               </div>
             )}
 
