@@ -216,6 +216,7 @@ export default function Home() {
           No names, no pressure — just honest insights to help everyone make smarter career decisions.
           Join the movement for pay transparency, and help others by sharing your story.
           </p>
+          <p className="text-sm text-gray-500 mb-4">Sign in with your work email to verify your company affiliation. <br/>(For testing purposes, private @gmail.com accounts also work)</p>
           <button 
             onClick={() => signIn("google")} 
             className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
