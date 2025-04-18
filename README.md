@@ -6,7 +6,7 @@ We use Zero Knowledge Proofs to verify that users have valid Google Workspace ac
 
 The salary submissions cannot be linked back to individual employees, yet are cryptographically verified to come from legitimate company email addresses.
 
-Try it out at open-bands.vercel.app
+Try it out at [open-bands.vercel.app](https://open-bands.vercel.app)
 
 ## How It Works
 
