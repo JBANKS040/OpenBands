@@ -262,7 +262,6 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">Welcome to OpenBands...</h1>
           <div className="bg-white rounded-lg shadow-sm p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Welcome to Openbands...</h2>
             <p className="text-gray-600 mb-6">
             ...where professionals share real compensation data anonymously.<br></br>
             No names, no pressure — just honest insights to help everyone make smarter career decisions.
