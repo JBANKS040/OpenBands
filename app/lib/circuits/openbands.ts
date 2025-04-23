@@ -14,12 +14,21 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     domain,
     position,
     salary,
+    ratings,
   }: {
     idToken: string;
     jwtPubkey: JsonWebKey;
     domain: string;
     position: string;
     salary: string;
+    ratings: {
+      work_life_balance: number;
+      culture_values: number;
+      career_growth: number;
+      compensation_benefits: number;
+      leadership_quality: number;
+      operational_efficiency: number;
+    };
   }) => {
     if (!idToken || !jwtPubkey) {
       throw new Error(
@@ -63,12 +72,18 @@ export const OPENBANDS_CIRCUIT_HELPER = {
         storage: Array.from(salaryUint8Array),
         len: salary.length,
       },
+      work_life_balance: ratings.work_life_balance,
+      culture_values: ratings.culture_values,
+      career_growth: ratings.career_growth,
+      compensation_benefits: ratings.compensation_benefits,
+      leadership_quality: ratings.leadership_quality,
+      operational_efficiency: ratings.operational_efficiency,
     };
 
     console.log("ZKLevels circuit inputs", inputs);
 
     const { Noir, UltraHonkBackend } = await initProver();
-    const circuitArtifact = await import(`../../assets/levels-0.0.1/circuit.json`);
+    const circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
     const backend = new UltraHonkBackend(circuitArtifact.bytecode, { threads: 8 });
     const noir = new Noir(circuitArtifact as CompiledCircuit);
 
@@ -89,71 +104,132 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       position,
       salary,
       jwtPubKey,
+      ratings,
     }: {
       domain: string;
       position: string;
       salary: string;
       jwtPubKey: bigint;
+      ratings: {
+        work_life_balance: number;
+        culture_values: number;
+        career_growth: number;
+        compensation_benefits: number;
+        leadership_quality: number;
+        operational_efficiency: number;
+      };
     }
   ) => {
-    if (!domain || !position || !salary || !jwtPubKey) {
-      throw new Error(
-        "[JWT Circuit] Proof verification failed: invalid public inputs"
+    try {
+      if (!domain || !position || !salary || !jwtPubKey || !ratings) {
+        throw new Error(
+          "[JWT Circuit] Proof verification failed: invalid public inputs"
+        );
+      }
+
+      console.log("Verifying proof with inputs:", {
+        domain,
+        position,
+        salary,
+        ratings: {
+          work_life_balance: ratings.work_life_balance,
+          culture_values: ratings.culture_values,
+          career_growth: ratings.career_growth,
+          compensation_benefits: ratings.compensation_benefits,
+          leadership_quality: ratings.leadership_quality,
+          operational_efficiency: ratings.operational_efficiency
+        }
+      });
+
+      const { UltraHonkBackend } = await initVerifier();
+
+      try {
+        const vkey = await import(`../../assets/openbands-0.0.1/vk.json`);
+        console.log("Loaded verification key");
+      } catch (err) {
+        console.error("Failed to load verification key:", err);
+        throw new Error("Failed to load verification key");
+      }
+
+      // Public Inputs = pubkey_limbs(18) + domain(64) + position(128) + salary(32) + ratings(6) = 248
+      const publicInputs: string[] = [];
+
+      // Push modulus limbs as 64 char hex strings (18 Fields)
+      const modulusLimbs = splitBigIntToLimbs(jwtPubKey, 120, 18);
+      publicInputs.push(
+        ...modulusLimbs.map((s) => "0x" + s.toString(16).padStart(64, "0"))
       );
+
+      // Push domain + domain length (BoundedVec of 64 bytes)
+      const domainUint8Array = new Uint8Array(64);
+      domainUint8Array.set(Uint8Array.from(new TextEncoder().encode(domain)));
+      publicInputs.push(
+        ...Array.from(domainUint8Array).map(
+          (s) => "0x" + s.toString(16).padStart(64, "0")
+        )
+      );
+      publicInputs.push("0x" + domain.length.toString(16).padStart(64, "0"));
+
+      // Push position + position length (BoundedVec of 128 bytes)
+      const positionUint8Array = new Uint8Array(128);
+      positionUint8Array.set(Uint8Array.from(new TextEncoder().encode(position)));
+      publicInputs.push(
+        ...Array.from(positionUint8Array).map(
+          (s) => "0x" + s.toString(16).padStart(64, "0")
+        )
+      );
+      publicInputs.push("0x" + position.length.toString(16).padStart(64, "0"));
+
+      // Push salary + salary length (BoundedVec of 32 bytes)
+      const salaryUint8Array = new Uint8Array(32);
+      salaryUint8Array.set(Uint8Array.from(new TextEncoder().encode(salary)));
+      publicInputs.push(
+        ...Array.from(salaryUint8Array).map(
+          (s) => "0x" + s.toString(16).padStart(64, "0")
+        )
+      );
+      publicInputs.push("0x" + salary.length.toString(16).padStart(64, "0"));
+
+      console.log("Adding ratings to public inputs:", {
+        work_life_balance: ratings.work_life_balance,
+        culture_values: ratings.culture_values,
+        career_growth: ratings.career_growth,
+        compensation_benefits: ratings.compensation_benefits,
+        leadership_quality: ratings.leadership_quality,
+        operational_efficiency: ratings.operational_efficiency
+      });
+
+      // Push ratings as public inputs
+      publicInputs.push("0x" + ratings.work_life_balance.toString(16).padStart(64, "0"));
+      publicInputs.push("0x" + ratings.culture_values.toString(16).padStart(64, "0"));
+      publicInputs.push("0x" + ratings.career_growth.toString(16).padStart(64, "0"));
+      publicInputs.push("0x" + ratings.compensation_benefits.toString(16).padStart(64, "0"));
+      publicInputs.push("0x" + ratings.leadership_quality.toString(16).padStart(64, "0"));
+      publicInputs.push("0x" + ratings.operational_efficiency.toString(16).padStart(64, "0"));
+
+      const proofData = {
+        proof: proof,
+        publicInputs,
+      };
+
+      try {
+        const circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
+        console.log("Loaded circuit artifact");
+        
+        const backend = new UltraHonkBackend(circuitArtifact.bytecode, { threads: 8 });
+        console.log("Initialized UltraHonkBackend");
+        
+        const result = await backend.verifyProof(proofData);
+        console.log("Proof verification result:", result);
+        
+        return result;
+      } catch (err) {
+        console.error("Failed during proof verification:", err);
+        throw err;
+      }
+    } catch (err) {
+      console.error("Error in verifyProof:", err);
+      throw err;
     }
-
-    const { UltraHonkBackend } = await initVerifier();
-
-    const vkey = await import(`../../assets/levels-0.0.1/circuit-vkey.json`);
-
-    // Public Inputs = pubkey_limbs(18) + domain(64) + position(128) + salary(32) = 242
-    const publicInputs: string[] = [];
-
-    // Push modulus limbs as 64 char hex strings (18 Fields)
-    const modulusLimbs = splitBigIntToLimbs(jwtPubKey, 120, 18);
-    publicInputs.push(
-      ...modulusLimbs.map((s) => "0x" + s.toString(16).padStart(64, "0"))
-    );
-
-    // Push domain + domain length (BoundedVec of 64 bytes)
-    const domainUint8Array = new Uint8Array(64);
-    domainUint8Array.set(Uint8Array.from(new TextEncoder().encode(domain)));
-    publicInputs.push(
-      ...Array.from(domainUint8Array).map(
-        (s) => "0x" + s.toString(16).padStart(64, "0")
-      )
-    );
-    publicInputs.push("0x" + domain.length.toString(16).padStart(64, "0"));
-
-    // Push position + position length (BoundedVec of 128 bytes)
-    const positionUint8Array = new Uint8Array(128);
-    positionUint8Array.set(Uint8Array.from(new TextEncoder().encode(position)));
-    publicInputs.push(
-      ...Array.from(positionUint8Array).map(
-        (s) => "0x" + s.toString(16).padStart(64, "0")
-      )
-    );
-    publicInputs.push("0x" + position.length.toString(16).padStart(64, "0"));
-
-    // Push salary + salary length (BoundedVec of 32 bytes)
-    const salaryUint8Array = new Uint8Array(32);
-    salaryUint8Array.set(Uint8Array.from(new TextEncoder().encode(salary)));
-    publicInputs.push(
-      ...Array.from(salaryUint8Array).map(
-        (s) => "0x" + s.toString(16).padStart(64, "0")
-      )
-    );
-    publicInputs.push("0x" + salary.length.toString(16).padStart(64, "0"));
-
-    const proofData = {
-      proof: proof,
-      publicInputs,
-    };
-
-    const circuitArtifact = await import(`../../assets/levels-0.0.1/circuit.json`);
-    const backend = new UltraHonkBackend(circuitArtifact.bytecode, { threads: 8 });
-    const result = await backend.verifyProof(proofData);
-
-    return result;
   },
 }; 

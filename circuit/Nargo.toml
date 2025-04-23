@@ -1,5 +1,5 @@
 [package]
-name = "zklevels"
+name = "openbands"
 type = "bin"
 authors = ["Stratos"]
 compiler_version = ">=1.0.0"

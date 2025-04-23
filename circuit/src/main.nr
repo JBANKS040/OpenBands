@@ -6,6 +6,12 @@ global MAX_EMAIL_LENGTH: u32 = 128;
 global MAX_POSITION_LENGTH: u32 = 128;
 global MAX_SALARY_LENGTH: u32 = 32;
 
+// Rating must be between 1 and 5
+fn verify_rating(rating: u8) {
+    assert(rating >= 1, "rating must be at least 1");
+    assert(rating <= 5, "rating must be at most 5");
+}
+
 /**
  * @brief Verify JWT signature (RSA/SHA256 only) and validate domain field
  * Also verify position and salary claims
@@ -24,6 +30,12 @@ global MAX_SALARY_LENGTH: u32 = 32;
  * @param domain: Domain name (`hd` key) as a byte array of ascii characters padded to MAX_DOMAIN_LENGTH
  * @param position: Position at the company as a byte array of ascii characters padded to MAX_POSITION_LENGTH
  * @param salary: Salary at the company as a byte array of ascii characters padded to MAX_SALARY_LENGTH
+ * @param work_life_balance: Work-life balance rating (1-5)
+ * @param culture_values: Culture and values rating (1-5)
+ * @param career_growth: Career growth rating (1-5)
+ * @param compensation_benefits: Compensation and benefits rating (1-5)
+ * @param leadership_quality: Leadership quality rating (1-5)
+ * @param operational_efficiency: Operational efficiency rating (1-5)
  **/
 fn main(
     partial_data: BoundedVec<u8, MAX_PARTIAL_DATA_LENGTH>,
@@ -36,6 +48,12 @@ fn main(
     domain: pub BoundedVec<u8, MAX_DOMAIN_LENGTH>,
     position: pub BoundedVec<u8, MAX_POSITION_LENGTH>,
     salary: pub BoundedVec<u8, MAX_SALARY_LENGTH>,
+    work_life_balance: pub u8,
+    culture_values: pub u8,
+    career_growth: pub u8,
+    compensation_benefits: pub u8,
+    leadership_quality: pub u8,
+    operational_efficiency: pub u8
 ) {
     // Init JWT struct and verify signature
     let jwt = JWT::init_with_partial_hash(
@@ -76,6 +94,14 @@ fn main(
     for i in 0..MAX_SALARY_LENGTH {
         assert(salary_claim.storage()[i] == salary.storage()[i], "invalid salary");
     }
+
+    // Verify ratings are valid (1-5)
+    verify_rating(work_life_balance);
+    verify_rating(culture_values);
+    verify_rating(career_growth);
+    verify_rating(compensation_benefits);
+    verify_rating(leadership_quality);
+    verify_rating(operational_efficiency);
 }
 
 unconstrained fn get_domain_start_index_in_email(email: BoundedVec<u8, MAX_EMAIL_LENGTH>) -> u32 {

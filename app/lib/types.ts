@@ -132,4 +132,13 @@ export interface OAuthProvider {
   tokenUrl: string;
   userInfoUrl: string;
   scope: string;
+}
+
+export interface CompanyRatings {
+  work_life_balance: number;
+  culture_values: number;
+  career_growth: number;
+  compensation_benefits: number;
+  leadership_quality: number;
+  operational_efficiency: number;
 } 

@@ -21,12 +21,12 @@ mkdir -p "../app/assets/openbands-$VERSION"
 mkdir -p "target/vk"
 
 echo "Copying circuit.json to app/assets/openbands-$VERSION..."
-cp target/openbands.json "../app/assets/openbands-$VERSION/circuit.json"
+cp target/openbands.json "../app/assets/openbands-$VERSION/openbands.json"
 
 echo "Generating verification key..."
 bb write_vk -b ./target/openbands.json -o ./target/vk
 
-echo "Generating vkey.json to app/assets/openbands-$VERSION..."
-node -e "const fs = require('fs'); fs.writeFileSync('../app/assets/levels-$VERSION/circuit-vkey.json', JSON.stringify(Array.from(Uint8Array.from(fs.readFileSync('./target/vk/vk')))));"
+echo "Generating vk.json to app/assets/openbands-$VERSION..."
+node -e "const fs = require('fs'); fs.writeFileSync('../app/assets/openbands-$VERSION/vk.json', JSON.stringify(Array.from(Uint8Array.from(fs.readFileSync('./target/vk/vk')))));"
 
 echo "Done" 

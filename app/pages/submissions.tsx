@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSession } from "next-auth/react";
 import { supabase } from "../lib/supabase";
 import { OPENBANDS_CIRCUIT_HELPER } from "../lib/circuits/openbands";
 import { pubkeyModulusFromJWK } from "../lib/utils";
+import CompanyRatings from "../components/CompanyRatings";
+import Layout from '../components/layout';
+import { CompanyRatings as CompanyRatingsType } from '../lib/supabase';
 
 interface Submission {
   domain: string;
@@ -13,16 +15,53 @@ interface Submission {
   jwt_pub_key: string;
   isVerifying?: boolean;
   verificationResult?: boolean | null;
+  ratings?: CompanyRatingsType;
 }
 
 interface CompanyData {
   domain: string;
   submissions: Submission[];
   isExpanded?: boolean;
+  averageRatings?: CompanyRatingsType;
 }
 
+const calculateAverageRatings = (submissions: Submission[]): CompanyRatingsType | undefined => {
+  const submissionsWithRatings = submissions.filter(s => s.ratings);
+  if (submissionsWithRatings.length === 0) return undefined;
+
+  const initialRatings: CompanyRatingsType = {
+    work_life_balance: 0,
+    culture_values: 0,
+    career_growth: 0,
+    compensation_benefits: 0,
+    leadership_quality: 0,
+    operational_efficiency: 0
+  };
+
+  const summedRatings = submissionsWithRatings.reduce((acc, submission) => {
+    if (!submission.ratings) return acc;
+    return {
+      work_life_balance: acc.work_life_balance + submission.ratings.work_life_balance,
+      culture_values: acc.culture_values + submission.ratings.culture_values,
+      career_growth: acc.career_growth + submission.ratings.career_growth,
+      compensation_benefits: acc.compensation_benefits + submission.ratings.compensation_benefits,
+      leadership_quality: acc.leadership_quality + submission.ratings.leadership_quality,
+      operational_efficiency: acc.operational_efficiency + submission.ratings.operational_efficiency
+    };
+  }, initialRatings);
+
+  const count = submissionsWithRatings.length;
+  return {
+    work_life_balance: summedRatings.work_life_balance / count,
+    culture_values: summedRatings.culture_values / count,
+    career_growth: summedRatings.career_growth / count,
+    compensation_benefits: summedRatings.compensation_benefits / count,
+    leadership_quality: summedRatings.leadership_quality / count,
+    operational_efficiency: summedRatings.operational_efficiency / count
+  };
+};
+
 export default function Submissions() {
-  const { data: session } = useSession();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [submissionsByCompany, setSubmissionsByCompany] = useState<CompanyData[]>([]);
   const [viewMode, setViewMode] = useState<'all' | 'byCompany'>('all');
@@ -35,7 +74,7 @@ export default function Submissions() {
     try {
       const { data, error } = await supabase
         .from('submissions')
-        .select('domain, position, salary, created_at, proof, jwt_pub_key')
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -44,7 +83,8 @@ export default function Submissions() {
         const submissionsWithVerification = data.map(submission => ({
           ...submission,
           isVerifying: false,
-          verificationResult: null
+          verificationResult: null,
+          ratings: submission.ratings ? JSON.parse(submission.ratings) : undefined
         }));
         
         setSubmissions(submissionsWithVerification);
@@ -63,7 +103,8 @@ export default function Submissions() {
           .map(([domain, submissions]) => ({
             domain,
             submissions,
-            isExpanded: false
+            isExpanded: false,
+            averageRatings: calculateAverageRatings(submissions)
           }));
 
         setSubmissionsByCompany(companiesData);
@@ -127,7 +168,15 @@ export default function Submissions() {
           domain: submission.domain,
           position: submission.position,
           salary: submission.salary,
-          jwtPubKey: modulus
+          jwtPubKey: modulus,
+          ratings: submission.ratings || {
+            work_life_balance: 3,
+            culture_values: 3,
+            career_growth: 3,
+            compensation_benefits: 3,
+            leadership_quality: 3,
+            operational_efficiency: 3
+          }
         }
       );
 
@@ -165,6 +214,11 @@ export default function Submissions() {
             <span className="font-medium">Salary: </span>
             ${submission.salary}/year
           </div>
+          {submission.ratings && (
+            <div className="mt-4">
+              <CompanyRatings ratings={submission.ratings} />
+            </div>
+          )}
           <div className="mt-2 text-xs text-gray-500">
             {new Date(submission.created_at).toLocaleString()}
           </div>
@@ -209,19 +263,26 @@ export default function Submissions() {
         onClick={() => toggleCompany(index)}
         className="w-full p-6 flex items-center justify-between hover:bg-gray-50 transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200"
       >
-        <div className="flex items-center space-x-3">
-          <svg 
-            className={`h-5 w-5 text-gray-500 transform transition-transform ${company.isExpanded ? 'rotate-90' : ''}`}
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-          <h3 className="text-xl font-semibold text-gray-900">{company.domain}</h3>
+        <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-3">
+            <svg 
+              className={`h-5 w-5 text-gray-500 transform transition-transform ${company.isExpanded ? 'rotate-90' : ''}`}
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+            <h3 className="text-xl font-semibold text-gray-900">{company.domain}</h3>
+          </div>
+          {company.averageRatings && (
+            <div className="flex items-center">
+              <CompanyRatings ratings={company.averageRatings} />
+            </div>
+          )}
         </div>
-        <span className="px-3 py-1 text-sm bg-gray-100 rounded-full text-gray-600">
-          {company.submissions.length} submissions
+        <span className="px-3 py-1 text-sm bg-gray-100 rounded-full text-gray-600 whitespace-nowrap">
+          {company.submissions.length} {company.submissions.length === 1 ? 'submission' : 'submissions'}
         </span>
       </button>
       
@@ -236,40 +297,42 @@ export default function Submissions() {
   );
 
   return (
-    <div>
-      <div className="mb-8 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Submissions</h1>
-        <div className="flex space-x-4">
-          <button
-            onClick={() => setViewMode('all')}
-            className={`px-4 py-2 rounded-md text-sm font-medium ${
-              viewMode === 'all'
-                ? 'bg-gray-900 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-50'
-            }`}
-          >
-            Show All
-          </button>
-          <button
-            onClick={() => setViewMode('byCompany')}
-            className={`px-4 py-2 rounded-md text-sm font-medium ${
-              viewMode === 'byCompany'
-                ? 'bg-gray-900 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-50'
-            }`}
-          >
-            Group by Company
-          </button>
+    <Layout>
+      <div>
+        <div className="mb-8 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-gray-900">Submissions</h1>
+          <div className="flex space-x-4">
+            <button
+              onClick={() => setViewMode('all')}
+              className={`px-4 py-2 rounded-md text-sm font-medium ${
+                viewMode === 'all'
+                  ? 'bg-gray-900 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Show All
+            </button>
+            <button
+              onClick={() => setViewMode('byCompany')}
+              className={`px-4 py-2 rounded-md text-sm font-medium ${
+                viewMode === 'byCompany'
+                  ? 'bg-gray-900 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Group by Company
+            </button>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {viewMode === 'all' ? (
+            submissions.map((submission, index) => renderSubmission(submission, index))
+          ) : (
+            submissionsByCompany.map((company, index) => renderCompany(company, index))
+          )}
         </div>
       </div>
-
-      <div className="space-y-4">
-        {viewMode === 'all' ? (
-          submissions.map((submission, index) => renderSubmission(submission, index))
-        ) : (
-          submissionsByCompany.map((company, index) => renderCompany(company, index))
-        )}
-      </div>
-    </div>
+    </Layout>
   );
 } 
