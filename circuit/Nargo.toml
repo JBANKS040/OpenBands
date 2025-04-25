@@ -7,3 +7,4 @@ version = "0.0.1"
 
 [dependencies]
 jwt = { tag = "v0.4.4", git = "https://github.com/zkemail/noir-jwt" }
+zkemail = { tag = "v0.4.2", git = "https://github.com/zkemail/zkemail.nr", directory = "lib" }
