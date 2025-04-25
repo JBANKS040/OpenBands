@@ -1,14 +1,28 @@
+Ressources:
+Check out zkemail.nr
+https://registry.zk.email/
+
+
 Features:
 
+- nullifier, only 1 entry per email???
 - verified position with zkemail through email signatures
 - !!! verified salary with zkemail through email body content/ PDF better but expensive (long proving time)
-- personal company feedback questions: text fiel, culture, work life balance, 
+- generate key and post submission later, e.g. after leaving the company
+- personal company feedback pro/con: text fie
+
+- compare salaries with coworker without disclosing it. Only reveal whos is higher // yaos millionaire problem
+
+- aggregated data. show salaries for a company only if 10+ submissions are reached
+Aggregation is a trivial MPC task. No performance bottlenecks, no trusted party. Everyone submits encrypted data, and the system reveals only the group statistics. No one ever sees individual salaries—not even during computation.
 
 
-#	Dimension	What the Rating Measures	Sample 1‑Sentence Prompt (1 – 5)
-Work–Life Balance	“My workload and schedule let me maintain a healthy work–life balance.”
-Culture & Values	“The company’s values are reflected in everyday behavior and decision‑making.”
-Career Growth	“I have clear, attainable opportunities to develop and advance my career here.”
-Compensation & Benefits	“Overall, my compensation and benefits are competitive and fair for my role.”
-Leadership Quality	“Senior leadership communicates openly and steers the company effectively.”
-Operational Efficiency	“Our processes and tools let me work efficiently without unnecessary friction.”
+- To make it even stronger, you can layer in differential privacy.
+This adds noise in a controlled way, so even if someone tries to reverse-engineer individual entries from the aggregate, it doesn’t work.
+https://desfontain.es/blog/friendly-intro-to-differential-privacy.html
+
+
+Salary proof with reclaim protocol??
+
+https://x.com/reclaimprotocol/status/1915448489653490135
+https://dev.reclaimprotocol.org/
