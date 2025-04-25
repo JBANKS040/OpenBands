@@ -16,6 +16,13 @@ Try it out at [open-bands.vercel.app](https://open-bands.vercel.app)
 3. **Privacy**: Your email address and identity are never revealed or stored (client side proof generation)
 4. **Verification**: Anyone can verify that submissions come from legitimate company employees
 
+## Current Features
+ 1. verified work email with zkJWT
+ 2. Company star rating over 6 dimensions
+
+**Next up:**
+1. verified position and salary with zkEmail
+
 
 ## Helpful Ressources
 
