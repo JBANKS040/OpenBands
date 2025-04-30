@@ -8,8 +8,11 @@ Features:
 - nullifier, only 1 entry per email???
 - verified position with zkemail through email signatures
 - !!! verified salary with zkemail through email body content/ PDF better but expensive (long proving time)
+- I wonder if you could connect with http://openbanking.nr so that salaries are constrained too 🤔
+
+
 - generate key and post submission later, e.g. after leaving the company
-- personal company feedback pro/con: text fie
+- personal company feedback pro/con: text field
 
 - compare salaries with coworker without disclosing it. Only reveal whos is higher // yaos millionaire problem
 
