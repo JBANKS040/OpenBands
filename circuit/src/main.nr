@@ -1,5 +1,8 @@
 use jwt::JWT;
 
+use utils::position_and_salary_extractor::extract_position_from_email_body; // @dev - extract_position_from_email_body() function
+use utils::position_and_salary_extractor::extract_salary_from_email_body;   // @dev - extract_position_from_salary_body() function
+
 global MAX_PARTIAL_DATA_LENGTH: u32 = 640; // signed data length after partial SHA
 global MAX_DOMAIN_LENGTH: u32 = 64;
 global MAX_EMAIL_LENGTH: u32 = 128;
