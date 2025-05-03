@@ -52,8 +52,8 @@ fn main(
     jwt_pubkey_redc_params_limbs: [u128; 18],
     jwt_signature_limbs: [u128; 18],
     domain: pub BoundedVec<u8, MAX_DOMAIN_LENGTH>,
-    position: pub BoundedVec<u8, MAX_POSITION_LENGTH>,
-    salary: pub BoundedVec<u8, MAX_SALARY_LENGTH>,
+    position: pub BoundedVec<u8, MAX_POSITION_LENGTH>,   // Position, which is part of Email Body-extracted from the Entire Email Body.
+    salary: pub BoundedVec<u8, MAX_SALARY_LENGTH>,       // Salary, which is part of Email Body-extracted from the Entire Email Body.
     work_life_balance: pub u8,
     culture_values: pub u8,
     career_growth: pub u8,
@@ -62,8 +62,8 @@ fn main(
     operational_efficiency: pub u8,
 
     // @dev - Input parameters for email verification /w ZKEmail.nr
-    header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,
-    body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,
+    header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,  // Entire Email Body
+    body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,      // Entire Email Body
     pubkey: RSAPubkey<KEY_LIMBS_2048>,
     signature: [Field; KEY_LIMBS_2048],
     body_hash_index: u32,
@@ -126,6 +126,51 @@ fn main(
         body_hash_index,
         dkim_header_sequence
     );
+
+    /// @dev - Validate to check whether a given "position" is included in the entire email body or not.
+    /// @dev - Compare a given "position" (BoundedVec<u8, MAX_POSITION_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
+    let is_position_found_in_email_body: bool;
+    for i in 0..body.len() {
+        if (position.storage()[0] == body.storage()[i]) {
+            if (position.len() == 1) {
+                // @dev - Position is found in the email body
+                is_position_found_in_email_body = true;
+                break;
+            }
+            if (position.storage()[1] == body.storage()[i+1]) {
+                if (position.len() == 2) {
+                    // @dev - Position is found in the email body
+                    is_position_found_in_email_body = true;
+                    break;
+                }
+                if (position.storage()[2] == body.storage()[i+2]) {
+                    if (position.len() == 3) {
+                        // @dev - Position is found in the email body
+                        is_position_found_in_email_body = true;
+                        break;
+                    }
+                    if (position.storage()[3] == body.storage()[i+3]) {
+                        if (position.len() == 4) {
+                            // @dev - Position is found in the email body
+                            is_position_found_in_email_body = true;
+                            break;
+                        }
+                        
+                        if (position.storage()[4] == body.storage()[i+4]) {
+                            // @dev - Position is found in the email body
+                            is_position_found_in_email_body = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    assert(is_position_found_in_email_body == true, "Position can not be found in email body");
+
+    // @dev - Validate to check whether a given "salary" is included in the entire email body or not.
+    // [TODO]: Compare given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>)  and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
 }
 
 unconstrained fn get_domain_start_index_in_email(email: BoundedVec<u8, MAX_EMAIL_LENGTH>) -> u32 {
