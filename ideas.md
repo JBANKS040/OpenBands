@@ -5,7 +5,7 @@ https://registry.zk.email/
 
 Features:
 
-- nullifier, only 1 entry per email???
+- nullifier, only 1 submission per email???
 - verified position with zkemail through email signatures
 - !!! verified salary with zkemail through email body content/ PDF better but expensive (long proving time)
 - I wonder if you could connect with http://openbanking.nr so that salaries are constrained too 🤔
