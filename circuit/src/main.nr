@@ -132,44 +132,68 @@ fn main(
 
     /// @dev - Validate to check whether a given "position" is included in the entire email body or not.
     /// @dev - Compare a given "position" (BoundedVec<u8, MAX_POSITION_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
-    /// @dev - In the following implementation, the maximum number of sequences-matched is 5. ("5" is enuough for judging whether a given position is included in the email body or not)
     let is_position_found_in_email_body: bool;
     for i in 0..body.len() {
         if (position.storage()[0] == body.storage()[i]) {
-            if (position.len() == 1) {
+            if (position.len() == 1) { // @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "1". 
                 // @dev - Position is found in the email body
                 is_position_found_in_email_body = true;
                 break;
             }
-            if (position.storage()[1] == body.storage()[i+1]) {
-                if (position.len() == 2) {
-                    // @dev - Position is found in the email body
-                    is_position_found_in_email_body = true;
-                    break;
-                }
-                if (position.storage()[2] == body.storage()[i+2]) {
-                    if (position.len() == 3) {
+
+            let mut position_array: BoundedVec<Field, position.len()> = BoundedVec::new();
+            let mut j = 1;
+            for j in 1..position.len() {
+                if (position.storage()[j] == body.storage()[i+j]) {
+                    position_array.push(position.storage()[j]);
+
+                    if (j == position.len() | position_array.len() == position.len()) { // @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "many" (Not "1"). 
                         // @dev - Position is found in the email body
                         is_position_found_in_email_body = true;
                         break;
-                    }
-                    if (position.storage()[3] == body.storage()[i+3]) {
-                        if (position.len() == 4) {
-                            // @dev - Position is found in the email body
-                            is_position_found_in_email_body = true;
-                            break;
-                        }
-                        
-                        if (position.storage()[4] == body.storage()[i+4]) {
-                            // @dev - Position is found in the email body
-                            is_position_found_in_email_body = true;
-                            break;
-                        }
                     }
                 }
             }
         }
     }
+
+    // for i in 0..body.len() {
+    //     if (position.storage()[0] == body.storage()[i]) {
+    //         if (position.len() == 1) {
+    //             // @dev - Position is found in the email body
+    //             is_position_found_in_email_body = true;
+    //             break;
+    //         }
+    //
+    //         if (position.storage()[1] == body.storage()[i+1]) {
+    //             if (position.len() == 2) {
+    //                 // @dev - Position is found in the email body
+    //                 is_position_found_in_email_body = true;
+    //                 break;
+    //             }
+    //             if (position.storage()[2] == body.storage()[i+2]) {
+    //                 if (position.len() == 3) {
+    //                     // @dev - Position is found in the email body
+    //                     is_position_found_in_email_body = true;
+    //                     break;
+    //                 }
+    //                 if (position.storage()[3] == body.storage()[i+3]) {
+    //                     if (position.len() == 4) {
+    //                         // @dev - Position is found in the email body
+    //                         is_position_found_in_email_body = true;
+    //                         break;
+    //                     }
+    //                    
+    //                     if (position.storage()[4] == body.storage()[i+4]) {
+    //                         // @dev - Position is found in the email body
+    //                         is_position_found_in_email_body = true;
+    //                         break;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     assert(is_position_found_in_email_body == true, "Position can not be found in email body");
 
