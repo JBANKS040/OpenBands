@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@aztec/bb.js": "^0.82.3",
+    "@noir-lang/backend_barretenberg": "^0.36.0",
+    "@noir-lang/noir_js": "^1.0.0-beta.3",
+    "@noir-lang/noir_wasm": "^1.0.0-beta.3",
+    "@noir-lang/types": "^1.0.0-beta.3",
+    "@zkpassport/poseidon2": "^0.6.1",
+    "path": "^0.12.7"
+  }
+}
