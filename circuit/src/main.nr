@@ -174,7 +174,47 @@ fn main(
     assert(is_position_found_in_email_body == true, "Position can not be found in email body");
 
     // @dev - Validate to check whether a given "salary" is included in the entire email body or not.
-    // [TODO]: Compare given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>)  and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
+    /// @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
+    /// @dev - In the following implementation, the maximum number of sequences-matched is 5. ("5" is enuough for judging whether a given salary is included in the email body or not)
+    let is_salary_found_in_email_body: bool;
+    for i in 0..body.len() {
+        if (salary.storage()[0] == body.storage()[i]) {
+            if (salary.len() == 1) {
+                // @dev - Salary is found in the email body
+                is_salary_found_in_email_body = true;
+                break;
+            }
+            if (salary.storage()[1] == body.storage()[i+1]) {
+                if (salary.len() == 2) {
+                    // @dev - Salary is found in the email body
+                    is_salary_found_in_email_body = true;
+                    break;
+                }
+                if (salary.storage()[2] == body.storage()[i+2]) {
+                    if (salary.len() == 3) {
+                        // @dev - Salary is found in the email body
+                        is_salary_found_in_email_body = true;
+                        break;
+                    }
+                    if (salary.storage()[3] == body.storage()[i+3]) {
+                        if (salary.len() == 4) {
+                            // @dev - Salary is found in the email body
+                            is_salary_found_in_email_body = true;
+                            break;
+                        }
+                        
+                        if (salary.storage()[4] == body.storage()[i+4]) {
+                            // @dev - Salary is found in the email body
+                            is_salary_found_in_email_body = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
 }
 
 unconstrained fn get_domain_start_index_in_email(email: BoundedVec<u8, MAX_EMAIL_LENGTH>) -> u32 {
