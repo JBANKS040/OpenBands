@@ -1,34 +1,7 @@
-import * as fs from "fs";
-
-import { getEmailBodyInUint8Array } from "./input/inputUint8ArrayDataGenerator.ts";
-
 /**
- * @notice - The main function
+ * @notice - Generate a input data 
  */
-async function main(): Promise<String> { // Mark the function as async
-    const BODY = await getEmailBodyInUint8Array();
-    //const uint8Array = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33]);
-
-    const emailBodyInUint8array = new Uint8Array(BODY);
-
-    /// @dev - Convert Uint8Array to String
-    const decoder = new TextDecoder();
-    const emailBodyInString = decoder.decode(emailBodyInUint8array);
-    console.log(`Email Body (in String):\n ${ emailBodyInString }`); // Output: "Hello, World!"
-
-    /// @dev - Export as a JSON file
-    const result = {
-        emailBodyInString: emailBodyInString,
-    };
-    exportJSON(result, "scripts/utils/converters/uint8Array-to-string-converter/output/output.json");
-
-    return emailBodyInString; // Return the resolved value
-}
-
-/** 
- * @notice - Get the input data, which is an Email body in Uint8Array format
- */
-function getInputData() {
+export async function getEmailBodyInUint8Array() {
     let BODY = [
         84, 104, 101, 32, 84, 105, 109, 101, 115, 32, 48, 51, 47, 74, 97, 110, 47, 50, 48, 48, 57,
         32, 67, 104, 97, 110, 99, 101, 108, 108, 111, 114, 32, 111, 110, 32, 98, 114, 105, 110, 107,
@@ -72,20 +45,3 @@ function getInputData() {
     
     return BODY;
 }
-
-/**
- * @notice - The function to export JSON file
- */
-function exportJSON(data: object, filename: string = "output.json") {
-    fs.writeFileSync(filename, JSON.stringify(data, null, 2), "utf-8");
-    console.log(`JSON saved to ${filename}`);
-}
-
-/**
- * @notice - Execute the main function
- */
-main().then((result) => {
-    console.log(`Result: ${result}`);
-}).catch((error) => {
-    console.error(`Error: ${error}`);
-});
