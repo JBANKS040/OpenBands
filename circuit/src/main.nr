@@ -116,6 +116,16 @@ fn main(
     verify_rating(compensation_benefits);
     verify_rating(leadership_quality);
     verify_rating(operational_efficiency);
+
+    // @dev - Verify an arbitrary email, which is signed by a 2048-bit RSA DKIM signature
+    let return_value: [Field; 2] = verify_email_2048_bit_dkim(
+        header,
+        body,
+        pubkey,
+        signature,
+        body_hash_index,
+        dkim_header_sequence
+    );
 }
 
 unconstrained fn get_domain_start_index_in_email(email: BoundedVec<u8, MAX_EMAIL_LENGTH>) -> u32 {
