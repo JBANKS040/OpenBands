@@ -4,7 +4,10 @@ use utils::position_and_salary_extractor::{
     extract_position_from_email_body, // @dev - extract_position_from_email_body() function
     extract_salary_from_email_body    // @dev - extract_salary_from_body() function
 }; 
-use utils::email_2048_bit_dkim_verifier::{verify_email_2048_bit_dkim}; // @dev - verify_email_2048_bit_dkim() function
+use utils::email_2048_bit_dkim_verifier::{
+    MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, KEY_LIMBS_2048,
+    verify_email_2048_bit_dkim        // @dev - verify_email_2048_bit_dkim() function
+};
 
 global MAX_PARTIAL_DATA_LENGTH: u32 = 640; // signed data length after partial SHA
 global MAX_DOMAIN_LENGTH: u32 = 64;
@@ -129,6 +132,7 @@ fn main(
 
     /// @dev - Validate to check whether a given "position" is included in the entire email body or not.
     /// @dev - Compare a given "position" (BoundedVec<u8, MAX_POSITION_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
+    /// @dev - In the following implementation, the maximum number of sequences-matched is 5. ("5" is enuough for judging whether a given position is included in the email body or not)
     let is_position_found_in_email_body: bool;
     for i in 0..body.len() {
         if (position.storage()[0] == body.storage()[i]) {
