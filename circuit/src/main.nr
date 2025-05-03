@@ -1,7 +1,10 @@
 use jwt::JWT;
 
-use utils::position_and_salary_extractor::extract_position_from_email_body; // @dev - extract_position_from_email_body() function
-use utils::position_and_salary_extractor::extract_salary_from_email_body;   // @dev - extract_position_from_salary_body() function
+use utils::position_and_salary_extractor::{
+    extract_position_from_email_body, // @dev - extract_position_from_email_body() function
+    extract_salary_from_email_body    // @dev - extract_salary_from_body() function
+}; 
+use utils::email_2048_bit_dkim_verifier::{verify_email_2048_bit_dkim}; // @dev - verify_email_2048_bit_dkim() function
 
 global MAX_PARTIAL_DATA_LENGTH: u32 = 640; // signed data length after partial SHA
 global MAX_DOMAIN_LENGTH: u32 = 64;
@@ -56,7 +59,15 @@ fn main(
     career_growth: pub u8,
     compensation_benefits: pub u8,
     leadership_quality: pub u8,
-    operational_efficiency: pub u8
+    operational_efficiency: pub u8,
+
+    // @dev - Input parameters for email verification /w ZKEmail.nr
+    header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,
+    body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,
+    pubkey: RSAPubkey<KEY_LIMBS_2048>,
+    signature: [Field; KEY_LIMBS_2048],
+    body_hash_index: u32,
+    dkim_header_sequence: Sequence
 ) {
     // Init JWT struct and verify signature
     let jwt = JWT::init_with_partial_hash(
