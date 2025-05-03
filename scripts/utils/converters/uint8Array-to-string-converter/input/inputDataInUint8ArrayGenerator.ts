@@ -1,5 +1,5 @@
 /**
- * @notice - Generate a input data 
+ * @notice - Generate an email body data in Uint8Array format
  */
 export async function getEmailBodyInUint8Array() {
     let BODY = [
