@@ -1,12 +1,21 @@
+mod tests;
+mod utils;
+
 use jwt::JWT;
+
+use zkemail::{
+    headers::{body_hash::get_body_hash, email_address::get_email_address},
+    MAX_EMAIL_ADDRESS_LENGTH, partial_hash::partial_sha256_var_end,
+    dkim::RSAPubkey, KEY_LIMBS_2048, Sequence
+};
 
 use utils::position_and_salary_extractor::{
     extract_position_from_email_body, // @dev - extract_position_from_email_body() function
     extract_salary_from_email_body    // @dev - extract_salary_from_body() function
 }; 
 use utils::email_2048_bit_dkim_verifier::{
-    MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, KEY_LIMBS_2048,
-    verify_email_2048_bit_dkim        // @dev - verify_email_2048_bit_dkim() function
+    MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, 
+    verify_email_2048_bit_dkim,        // @dev - verify_email_2048_bit_dkim() function
 };
 
 global MAX_PARTIAL_DATA_LENGTH: u32 = 640; // signed data length after partial SHA
@@ -162,7 +171,7 @@ unconstrained fn is_position_found_in_email_body(
     position: BoundedVec<u8, MAX_POSITION_LENGTH>, 
     body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>
 ) -> bool {
-    let is_position_found_in_email_body: bool = false;
+    let mut is_position_found_in_email_body: bool = false;
     for i in 0..body.len() {
         if (position.storage()[0] == body.storage()[i]) {
             if (position.len() == 1) { // @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "1". 
@@ -239,7 +248,7 @@ unconstrained fn is_salary_found_in_email_body(
     salary: BoundedVec<u8, MAX_SALARY_LENGTH>, 
     body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>
 ) -> bool {
-    let is_salary_found_in_email_body: bool = false;
+    let mut is_salary_found_in_email_body: bool = false;
     for i in 0..body.len() {
         if (salary.storage()[0] == body.storage()[i]) {
             if (salary.len() == 1) {

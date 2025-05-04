@@ -1,6 +1,17 @@
 pub(crate) mod EmailLarge {
 
-    use crate::{dkim::RSAPubkey, KEY_LIMBS_2048, Sequence};
+    use zkemail::{
+        dkim::RSAPubkey, headers::body_hash::get_body_hash, 
+        KEY_LIMBS_2048, Sequence,
+    };
+
+    // use crate::{
+    //     // utils::email_2048_bit_dkim_verifier::{
+    //     //     //zkemail::{dkim::RSAPubkey, headers::body_hash::get_body_hash, KEY_LIMBS_2048, Sequence},
+    //     //     MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, KEY_LIMBS_2048
+    //     // }
+    //     //dkim::RSAPubkey, KEY_LIMBS_2048, Sequence
+    // };
 
     // regular inputs
     pub(crate) global EMAIL_LARGE_MAX_HEADER_LENGTH: u32 = 512;
@@ -207,7 +218,11 @@ pub(crate) mod EmailLarge {
 
 pub(crate) mod EmailAddresses {
 
-    use crate::{MAX_EMAIL_ADDRESS_LENGTH, Sequence};
+    //use crate::{MAX_EMAIL_ADDRESS_LENGTH, Sequence};
+    use zkemail::{
+        MAX_EMAIL_ADDRESS_LENGTH, Sequence
+    };
+
     pub(crate) global ADDRESS: BoundedVec<u8, MAX_EMAIL_ADDRESS_LENGTH> =
         BoundedVec::from_array("runnier.leagues.0j@icloud.com".as_bytes());
     pub(crate) global ADDRESS_ONLY: [u8; 38] =
