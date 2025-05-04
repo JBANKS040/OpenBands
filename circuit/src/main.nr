@@ -132,7 +132,37 @@ fn main(
 
     /// @dev - Validate to check whether a given "position" is included in the entire email body or not.
     /// @dev - Compare a given "position" (BoundedVec<u8, MAX_POSITION_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
-    let is_position_found_in_email_body: bool;
+    let is_position_found_in_email_body: bool = is_position_found_in_email_body(position, body);
+    assert(is_position_found_in_email_body == true, "Position can not be found in email body");
+
+    // @dev - Validate to check whether a given "salary" is included in the entire email body or not.
+    /// @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
+    /// @dev - In the following implementation, the maximum number of sequences-matched is 5. ("5" is enuough for judging whether a given salary is included in the email body or not)
+    let is_salary_found_in_email_body: bool = is_salary_found_in_email_body(salary, body);
+    assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
+}
+
+unconstrained fn get_domain_start_index_in_email(email: BoundedVec<u8, MAX_EMAIL_LENGTH>) -> u32 {
+    let mut domain_start_index = 0;
+    for i in 0..MAX_EMAIL_LENGTH {
+        if email.storage()[i] == ("@".as_bytes())[0] {
+            domain_start_index = i + 1;
+            break;
+        }
+    }
+
+    domain_start_index
+}
+
+/**
+ * @dev - Validate to check whether a given "position" is included in the entire email body or not.
+ * @dev - Compare a given "position" (BoundedVec<u8, MAX_POSITION_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
+ */
+unconstrained fn is_position_found_in_email_body(
+    position: BoundedVec<u8, MAX_POSITION_LENGTH>, 
+    body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>
+) -> bool {
+    let is_position_found_in_email_body: bool = false;
     for i in 0..body.len() {
         if (position.storage()[0] == body.storage()[i]) {
             if (position.len() == 1) { // @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "1". 
@@ -156,6 +186,8 @@ fn main(
             }
         }
     }
+
+    is_position_found_in_email_body
 
     // for i in 0..body.len() {
     //     if (position.storage()[0] == body.storage()[i]) {
@@ -194,13 +226,20 @@ fn main(
     //         }
     //     }
     // }
+    //
+    // is_position_found_in_email_body
+}
 
-    assert(is_position_found_in_email_body == true, "Position can not be found in email body");
-
-    // @dev - Validate to check whether a given "salary" is included in the entire email body or not.
-    /// @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
-    /// @dev - In the following implementation, the maximum number of sequences-matched is 5. ("5" is enuough for judging whether a given salary is included in the email body or not)
-    let is_salary_found_in_email_body: bool;
+/** 
+ * @dev - Validate to check whether a given "salary" is included in the entire email body or not.
+ * @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
+ * @dev - In the following implementation, the maximum number of sequences-matched is 5. ("5" is enuough for judging whether a given salary is included in the email body or not)
+ */
+unconstrained fn is_salary_found_in_email_body(
+    salary: BoundedVec<u8, MAX_SALARY_LENGTH>, 
+    body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>
+) -> bool {
+    let is_salary_found_in_email_body: bool = false;
     for i in 0..body.len() {
         if (salary.storage()[0] == body.storage()[i]) {
             if (salary.len() == 1) {
@@ -238,17 +277,5 @@ fn main(
         }
     }
 
-    assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
+    is_salary_found_in_email_body
 }
-
-unconstrained fn get_domain_start_index_in_email(email: BoundedVec<u8, MAX_EMAIL_LENGTH>) -> u32 {
-    let mut domain_start_index = 0;
-    for i in 0..MAX_EMAIL_LENGTH {
-        if email.storage()[i] == ("@".as_bytes())[0] {
-            domain_start_index = i + 1;
-            break;
-        }
-    }
-
-    domain_start_index
-} 
