@@ -180,13 +180,13 @@ unconstrained fn is_position_found_in_email_body(
                 break;
             }
 
-            let mut position_array: BoundedVec<Field, position.len()> = BoundedVec::new();
-            let mut j = 1;
+            let mut position_array: Vec<u8> = Vec::new();
+            //let mut position_array: BoundedVec<Field, position.len()> = BoundedVec::new();
             for j in 1..position.len() {
                 if (position.storage()[j] == body.storage()[i+j]) {
                     position_array.push(position.storage()[j]);
 
-                    if (j == position.len() | position_array.len() == position.len()) { // @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "many" (Not "1"). 
+                    if ((j == position.len()) & (position_array.len() == position.len())) { // @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "many" (Not "1"). 
                         // @dev - Position is found in the email body
                         is_position_found_in_email_body = true;
                         break;
