@@ -1,4 +1,4 @@
-pub(crate) mod EmailLarge {
+pub(crate) mod EmploymentOfferEmailLarge {
 
     use zkemail::{
         dkim::RSAPubkey, headers::body_hash::get_body_hash, 
@@ -25,8 +25,23 @@ pub(crate) mod EmailLarge {
     pub(crate) global SALARY_BODY: BoundedVec<u8, EMAIL_LARGE_MAX_BODY_LENGTH> = BoundedVec::from([]);
 
 
+    /**
+     * @notice - Default input data, which is written in zkEmail.nr repo
+     */
+    // regular inputs
+    pub(crate) global EMAIL_LARGE_MAX_HEADER_LENGTH: u32 = 512;
+    pub(crate) global EMAIL_LARGE_MAX_BODY_LENGTH: u32 = 1024;
+
+}
 
 
+
+pub(crate) mod EmailLarge {
+
+    use zkemail::{
+        dkim::RSAPubkey, headers::body_hash::get_body_hash, 
+        KEY_LIMBS_2048, Sequence,
+    };
 
     /**
      * @notice - Default input data, which is written in zkEmail.nr repo
