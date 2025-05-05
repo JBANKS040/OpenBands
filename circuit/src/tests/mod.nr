@@ -1,6 +1,56 @@
 pub(crate) mod test_inputs;
 
-mod test_success {
+
+mod test_zkemail_integration_success {
+
+    use crate::{
+        MAX_PARTIAL_DATA_LENGTH, MAX_DOMAIN_LENGTH, MAX_POSITION_LENGTH, MAX_SALARY_LENGTH,    // main.nr
+        utils::email_2048_bit_dkim_verifier::{MAX_EMAIL_BODY_LENGTH, MAX_EMAIL_HEADER_LENGTH},        
+        tests::test_inputs::{EmailLarge}
+    };
+
+    use zkemail::{
+        headers::{body_hash::get_body_hash, email_address::get_email_address},
+        MAX_EMAIL_ADDRESS_LENGTH, partial_hash::partial_sha256_var_end,
+        dkim::RSAPubkey, KEY_LIMBS_2048, Sequence
+    };
+
+    use std::hash::sha256_var;
+
+    #[test]
+    fn test_verify_position_and_salary_and_verify_email_2048_bit_dkim() {
+
+        let partial_data: BoundedVec<u8, MAX_PARTIAL_DATA_LENGTH>;
+        let partial_hash: [u32; 8];
+        let full_data_length: u32;
+        let base64_decode_offset: u32;
+        let jwt_pubkey_modulus_limbs: [u128; 18];
+        let jwt_pubkey_redc_params_limbs: [u128; 18];
+        let jwt_signature_limbs: [u128; 18];
+        let domain: BoundedVec<u8, MAX_DOMAIN_LENGTH>;
+        let position: BoundedVec<u8, MAX_POSITION_LENGTH>;
+        let salary: BoundedVec<u8, MAX_SALARY_LENGTH>;
+        let work_life_balance: u8 = 5;
+        let culture_values: u8 = 4;
+        let career_growth: u8 =3;
+        let compensation_benefits: u8 = 5;
+        let leadership_quality: u8 = 4;
+        let operational_efficiency: u8 = 3;
+
+        // @dev - Input parameters for email verification /w ZKEmail.nr
+        let header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>;  // Entire Email Header
+        let body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>;      // Entire Email Body
+        let pubkey: RSAPubkey<KEY_LIMBS_2048>;
+        let signature: [Field; KEY_LIMBS_2048];
+        let body_hash_index: u32;
+        let dkim_header_sequence: Sequence;
+ 
+
+    }
+}
+
+
+mod test_zkemail_modules_success {
 
     use crate::{
         main,

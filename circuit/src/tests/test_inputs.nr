@@ -13,6 +13,24 @@ pub(crate) mod EmailLarge {
     //     //dkim::RSAPubkey, KEY_LIMBS_2048, Sequence
     // };
 
+
+    /**
+     * @notice - Input data for testing to verify a position and salary
+     */
+    // [TODO]:
+    pub(crate) global EMPLOYMENT_OFFER_EMAIL_HEADER: BoundedVec<u8, EMAIL_LARGE_MAX_HEADER_LENGTH> = BoundedVec::from([]);
+    pub(crate) global EMPLOYMENT_OFFER_EMAIL_BODY: BoundedVec<u8, EMAIL_LARGE_MAX_BODY_LENGTH> = BoundedVec::from([]);
+
+    pub(crate) global POSITION_BODY: BoundedVec<u8, EMAIL_LARGE_MAX_BODY_LENGTH> = BoundedVec::from([]);
+    pub(crate) global SALARY_BODY: BoundedVec<u8, EMAIL_LARGE_MAX_BODY_LENGTH> = BoundedVec::from([]);
+
+
+
+
+
+    /**
+     * @notice - Default input data, which is written in zkEmail.nr repo
+     */
     // regular inputs
     pub(crate) global EMAIL_LARGE_MAX_HEADER_LENGTH: u32 = 512;
     pub(crate) global EMAIL_LARGE_MAX_BODY_LENGTH: u32 = 1024;

@@ -74,7 +74,7 @@ fn main(
     operational_efficiency: pub u8,
 
     // @dev - Input parameters for email verification /w ZKEmail.nr
-    header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,  // Entire Email Body
+    header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,  // Entire Email Header
     body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,      // Entire Email Body
     pubkey: RSAPubkey<KEY_LIMBS_2048>,
     signature: [Field; KEY_LIMBS_2048],
