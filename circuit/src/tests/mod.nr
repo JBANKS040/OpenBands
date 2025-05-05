@@ -7,7 +7,9 @@ mod test_zkemail_integration_success {
         MAX_PARTIAL_DATA_LENGTH, MAX_DOMAIN_LENGTH, MAX_POSITION_LENGTH, MAX_SALARY_LENGTH,    // main.nr
         utils::email_2048_bit_dkim_verifier::{MAX_EMAIL_BODY_LENGTH, MAX_EMAIL_HEADER_LENGTH},        
         tests::test_inputs::{
-            EmailLarge, 
+            EmailLarge::{
+                PUBKEY, SIGNATURE, BODY_HASH_INDEX, DKIM_HEADER_SEQUENCE,
+            }, 
             EmploymentOfferEmailLarge::{
                 EMPLOYMENT_OFFER_EMAIL_HEADER, EMPLOYMENT_OFFER_EMAIL_BODY,
                 POSITION_BODY, SALARY_BODY,
@@ -46,10 +48,10 @@ mod test_zkemail_integration_success {
         // @dev - Input parameters for email verification /w ZKEmail.nr
         let header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = EMPLOYMENT_OFFER_EMAIL_HEADER;  // Entire Email Header
         let body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = EMPLOYMENT_OFFER_EMAIL_BODY;        // Entire Email Body
-        let pubkey: RSAPubkey<KEY_LIMBS_2048> = xxxx;
-        let signature: [Field; KEY_LIMBS_2048] = xxxx;
-        let body_hash_index: u32 = xxxx;
-        let dkim_header_sequence: Sequence = xxxx;
+        let pubkey: RSAPubkey<KEY_LIMBS_2048> = PUBKEY;             // RSA Public Key
+        let signature: [Field; KEY_LIMBS_2048] = SIGNATURE;         // RSA Signature
+        let body_hash_index: u32 = BODY_HASH_INDEX;                 // Index of the body hash in the DKIM-signed header
+        let dkim_header_sequence: Sequence = DKIM_HEADER_SEQUENCE;  // DKIM header sequence
  
 
     }
