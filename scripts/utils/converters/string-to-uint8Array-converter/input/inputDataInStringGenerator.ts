@@ -12,7 +12,7 @@ export async function getEmailBodyInString() {
     let BODY = "Your starting annual salary will be $100,000"
 
     /// @dev - TEST
-    //let BODY = "alice@example.com"  // [Log]: 97,108,105,99,101,64,101,120,97,109,112,108,101,46,99,111,109
+    //let BODY = "runnier.leagues.0j@icloud.com"  // [Log]: 114,117,110,110,105,101,114,46,108,101,97,103,117,101,115,46,48,106,64,105,99,108,111,117,100,46,99,111,109
 
     return BODY;
 }
