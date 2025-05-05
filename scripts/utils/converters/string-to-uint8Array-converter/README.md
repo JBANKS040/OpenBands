@@ -7,5 +7,5 @@ NOTE:
 - The following command should be executed in the root directory.
 
 ```bash
-sh ./scripts/utils/converters/uint8Array-to-string-converter/runningScript_uint8arrayToStringConverter.sh
+sh ./scripts/utils/converters/string-to-uint8Array-converter/runningScript_stringToUint8arrayConverter.sh
 ```

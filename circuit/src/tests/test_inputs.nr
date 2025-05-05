@@ -5,13 +5,17 @@ pub(crate) mod EmploymentOfferEmailLarge {
         KEY_LIMBS_2048, Sequence,
     };
 
-    // use crate::{
-    //     // utils::email_2048_bit_dkim_verifier::{
-    //     //     //zkemail::{dkim::RSAPubkey, headers::body_hash::get_body_hash, KEY_LIMBS_2048, Sequence},
-    //     //     MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, KEY_LIMBS_2048
-    //     // }
-    //     //dkim::RSAPubkey, KEY_LIMBS_2048, Sequence
-    // };
+    use crate::{
+        MAX_PARTIAL_DATA_LENGTH, MAX_DOMAIN_LENGTH, MAX_POSITION_LENGTH, MAX_SALARY_LENGTH,    // main.nr
+        utils::email_2048_bit_dkim_verifier::{MAX_EMAIL_BODY_LENGTH, MAX_EMAIL_HEADER_LENGTH},        
+        // tests::test_inputs::{
+        //     EmailLarge, 
+        //     EmploymentOfferEmailLarge::{
+        //         EMPLOYMENT_OFFER_EMAIL_HEADER, EMPLOYMENT_OFFER_EMAIL_BODY,
+        //         POSITION_BODY, SALARY_BODY,
+        //     },
+        // }
+    };
 
 
     /**
@@ -21,8 +25,8 @@ pub(crate) mod EmploymentOfferEmailLarge {
     pub(crate) global EMPLOYMENT_OFFER_EMAIL_HEADER: BoundedVec<u8, EMAIL_LARGE_MAX_HEADER_LENGTH> = BoundedVec::from([]);
     pub(crate) global EMPLOYMENT_OFFER_EMAIL_BODY: BoundedVec<u8, EMAIL_LARGE_MAX_BODY_LENGTH> = BoundedVec::from([]);
 
-    pub(crate) global POSITION_BODY: BoundedVec<u8, EMAIL_LARGE_MAX_BODY_LENGTH> = BoundedVec::from([]);
-    pub(crate) global SALARY_BODY: BoundedVec<u8, EMAIL_LARGE_MAX_BODY_LENGTH> = BoundedVec::from([]);
+    pub(crate) global POSITION_BODY: BoundedVec<u8, MAX_POSITION_LENGTH> = BoundedVec::from([]);
+    pub(crate) global SALARY_BODY: BoundedVec<u8, MAX_SALARY_LENGTH> = BoundedVec::from([]);
 
 
     /**

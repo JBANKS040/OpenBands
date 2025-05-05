@@ -11,5 +11,8 @@ export async function getEmailBodyInString() {
     /// @dev - Part of Email body text, which a salary part is extracted.
     let BODY = "Your starting annual salary will be $100,000"
 
+    /// @dev - TEST
+    //let BODY = "alice@example.com"  // [Log]: 97,108,105,99,101,64,101,120,97,109,112,108,101,46,99,111,109
+
     return BODY;
 }
