@@ -164,6 +164,10 @@ fn main(
     assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
 }
 
+
+/**
+ * @notice - Get (Identify) a start index of domain in email
+ */
 unconstrained fn get_domain_start_index_in_email(email: BoundedVec<u8, MAX_EMAIL_LENGTH>) -> u32 {
     let mut domain_start_index = 0;
     for i in 0..MAX_EMAIL_LENGTH {
