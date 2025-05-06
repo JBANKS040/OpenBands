@@ -18,6 +18,13 @@ use utils::email_2048_bit_dkim_verifier::{
     verify_email_2048_bit_dkim,        // @dev - verify_email_2048_bit_dkim() function
 };
 
+// @dev - [NOTE]: The following imported-variables are temporary variables. They are stored into the "test_header" and "test_body" for passing the verify_email_2048_bit_dkim() function. Thus, this should be removed once appropreate implementation will be done in the future.
+use tests::test_inputs::{
+    EmailLarge::{
+        HEADER, BODY,
+    },
+};
+
 global MAX_PARTIAL_DATA_LENGTH: u32 = 640; // signed data length after partial SHA
 global MAX_DOMAIN_LENGTH: u32 = 64;
 global MAX_EMAIL_LENGTH: u32 = 128;
@@ -129,10 +136,16 @@ fn main(
     verify_rating(leadership_quality);
     verify_rating(operational_efficiency);
 
+    // @dev - [NOTE]: The following variables are temporary variables. They are just for passing the verify_email_2048_bit_dkim() function. Thus, this should be replaced with a given "header" and "body" going forward.
+    let test_header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = HEADER;
+    let test_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = BODY;
+
     // @dev - Verify an arbitrary email, which is signed by a 2048-bit RSA DKIM signature
     let return_value: [Field; 2] = verify_email_2048_bit_dkim( /// [Error]: Cannot satisfy constraint - /nargo/github.com/noir-lang/noir_rsa/v0.5.1/lib/src/rsa.nr (at Line 12)
-        header,
-        body,
+        test_header,  // [TODO]: Should be replaced with a given "header" in the future.
+        //header,
+        test_body,    // [TODO]: Should be replaced with a given "body" in the future.
+        //body,
         pubkey,
         signature,
         body_hash_index,
