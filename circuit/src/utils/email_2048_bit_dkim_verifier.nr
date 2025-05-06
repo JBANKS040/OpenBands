@@ -2,7 +2,7 @@ use std::{collections::bounded_vec::BoundedVec, hash::{pedersen_hash, sha256_var
 use zkemail::{dkim::RSAPubkey, headers::body_hash::get_body_hash, KEY_LIMBS_2048, Sequence};
 
 global MAX_EMAIL_HEADER_LENGTH: u32 = 512;
-global MAX_EMAIL_BODY_LENGTH: u32 = 1024;
+global MAX_EMAIL_BODY_LENGTH: u32 = 1024;  // @dev - This argument value should be 2048?
 
 /**
  * Verify an arbitrary email signed by a 2048-bit RSA DKIM signature
