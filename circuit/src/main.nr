@@ -141,7 +141,7 @@ fn main(
     let test_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = BODY;
 
     // @dev - Verify an arbitrary email, which is signed by a 2048-bit RSA DKIM signature
-    let return_value: [Field; 2] = verify_email_2048_bit_dkim( /// [Error]: Cannot satisfy constraint - /nargo/github.com/noir-lang/noir_rsa/v0.5.1/lib/src/rsa.nr (at Line 12)
+    let return_value: [Field; 2] = verify_email_2048_bit_dkim(
         test_header,  // [TODO]: Should be replaced with a given "header" in the future.
         //header,
         test_body,    // [TODO]: Should be replaced with a given "body" in the future.
@@ -184,11 +184,17 @@ unconstrained fn is_position_found_in_email_body(
     position: BoundedVec<u8, MAX_POSITION_LENGTH>, 
     body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>
 ) -> bool {
+    /// @dev - Logging
+    let position_storage = position.storage(); 
+    let body_storage = body.storage(); 
+    println(f"position.storage(): {position_storage}\n");
+    println(f"body.storage(): {body_storage}\n");
+
+    /// @dev - Look for "position" in "email_body"
     let mut is_position_found_in_email_body: bool = false;
     for i in 0..body.len() {
         if (position.storage()[0] == body.storage()[i]) {
             if (position.len() == 1) { // @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "1". 
-                // @dev - Position is found in the email body
                 is_position_found_in_email_body = true;
                 break;
             }
@@ -197,10 +203,18 @@ unconstrained fn is_position_found_in_email_body(
             //let mut position_array: BoundedVec<Field, position.len()> = BoundedVec::new();
             for j in 1..position.len() {
                 if (position.storage()[j] == body.storage()[i+j]) {
+                    /// @dev - Logging
                     position_array.push(position.storage()[j]);
+                    println(f"position_array: {position_array}\n");
 
-                    if ((j == position.len()) & (position_array.len() == position.len())) { // @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "many" (Not "1"). 
-                        // @dev - Position is found in the email body
+                    /// @dev - Logging
+                    let position_len = position.len() - 1;
+                    let position_array_len = position_array.len();
+                    println(f"position.len() - 1: {position_len}\n");
+                    println(f"position_array.len(): {position_array_len}\n");
+
+                    // @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "many" (Not "1"). 
+                    if ((j == position.len() - 1) & (position_array.len() == position.len() - 1)) { /// @dev - Since "j" get started from "1", "1" should be subtracted from the position.len()
                         is_position_found_in_email_body = true;
                         break;
                     }
