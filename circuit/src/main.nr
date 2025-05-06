@@ -224,46 +224,6 @@ unconstrained fn is_position_found_in_email_body(
     }
 
     is_position_found_in_email_body
-
-    // for i in 0..body.len() {
-    //     if (position.storage()[0] == body.storage()[i]) {
-    //         if (position.len() == 1) {
-    //             // @dev - Position is found in the email body
-    //             is_position_found_in_email_body = true;
-    //             break;
-    //         }
-    //
-    //         if (position.storage()[1] == body.storage()[i+1]) {
-    //             if (position.len() == 2) {
-    //                 // @dev - Position is found in the email body
-    //                 is_position_found_in_email_body = true;
-    //                 break;
-    //             }
-    //             if (position.storage()[2] == body.storage()[i+2]) {
-    //                 if (position.len() == 3) {
-    //                     // @dev - Position is found in the email body
-    //                     is_position_found_in_email_body = true;
-    //                     break;
-    //                 }
-    //                 if (position.storage()[3] == body.storage()[i+3]) {
-    //                     if (position.len() == 4) {
-    //                         // @dev - Position is found in the email body
-    //                         is_position_found_in_email_body = true;
-    //                         break;
-    //                     }
-    //                    
-    //                     if (position.storage()[4] == body.storage()[i+4]) {
-    //                         // @dev - Position is found in the email body
-    //                         is_position_found_in_email_body = true;
-    //                         break;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-    //
-    // is_position_found_in_email_body
 }
 
 /** 
@@ -283,34 +243,29 @@ unconstrained fn is_salary_found_in_email_body(
                 is_salary_found_in_email_body = true;
                 break;
             }
-            if (salary.storage()[1] == body.storage()[i+1]) {
-                if (salary.len() == 2) {
-                    // @dev - Salary is found in the email body
-                    is_salary_found_in_email_body = true;
-                    break;
-                }
-                if (salary.storage()[2] == body.storage()[i+2]) {
-                    if (salary.len() == 3) {
-                        // @dev - Salary is found in the email body
+
+            let mut salary_array: Vec<u8> = Vec::new();
+            //let mut salary_array: BoundedVec<Field, salary.len()> = BoundedVec::new();
+            for j in 1..salary.len() {
+                if (salary.storage()[j] == body.storage()[i+j]) {
+                    /// @dev - Logging
+                    salary_array.push(salary.storage()[j]);
+                    println(f"salary_array: {salary_array}\n");
+
+                    /// @dev - Logging
+                    let salary_len = salary.len() - 1;
+                    let salary_array_len = salary_array.len();
+                    println(f"salary.len() - 1: {salary_len}\n");
+                    println(f"position_array.len(): {salary_array_len}\n");
+
+                    // @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "many" (Not "1"). 
+                    if ((j == salary.len() - 1) & (salary_array.len() == salary.len() - 1)) { /// @dev - Since "j" get started from "1", "1" should be subtracted from the position.len()
                         is_salary_found_in_email_body = true;
                         break;
                     }
-                    if (salary.storage()[3] == body.storage()[i+3]) {
-                        if (salary.len() == 4) {
-                            // @dev - Salary is found in the email body
-                            is_salary_found_in_email_body = true;
-                            break;
-                        }
-                        
-                        if (salary.storage()[4] == body.storage()[i+4]) {
-                            // @dev - Salary is found in the email body
-                            is_salary_found_in_email_body = true;
-                            break;
-                        }
-                    }
                 }
             }
-        }
+         }
     }
 
     is_salary_found_in_email_body
