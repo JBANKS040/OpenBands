@@ -207,7 +207,6 @@ unconstrained fn is_position_found_in_email_body(
             //let mut position_array: BoundedVec<Field, position.len()> = BoundedVec::new();
             for j in 1..position.len() {
                 if (position.storage()[j] == body.storage()[i+j]) {
-                    /// @dev - Logging
                     position_array.push(position.storage()[j]);
                     println(f"position_array: {position_array}\n");
 
@@ -217,7 +216,7 @@ unconstrained fn is_position_found_in_email_body(
                     println(f"position.len() - 1: {position_len}\n");
                     println(f"position_array.len(): {position_array_len}\n");
 
-                    // @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "many" (Not "1"). 
+                    /// @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "many" (Not "1"). 
                     if ((j == position.len() - 1) & (position_array.len() == position.len() - 1)) { /// @dev - Since "j" get started from "1", "1" should be subtracted from the position.len()
                         is_position_found_in_email_body = true;
                         break;
@@ -252,7 +251,6 @@ unconstrained fn is_salary_found_in_email_body(
             //let mut salary_array: BoundedVec<Field, salary.len()> = BoundedVec::new();
             for j in 1..salary.len() {
                 if (salary.storage()[j] == body.storage()[i+j]) {
-                    /// @dev - Logging
                     salary_array.push(salary.storage()[j]);
                     println(f"salary_array: {salary_array}\n");
 
