@@ -130,7 +130,7 @@ fn main(
     verify_rating(operational_efficiency);
 
     // @dev - Verify an arbitrary email, which is signed by a 2048-bit RSA DKIM signature
-    let return_value: [Field; 2] = verify_email_2048_bit_dkim(
+    let return_value: [Field; 2] = verify_email_2048_bit_dkim( /// [Error]: Cannot satisfy constraint - /nargo/github.com/noir-lang/noir_rsa/v0.5.1/lib/src/rsa.nr (at Line 12)
         header,
         body,
         pubkey,
@@ -144,7 +144,7 @@ fn main(
     let is_position_found_in_email_body: bool = unsafe { is_position_found_in_email_body(position, body) };
     assert(is_position_found_in_email_body == true, "Position can not be found in email body");
 
-    // @dev - Validate to check whether a given "salary" is included in the entire email body or not.
+    /// @dev - Validate to check whether a given "salary" is included in the entire email body or not.
     /// @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
     /// @dev - In the following implementation, the maximum number of sequences-matched is 5. ("5" is enuough for judging whether a given salary is included in the email body or not)
     let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(salary, body) };
