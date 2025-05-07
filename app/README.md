@@ -9,6 +9,8 @@ cp .env.example .env
 - 2/ Store `API Key` informations into `.env`:
   - `Supabase's APY Key` can be get from here: https://supabase.com/
   - `Google Client ID` can be get from here: https://console.cloud.google.com/auth/clients 
+    - `Authorized Javascript Origins`: `localhost:3000`
+    - `Authorized redirect URIs`: `localhost:3000/auth/callback`
 ```bash
 # This file contains environment variables for a Next.js application using Supabase. (https://supabase.com/)
 NEXT_PUBLIC_SUPABASE_URL="Your Supabase URL"
