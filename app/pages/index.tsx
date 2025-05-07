@@ -69,6 +69,7 @@ async function getGooglePublicKey(kid: string): Promise<JsonWebKey> {
 
 export default function Home() {
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: null, idToken: null });
+  const [emlFile, setEmlFile] = useState("");
   const [position, setPosition] = useState("");
   const [salary, setSalary] = useState("");
   const [loading, setLoading] = useState(false);
@@ -104,7 +105,7 @@ export default function Home() {
     setUserInfo({ email: null, idToken: null });
   }, []);
 
-  /// @dev - Upload / Read EML file
+  /// @dev - Upload / Read .eml file
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
@@ -113,9 +114,10 @@ export default function Home() {
     try {
       // Read the file as text
       const eml = await file.text();
+      setEmlFile(eml);
       console.log(`eml: ${eml}`);
     } catch (error) {
-      console.error("Error generating proof:", error)
+      console.error("Error uploading/reading an .eml file:", error)
     } finally {
       setLoading(false)
     }
