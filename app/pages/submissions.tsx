@@ -62,6 +62,7 @@ const calculateAverageRatings = (submissions: Submission[]): CompanyRatingsType 
 };
 
 export default function Submissions() {
+  const [loading, setLoading] = useState(false);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [submissionsByCompany, setSubmissionsByCompany] = useState<CompanyData[]>([]);
   const [viewMode, setViewMode] = useState<'all' | 'byCompany'>('all');
@@ -204,8 +205,8 @@ export default function Submissions() {
       className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow"
     >
       <div className="flex justify-between items-start">
+      <div className="text-lg font-medium text-gray-900">Someone from {submission.domain}</div>
         <div>
-          <div className="text-lg font-medium text-gray-900">Someone from {submission.domain}</div>
           <div className="mt-2 text-sm text-gray-600">
             <span className="font-medium">Position: </span>
             {submission.position}
