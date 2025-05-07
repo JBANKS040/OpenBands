@@ -6,6 +6,8 @@ import { splitBigIntToLimbs } from "../utils";
 const MAX_DOMAIN_LENGTH = 64;
 const MAX_POSITION_LENGTH = 128;
 const MAX_SALARY_LENGTH = 32;
+const MAX_HEADER_LENGTH = 512;
+const MAX_BODY_LENGTH = 1024;
 
 export const OPENBANDS_CIRCUIT_HELPER = {
   generateProof: async ({
@@ -15,6 +17,13 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     position,
     salary,
     ratings,
+    /// @dev - zkEmail related input arguments:
+    header,
+    body,
+    pubkey,
+    signature,
+    body_hash_index,
+    dkim_header_sequence
   }: {
     idToken: string;
     jwtPubkey: JsonWebKey;
@@ -29,6 +38,13 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       leadership_quality: number;
       operational_efficiency: number;
     };
+    /// @dev - zkEmail related input arguments:
+    header: zkEmailInputData.header,
+    body: zkEmailInputData.body,
+    pubkey: zkEmailInputData.pubkey,
+    signature: zkEmailInputData.signature,
+    bodyHashIndex: zkEmailInputData.body_hash_index,
+    dkimHeaderSequence: zkEmailInputData.dkim_header_sequence
   }) => {
     if (!idToken || !jwtPubkey) {
       throw new Error(
@@ -52,6 +68,27 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     const salaryUint8Array = new Uint8Array(MAX_SALARY_LENGTH);
     salaryUint8Array.set(Uint8Array.from(new TextEncoder().encode(salary)));
 
+    /// @dev - ZKEmail related input arguments
+    const headerUint8Array = new Uint8Array(MAX_HEADER_LENGTH);
+    headerUint8Array.set(Uint8Array.from(new TextEncoder().encode(header)));
+
+    const bodyUint8Array = new Uint8Array(MAX_BODY_LENGTH);
+    bodyUint8Array.set(Uint8Array.from(new TextEncoder().encode(body)));
+
+    /// @dev - [TODO]: The following variables should be replaced with the appropreate values
+    const pubkeyLimbs2048 = pubkey;
+    //pubkey.set(Uint8Array.from(new TextEncoder().encode(pubkey)));
+
+    const signatureLimbs2048 = signature;
+    //signature.set(Uint8Array.from(new TextEncoder().encode(signature)));
+    
+    const bodyHashIndex = body_hash_index;
+    //body_hash_index.set(Uint8Array.from(new TextEncoder().encode(body_hash_index)));
+    
+    const dkimHeaderSequence = dkim_header_sequence;
+    //dkim_header_sequence.set(Uint8Array.from(new TextEncoder().encode(dkim_header_sequence)));
+
+    /// @dev - Input arguments
     const inputs = {
       partial_data: jwtInputs.partial_data,
       partial_hash: jwtInputs.partial_hash,
@@ -78,6 +115,20 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       compensation_benefits: ratings.compensation_benefits,
       leadership_quality: ratings.leadership_quality,
       operational_efficiency: ratings.operational_efficiency,
+
+      /// @dev - zkEmail related input arguments:
+      header: {
+        storage: Array.from(headerUint8Array),
+        len: header.length,
+      },
+      body: {
+        storage: Array.from(bodyUint8Array),
+        len: body.length,
+      },
+      pubkey: pubkeyLimbs2048,
+      signature: signatureLimbs2048,
+      body_hash_index: bodyHashIndex,
+      dkim_header_sequence: dkimHeaderSequence
     };
 
     console.log("ZKLevels circuit inputs", inputs);
