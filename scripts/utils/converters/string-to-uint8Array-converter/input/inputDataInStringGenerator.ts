@@ -20,8 +20,8 @@ export async function getEmailBodyInString() {
     //let DOMAIN_BODY = "test.com"  // [Log]: 116,101,115,116,46,99,111,109
 
     //return BODY;
-    return EMAIL_HEADER;
-    //return EMAIL_BODY;
+    //return EMAIL_HEADER;
+    return EMAIL_BODY;
     //return POSITION_BODY;
     //return SALARY_BODY;
 }

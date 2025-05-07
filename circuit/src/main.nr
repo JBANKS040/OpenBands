@@ -137,15 +137,15 @@ fn main(
     verify_rating(operational_efficiency);
 
     // @dev - [NOTE]: The following variables are temporary variables. They are just for passing the verify_email_2048_bit_dkim() function. Thus, this should be replaced with a given "header" and "body" going forward.
-    let test_header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = HEADER;
-    let test_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = BODY;
+    //let test_header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = HEADER;
+    //let test_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = BODY;
 
     // @dev - Verify an arbitrary email, which is signed by a 2048-bit RSA DKIM signature
     let return_value: [Field; 2] = verify_email_2048_bit_dkim(
-        test_header,  // [TODO]: Should be replaced with a given "header" in the future.
-        //header,
-        test_body,    // [TODO]: Should be replaced with a given "body" in the future.
-        //body,
+        //test_header,  // [TODO]: Should be replaced with a given "header" in the future.
+        header,
+        //test_body,    // [TODO]: Should be replaced with a given "body" in the future.
+        body,
         pubkey,
         signature,
         body_hash_index,
@@ -159,7 +159,6 @@ fn main(
 
     /// @dev - Validate to check whether a given "salary" is included in the entire email body or not.
     /// @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
-    /// @dev - In the following implementation, the maximum number of sequences-matched is 5. ("5" is enuough for judging whether a given salary is included in the email body or not)
     let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(salary, body) };
     assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
 }
