@@ -37,6 +37,15 @@ interface UserInfo {
   idToken: string | null;
 }
 
+interface ZkEmailInputData {
+  header: string;
+  body: string;
+  pubkey: string;
+  signature: string;
+  body_hash_index :string;
+  dkim_header_sequence: string;
+}
+
 const ratingLabels = {
   work_life_balance: 'Work-Life Balance',
   culture_values: 'Culture & Values',
@@ -69,6 +78,15 @@ async function getGooglePublicKey(kid: string): Promise<JsonWebKey> {
 
 export default function Home() {
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: null, idToken: null });
+  const [zkEmailInputData, setZkEmailInputData] = useState<ZkEmailInputData>({
+    header: "",
+    body: "",
+    pubkey: "",
+    signature: "",
+    body_hash_index: "",
+    dkim_header_sequence: ""
+  });
+  const [emailBody, setEmailBody] = useState("");
   const [emlFile, setEmlFile] = useState("");
   const [position, setPosition] = useState("");
   const [salary, setSalary] = useState("");
@@ -116,6 +134,16 @@ export default function Home() {
       const eml = await file.text();
       setEmlFile(eml);
       console.log(`eml: ${eml}`);
+
+      // Set the zkEmailInputData
+      setZkEmailInputData({
+        header: eml.split("-----BEGIN PGP SIGNATURE-----")[0],
+        body: eml.split("-----BEGIN PGP SIGNATURE-----")[1],
+        pubkey: "",
+        signature: "",
+        body_hash_index: "",
+        dkim_header_sequence: ""
+      });
     } catch (error) {
       console.error("Error uploading/reading an .eml file:", error)
     } finally {
@@ -160,7 +188,7 @@ export default function Home() {
   };
 
   const generateProof = async () => {
-    if (!userInfo.idToken || !position || !salary) return;
+    if (!userInfo.idToken || !zkEmailInputData || !emlFile || !position || !salary) return;
 
     setLoading(true);
     setError(null);
@@ -176,13 +204,21 @@ export default function Home() {
       const jwtPubkey = await getGooglePublicKey(kid);
 
       // First generate the proof
-      const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({
+      const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({  /// @dev - [TODO]: Add the zkEmail related input parameters to the generateProof() of the original file.
         idToken: userInfo.idToken,
         jwtPubkey,
         domain,
         position,
         salary,
-        ratings
+        ratings,
+
+        /// @dev - zkEmail related input arguments:
+        header: zkEmailInputData.header,
+        body: zkEmailInputData.body,
+        pubkey: zkEmailInputData.pubkey,
+        signature: zkEmailInputData.signature,
+        body_hash_index: zkEmailInputData.body_hash_index,
+        dkim_header_sequence: zkEmailInputData.dkim_header_sequence
       });
 
       // Then try to store it (this might fail due to schema issues)
