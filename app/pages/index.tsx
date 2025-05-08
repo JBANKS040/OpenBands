@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useGoogleLogin, GoogleLogin } from "@react-oauth/google";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { OPENBANDS_CIRCUIT_HELPER } from "../lib/circuits/openbands";
 import { pubkeyModulusFromJWK } from "../lib/utils";
@@ -7,7 +7,6 @@ import { supabase, Submission, CompanyRatings as CompanyRatingsType } from "../l
 import CompanyRatings from '../components/CompanyRatings';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
-import fs from "fs/promises";
 
 
 interface GoogleJwtPayload {
@@ -70,6 +69,7 @@ async function getGooglePublicKey(kid: string): Promise<JsonWebKey> {
 export default function Home() {
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: null, idToken: null });
   const [emlFile, setEmlFile] = useState("");
+  const [emlFileName, setEmlFileName] = useState<string | null>(null);
   const [position, setPosition] = useState("");
   const [salary, setSalary] = useState("");
   const [loading, setLoading] = useState(false);
@@ -83,6 +83,9 @@ export default function Home() {
     leadership_quality: 3,
     operational_efficiency: 3
   });
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [dragOver, setDragOver] = useState(false);
 
   useEffect(() => {
     fetchSubmissions();
@@ -106,22 +109,58 @@ export default function Home() {
   }, []);
 
   /// @dev - Upload / Read .eml file
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-
-    setLoading(true)
+  const handleFileUpload = async (file: File) => {
+    console.log('handleFileUpload called with:', file);
+    if (!file.name.toLowerCase().endsWith('.eml')) {
+      setError('Please upload a valid .eml file');
+      return;
+    }
+    setLoading(true);
     try {
-      // Read the file as text
       const eml = await file.text();
       setEmlFile(eml);
-      console.log(`eml: ${eml}`);
-    } catch (error) {
-      console.error("Error uploading/reading an .eml file:", error)
+      setEmlFileName(file.name);
+      setError(null);
+      console.log('eml content:', eml.slice(0, 100));
+    } catch (err) {
+      setError(`Failed to read file: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      setEmlFile('');
+      setEmlFileName(null);
+      console.error('Failed to read file:', err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragOver(false);
+    console.log('Drop event fired');
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      console.log('File dropped:', e.dataTransfer.files[0]);
+      handleFileUpload(e.dataTransfer.files[0]);
+    } else {
+      console.log('No files found in drop event');
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      handleFileUpload(e.target.files[0]);
+      e.target.value = '';
+    }
+  };
+
+  const handleSelectClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleClearFile = () => {
+    setEmlFile('');
+    setEmlFileName(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    setError(null);
+  };
 
   const fetchSubmissions = async () => {
     try {
@@ -320,17 +359,57 @@ export default function Home() {
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700">Upload .eml file</label>
-              <input 
-                type="file" 
+              <input
+                ref={fileInputRef}
+                type="file"
                 accept=".eml"
-                onChange={handleFileUpload}
+                className="hidden"
+                onChange={handleFileSelect}
                 disabled={loading}
               />
+              <div
+                className={`mt-2 flex flex-col items-center justify-center border-2 border-dashed rounded-lg h-32 cursor-pointer transition-colors relative ${dragOver ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+                onClick={handleSelectClick}
+                onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={e => { e.preventDefault(); setDragOver(false); }}
+                onDrop={handleDrop}
+              >
+                <svg className="mx-auto mb-2" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 16v-8m0 0l-4 4m4-4l4 4" />
+                  <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2" fill="none" />
+                </svg>
+                {!emlFile && (
+                  <>
+                    <span className="text-blue-600 hover:underline cursor-pointer">Click to upload</span> or drag and drop<br/>
+                    <span className="text-xs text-gray-500">(.eml format)</span>
+                  </>
+                )}
+                {emlFile && emlFileName && (
+                  <div className="mt-2 text-xs text-green-700">
+                    File uploaded: <span className="font-medium">{emlFileName}</span>
+                  </div>
+                )}
+                {emlFile && !loading && (
+                  <div className="mt-1 text-xs text-green-600">File upload successful!</div>
+                )}
+                {emlFile && (
+                  <div className="flex justify-center mt-2">
+                    <button
+                      type="button"
+                      onClick={e => { e.stopPropagation(); handleClearFile(); }}
+                      className="px-3 py-1 text-xs bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
+                      disabled={loading}
+                    >
+                      Clear File
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                your position at: {userInfo.email?.split('@')[1]}
+                Your position at: {userInfo.email?.split('@')[1]}
               </label>
               <input
                 type="text"
@@ -338,7 +417,7 @@ export default function Home() {
                 onChange={(e) => setPosition(e.target.value)}
                 maxLength={128}
                 className="form-input"
-                placeholder="Enter your position"
+                placeholder="Enter your position title"
                 spellCheck="false"
                 autoComplete="off"
               />
@@ -359,7 +438,7 @@ export default function Home() {
             </div>
 
             <div className="space-y-8">
-              <h3 className="text-lg font-medium text-gray-900">Company Ratings</h3>
+              <h3 className="text-lg font-medium text-gray-900">Your Company Ratings</h3>
               {Object.entries(ratings).map(([key, value]) => (
                 <div key={key} className="space-y-3">
                   <div className="flex items-center justify-between">
@@ -396,7 +475,7 @@ export default function Home() {
                   Generating...
                 </span>
               ) : (
-                "Share Anonymously"
+                "Generate Proof and Submit"
               )}
             </button>
           </div>
