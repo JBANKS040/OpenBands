@@ -7,6 +7,8 @@ import { supabase, Submission, CompanyRatings as CompanyRatingsType } from "../l
 import CompanyRatings from '../components/CompanyRatings';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
+import fs from "fs/promises";
+
 
 interface GoogleJwtPayload {
   email: string;
@@ -67,6 +69,7 @@ async function getGooglePublicKey(kid: string): Promise<JsonWebKey> {
 
 export default function Home() {
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: null, idToken: null });
+  const [emlFile, setEmlFile] = useState("");
   const [position, setPosition] = useState("");
   const [salary, setSalary] = useState("");
   const [loading, setLoading] = useState(false);
@@ -101,6 +104,24 @@ export default function Home() {
   const handleLogout = useCallback(() => {
     setUserInfo({ email: null, idToken: null });
   }, []);
+
+  /// @dev - Upload / Read .eml file
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setLoading(true)
+    try {
+      // Read the file as text
+      const eml = await file.text();
+      setEmlFile(eml);
+      console.log(`eml: ${eml}`);
+    } catch (error) {
+      console.error("Error uploading/reading an .eml file:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const fetchSubmissions = async () => {
     try {
@@ -297,6 +318,16 @@ export default function Home() {
           </div>
 
           <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Upload .eml file</label>
+              <input 
+                type="file" 
+                accept=".eml"
+                onChange={handleFileUpload}
+                disabled={loading}
+              />
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 your position at: {userInfo.email?.split('@')[1]}
