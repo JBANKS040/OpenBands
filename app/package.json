@@ -20,7 +20,8 @@
     "noir-jwt": "0.4.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@zk-email/helpers": "^6.3.2"
+    "@zk-email/helpers": "^6.3.2",
+    "buffer": "^6.0.3"
   },
   "devDependencies": {
     "@types/node": "20.17.43",
