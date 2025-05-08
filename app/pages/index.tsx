@@ -5,6 +5,7 @@ import { OPENBANDS_CIRCUIT_HELPER } from "../lib/circuits/openbands";
 import { pubkeyModulusFromJWK } from "../lib/utils";
 import { supabase, Submission, CompanyRatings as CompanyRatingsType } from "../lib/supabase";
 import CompanyRatings from '../components/CompanyRatings';
+import { getDKIMResult } from '../components/ZkEmail';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
 import fs from "fs/promises";
@@ -134,6 +135,22 @@ export default function Home() {
       const eml = await file.text();
       setEmlFile(eml);
       console.log(`eml: ${eml}`);
+
+      // Extract a position and body from the .eml file
+      // default header/ body lengths to use for input gen
+      const inputParams = {
+        maxHeadersLength: 512,
+        maxBodyLength: 1024,
+      };
+
+      const dkimResult = await getDKIMResult(eml, inputParams);
+      console.log(`dkimResult: ${dkimResult}`);
+
+      //console.log(`header: ${header}`);
+      //console.log(`body: ${body}`);
+
+      console.log(`eml.split("-----BEGIN PGP SIGNATURE-----")[0]: ${eml.split("-----BEGIN PGP SIGNATURE-----")[0]}`);
+      console.log(`eml.split("-----BEGIN PGP SIGNATURE-----")[1]: ${eml.split("-----BEGIN PGP SIGNATURE-----")[1]}`);
 
       // Set the zkEmailInputData
       setZkEmailInputData({

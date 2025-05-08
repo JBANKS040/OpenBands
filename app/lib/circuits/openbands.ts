@@ -71,9 +71,11 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     /// @dev - ZKEmail related input arguments
     const headerUint8Array = new Uint8Array(MAX_HEADER_LENGTH);
     headerUint8Array.set(Uint8Array.from(new TextEncoder().encode(header)));
+    console.log(`headerUint8Array: ${headerUint8Array}`);
 
     const bodyUint8Array = new Uint8Array(MAX_BODY_LENGTH);
     bodyUint8Array.set(Uint8Array.from(new TextEncoder().encode(body)));
+    console.log(`bodyUint8Array: ${bodyUint8Array}`);
 
     /// @dev - [TODO]: The following 4 argument values should be replaced with the appropreate values later
     const pubkeyLimbs2048 = {
