@@ -13,6 +13,13 @@ export async function extractEmailHeaderAndBody(
     let header = "test header";
     let body = "test body";
 
+    const match = rawEmail.match(/^Subject:\s*(.+)$/im);
+    console.log(`Subject: ${match}`);
+
+
+    //console.log(`eml.split(""): ${rawEmail.split(" ")}`);
+    //console.log(`eml.split("-----BEGIN PGP SIGNATURE-----")[1]: ${rawEmail.split("-----BEGIN PGP SIGNATURE-----")[1]}`);
+
     return { header, body };
 }
 

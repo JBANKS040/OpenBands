@@ -150,10 +150,6 @@ export default function Home() {
       //const dkimResult = await getDKIMResult(eml, inputParams);
       //console.log(`dkimResult: ${dkimResult}`);
 
-
-      console.log(`eml.split("-----BEGIN PGP SIGNATURE-----")[0]: ${eml.split("-----BEGIN PGP SIGNATURE-----")[0]}`);
-      console.log(`eml.split("-----BEGIN PGP SIGNATURE-----")[1]: ${eml.split("-----BEGIN PGP SIGNATURE-----")[1]}`);
-
       // Set the zkEmailInputData
       setZkEmailInputData({
         header: eml.split("-----BEGIN PGP SIGNATURE-----")[0],
