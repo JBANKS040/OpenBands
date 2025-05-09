@@ -81,3 +81,6 @@ dist
 # Temporary folders
 tmp/
 temp/
+
+# Added
+output.json
