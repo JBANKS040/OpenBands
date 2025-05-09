@@ -2,7 +2,7 @@ import { generateInputs } from "noir-jwt";
 import { InputMap, type CompiledCircuit } from "@noir-lang/noir_js";
 import { initProver, initVerifier } from "../lazy-modules";
 import { splitBigIntToLimbs } from "../utils";
-import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH } from "../zkemail/zkEmailTestValueGenerator.tsx";
+import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH } from "../zkemail/zkEmailTestValueGenerator.ts";
 
 const MAX_DOMAIN_LENGTH = 64;
 const MAX_POSITION_LENGTH = 128;
