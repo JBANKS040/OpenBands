@@ -125,7 +125,7 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       dkim_header_sequence
     };
 
-    console.log("ZKLevels circuit inputs", inputs);
+    console.log("Openbands circuit inputs", inputs);
 
     const { Noir, UltraHonkBackend } = await initProver();
     const circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
