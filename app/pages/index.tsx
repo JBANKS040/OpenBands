@@ -4,10 +4,11 @@ import { jwtDecode } from "jwt-decode";
 import { OPENBANDS_CIRCUIT_HELPER } from "../lib/circuits/openbands";
 import { pubkeyModulusFromJWK } from "../lib/utils";
 import { supabase, Submission, CompanyRatings as CompanyRatingsType } from "../lib/supabase";
+import { getZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
+
 import CompanyRatings from '../components/CompanyRatings';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
-import { getZkEmailTestValues } from '../components/ZkEmailTestValueGenerator';
 import fs from "fs/promises";
 
 
@@ -177,14 +178,14 @@ export default function Home() {
       const jwtPubkey = await getGooglePublicKey(kid);
 
       /// @dev - Get ZKEmail test values
-      const zkEmailTestValues: ZkEmailTestValues = getZkEmailTestValues();
-      // const { header: _header, body: _body, pubkey: _pubkey, signature: _signature, body_hash_index: _body_hash_index, dkim_header_sequence: _dkim_header_sequence } = zkEmailTestValues;
-      // console.log(`header: ${_header}`);
-      // console.log(`body: ${_body}`);
-      // console.log(`pubkey: ${_pubkey}`);
-      // console.log(`signature: ${_signature}`);
-      // console.log(`body_hash_index: ${_body_hash_index}`);
-      // console.log(`dkim_header_sequence: ${_dkim_header_sequence}`);
+      const zkEmailTestValues: ZkEmailTestValues = await getZkEmailTestValues();
+      const { header: _header, body: _body, pubkey: _pubkey, signature: _signature, body_hash_index: _body_hash_index, dkim_header_sequence: _dkim_header_sequence } = zkEmailTestValues;
+      console.log(`header: ${_header}`);
+      console.log(`body: ${_body}`);
+      console.log(`pubkey: ${_pubkey}`);
+      console.log(`signature: ${_signature}`);
+      console.log(`body_hash_index: ${_body_hash_index}`);
+      console.log(`dkim_header_sequence: ${_dkim_header_sequence}`);
 
       // First generate the proof
       const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({
