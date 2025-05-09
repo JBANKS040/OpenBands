@@ -15,6 +15,13 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     position,
     salary,
     ratings,
+    // @dev - Input parameters for email verification /w ZKEmail.nr
+    header,
+    body,
+    pubkey,
+    signature,
+    body_hash_index,
+    dkim_header_sequence,
   }: {
     idToken: string;
     jwtPubkey: JsonWebKey;
@@ -29,6 +36,16 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       leadership_quality: number;
       operational_efficiency: number;
     };
+    // @dev - Input parameters for email verification /w ZKEmail.nr
+    header: BoundedVec; // Entire Email Header
+    body: BoundedVec;   // Entire Email Body
+    pubkey: {
+      modulus: string[];
+      redc: string[];
+    };
+    signature: string[];
+    body_hash_index: string;
+    dkim_header_sequence: Sequence;
   }) => {
     if (!idToken || !jwtPubkey) {
       throw new Error(
@@ -78,6 +95,13 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       compensation_benefits: ratings.compensation_benefits,
       leadership_quality: ratings.leadership_quality,
       operational_efficiency: ratings.operational_efficiency,
+      // @dev - Input parameters for email verification /w ZKEmail.nr
+      header,
+      body,
+      pubkey,
+      signature,
+      body_hash_index,
+      dkim_header_sequence
     };
 
     console.log("ZKLevels circuit inputs", inputs);
