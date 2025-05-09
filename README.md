@@ -1,6 +1,6 @@
 # OpenBands
 
-OpenBands is a privacy-preserving salary transparency and company review platform.
+OpenBands is a privacy-preserving company reviews and salary reports platform.
 
 We use Zero Knowledge Proofs to verify that users have valid Google Workspace accounts from their claimed organizations, while keeping email addresses and personal details private. This allows employees to share salary information without fear of retaliation or identification.
 
