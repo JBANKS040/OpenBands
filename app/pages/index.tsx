@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { OPENBANDS_CIRCUIT_HELPER } from "../lib/circuits/openbands";
 import { pubkeyModulusFromJWK } from "../lib/utils";
 import { supabase, Submission, CompanyRatings as CompanyRatingsType } from "../lib/supabase";
-import { getZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
+import { getZkEmailTestValues, ZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
 
 import CompanyRatings from '../components/CompanyRatings';
 import InteractiveStarRating from '../components/InteractiveStarRating';
