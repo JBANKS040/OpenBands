@@ -54,8 +54,10 @@ interface ZkEmailTestValues {
 // };
 
 export async function getZkEmailTestValues() {
-  const HEADER = getEmailHeaderInUint8Array();
-  const BODY = getEmailBodyInUint8Array();
+  const HEADER = getEmailHeaderInString();
+  //const HEADER = getEmailHeaderInUint8Array();
+  const BODY = getEmailBodyInString();
+  //const BODY = getEmailBodyInUint8Array();
   const RSA_PUBKEY = getRSAPubkey();
   const SIGNATURE = getSignature();
   const BODY_HASH_INDEX = getBodyHashIndex();
