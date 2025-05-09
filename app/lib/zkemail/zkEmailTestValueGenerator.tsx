@@ -1,4 +1,20 @@
-import { getEmailHeaderInUint8Array, getEmailBodyInUint8Array, getRSAPubkey, getSignature, getBodyHashIndex, getDkimHeaderSequence } from "./test-input-data/inputDataInUint8ArrayGenerator";
+// import { 
+//   getEmailHeaderInUint8Array, 
+//   getEmailBodyInUint8Array, 
+//   getRSAPubkey, 
+//   getSignature, 
+//   getBodyHashIndex, 
+//   getDkimHeaderSequence 
+// } from "./test-input-data/inputDataInUint8ArrayGenerator";
+
+import { 
+  getEmailHeaderInString, 
+  getEmailBodyInString, 
+  getRSAPubkey, 
+  getSignature, 
+  getBodyHashIndex, 
+  getDkimHeaderSequence 
+} from "./test-input-data/inputDataInStringGenerator";
 
 
 export const MAX_HEADER_LENGTH = 512;
