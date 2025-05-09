@@ -2,6 +2,7 @@ import { generateInputs } from "noir-jwt";
 import { InputMap, type CompiledCircuit } from "@noir-lang/noir_js";
 import { initProver, initVerifier } from "../lazy-modules";
 import { splitBigIntToLimbs } from "../utils";
+import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH } from "../zkemail/zkEmailTestValueGenerator.tsx";
 
 const MAX_DOMAIN_LENGTH = 64;
 const MAX_POSITION_LENGTH = 128;
@@ -15,6 +16,13 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     position,
     salary,
     ratings,
+    // @dev - Input parameters for email verification /w ZKEmail.nr
+    header,
+    body,
+    pubkey,
+    signature,
+    body_hash_index,
+    dkim_header_sequence,
   }: {
     idToken: string;
     jwtPubkey: JsonWebKey;
@@ -28,6 +36,21 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       compensation_benefits: number;
       leadership_quality: number;
       operational_efficiency: number;
+    };
+    // @dev - Input parameters for email verification /w ZKEmail.nr
+    header: string;
+    //header: BoundedVec; // Entire Email Header (NOTE: Should be the same data type with the "position" and "salary" parameter) 
+    body: string;
+    //body: BoundedVec;   // Entire Email Body   (NOTE: Should be the same data type with the "position" and "salary" parameter) 
+    pubkey: {
+      modulus: string[];
+      redc: string[];
+    };
+    signature: string[];
+    body_hash_index: number;
+    dkim_header_sequence: {
+      index: number;
+      length: number;
     };
   }) => {
     if (!idToken || !jwtPubkey) {
@@ -51,6 +74,15 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
     const salaryUint8Array = new Uint8Array(MAX_SALARY_LENGTH);
     salaryUint8Array.set(Uint8Array.from(new TextEncoder().encode(salary)));
+
+    // @dev - Input parameters for email verification /w ZKEmail.nr
+    const headerUint8Array = new Uint8Array(MAX_HEADER_LENGTH);
+    headerUint8Array.set(Uint8Array.from(new TextEncoder().encode(header)));
+    console.log(`headerUint8Array: ${headerUint8Array}`);
+
+    const bodyUint8Array = new Uint8Array(MAX_BODY_LENGTH);
+    bodyUint8Array.set(Uint8Array.from(new TextEncoder().encode(body)));
+    console.log(`bodyUint8Array: ${bodyUint8Array}`);
 
     const inputs = {
       partial_data: jwtInputs.partial_data,
@@ -78,6 +110,19 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       compensation_benefits: ratings.compensation_benefits,
       leadership_quality: ratings.leadership_quality,
       operational_efficiency: ratings.operational_efficiency,
+      // @dev - Input parameters for email verification /w ZKEmail.nr
+      header: {
+        storage: Array.from(headerUint8Array),
+        len: header.length,
+      },
+      body: {
+        storage: Array.from(bodyUint8Array),
+        len: body.length,
+      },
+      pubkey,
+      signature,
+      body_hash_index,
+      dkim_header_sequence
     };
 
     console.log("ZKLevels circuit inputs", inputs);

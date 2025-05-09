@@ -4,9 +4,13 @@ import { jwtDecode } from "jwt-decode";
 import { OPENBANDS_CIRCUIT_HELPER } from "../lib/circuits/openbands";
 import { pubkeyModulusFromJWK } from "../lib/utils";
 import { supabase, Submission, CompanyRatings as CompanyRatingsType } from "../lib/supabase";
+import { getZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
+
 import CompanyRatings from '../components/CompanyRatings';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
+import fs from "fs/promises";
+
 
 interface GoogleJwtPayload {
   email: string;
@@ -67,6 +71,7 @@ async function getGooglePublicKey(kid: string): Promise<JsonWebKey> {
 
 export default function Home() {
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: null, idToken: null });
+  const [emlFile, setEmlFile] = useState("");
   const [position, setPosition] = useState("");
   const [salary, setSalary] = useState("");
   const [loading, setLoading] = useState(false);
@@ -101,6 +106,24 @@ export default function Home() {
   const handleLogout = useCallback(() => {
     setUserInfo({ email: null, idToken: null });
   }, []);
+
+  /// @dev - Upload / Read .eml file
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setLoading(true)
+    try {
+      // Read the file as text
+      const eml = await file.text();
+      setEmlFile(eml);
+      console.log(`eml: ${eml}`);
+    } catch (error) {
+      console.error("Error uploading/reading an .eml file:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const fetchSubmissions = async () => {
     try {
@@ -154,6 +177,16 @@ export default function Home() {
 
       const jwtPubkey = await getGooglePublicKey(kid);
 
+      /// @dev - Get ZKEmail test values
+      const zkEmailTestValues: ZkEmailTestValues = await getZkEmailTestValues();
+      const { header: _header, body: _body, pubkey: _pubkey, signature: _signature, body_hash_index: _body_hash_index, dkim_header_sequence: _dkim_header_sequence } = zkEmailTestValues;
+      console.log(`header: ${_header}`);
+      console.log(`body: ${_body}`);
+      console.log(`pubkey: ${_pubkey}`);
+      console.log(`signature: ${_signature}`);
+      console.log(`body_hash_index: ${_body_hash_index}`);
+      console.log(`dkim_header_sequence: ${_dkim_header_sequence}`);
+
       // First generate the proof
       const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({
         idToken: userInfo.idToken,
@@ -161,7 +194,14 @@ export default function Home() {
         domain,
         position,
         salary,
-        ratings
+        ratings,
+        // @dev - Input parameters for email verification /w ZKEmail.nr
+        header: zkEmailTestValues.header,
+        body: zkEmailTestValues.body,
+        pubkey: zkEmailTestValues.pubkey,
+        signature: zkEmailTestValues.signature,
+        body_hash_index: zkEmailTestValues.body_hash_index,
+        dkim_header_sequence: zkEmailTestValues.dkim_header_sequence
       });
 
       // Then try to store it (this might fail due to schema issues)
@@ -297,6 +337,16 @@ export default function Home() {
           </div>
 
           <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Upload .eml file</label>
+              <input 
+                type="file" 
+                accept=".eml"
+                onChange={handleFileUpload}
+                disabled={loading}
+              />
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 your position at: {userInfo.email?.split('@')[1]}
