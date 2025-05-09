@@ -23,6 +23,10 @@ use tests::test_inputs::{
     EmailLarge::{
         HEADER, BODY,
     },
+    EmploymentOfferEmailLarge::{
+        EMPLOYMENT_OFFER_EMAIL_HEADER, EMPLOYMENT_OFFER_EMAIL_BODY,
+        POSITION_BODY, SALARY_BODY,
+    },
 };
 
 global MAX_PARTIAL_DATA_LENGTH: u32 = 640; // signed data length after partial SHA
@@ -136,7 +140,7 @@ fn main(
     verify_rating(leadership_quality);
     verify_rating(operational_efficiency);
 
-    // @dev - [NOTE]: The following variables are temporary variables. They are just for passing the verify_email_2048_bit_dkim() function. Thus, this should be replaced with a given "header" and "body" going forward.
+    // @dev - [TODO]: The following variables are temporary variables. They are just for passing the verify_email_2048_bit_dkim() function. Thus, this should be replaced with a given "header" and "body" going forward.
     let test_header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = HEADER;
     let test_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = BODY;
 
@@ -152,15 +156,21 @@ fn main(
         dkim_header_sequence
     );
 
+    // @dev - [TODO]: The following variables are temporary variables. They are just for passing the is_position_found_in_email_body() and is_salary_found_in_email_body() function. Thus, this should be replaced with a given "body"/"position"/"salary" going forward.
+    let test_email_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = EMPLOYMENT_OFFER_EMAIL_BODY;
+    let test_position: BoundedVec<u8, MAX_POSITION_LENGTH> = POSITION_BODY;
+    let test_salary: BoundedVec<u8, MAX_SALARY_LENGTH> = SALARY_BODY;
+
     /// @dev - Validate to check whether a given "position" is included in the entire email body or not.
     /// @dev - Compare a given "position" (BoundedVec<u8, MAX_POSITION_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
-    let is_position_found_in_email_body: bool = unsafe { is_position_found_in_email_body(position, body) };
+    let is_position_found_in_email_body: bool = unsafe { is_position_found_in_email_body(test_position, test_email_body) };
+    //let is_position_found_in_email_body: bool = unsafe { is_position_found_in_email_body(position, body) };
     assert(is_position_found_in_email_body == true, "Position can not be found in email body");
 
     /// @dev - Validate to check whether a given "salary" is included in the entire email body or not.
     /// @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
-    /// @dev - In the following implementation, the maximum number of sequences-matched is 5. ("5" is enuough for judging whether a given salary is included in the email body or not)
-    let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(salary, body) };
+    let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(test_salary, test_email_body) };
+    //let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(salary, body) };
     assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
 }
 

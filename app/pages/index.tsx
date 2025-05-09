@@ -4,6 +4,8 @@ import { jwtDecode } from "jwt-decode";
 import { OPENBANDS_CIRCUIT_HELPER } from "../lib/circuits/openbands";
 import { pubkeyModulusFromJWK } from "../lib/utils";
 import { supabase, Submission, CompanyRatings as CompanyRatingsType } from "../lib/supabase";
+import { getZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
+
 import CompanyRatings from '../components/CompanyRatings';
 import { extractEmailHeaderAndBody, getDKIMResult } from '../components/ZkEmail';
 import InteractiveStarRating from '../components/InteractiveStarRating';
@@ -218,6 +220,16 @@ export default function Home() {
 
       const jwtPubkey = await getGooglePublicKey(kid);
 
+      /// @dev - Get ZKEmail test values
+      const zkEmailTestValues: ZkEmailTestValues = await getZkEmailTestValues();
+      const { header: _header, body: _body, pubkey: _pubkey, signature: _signature, body_hash_index: _body_hash_index, dkim_header_sequence: _dkim_header_sequence } = zkEmailTestValues;
+      console.log(`header: ${_header}`);
+      console.log(`body: ${_body}`);
+      console.log(`pubkey: ${_pubkey}`);
+      console.log(`signature: ${_signature}`);
+      console.log(`body_hash_index: ${_body_hash_index}`);
+      console.log(`dkim_header_sequence: ${_dkim_header_sequence}`);
+
       // First generate the proof
       const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({  /// @dev - [TODO]: Add the zkEmail related input parameters to the generateProof() of the original file.
         idToken: userInfo.idToken,
@@ -226,14 +238,21 @@ export default function Home() {
         position,
         salary,
         ratings,
+        // @dev - Input parameters for email verification /w ZKEmail.nr
+        header: zkEmailTestValues.header,
+        body: zkEmailTestValues.body,
+        pubkey: zkEmailTestValues.pubkey,
+        signature: zkEmailTestValues.signature,
+        body_hash_index: zkEmailTestValues.body_hash_index,
+        dkim_header_sequence: zkEmailTestValues.dkim_header_sequence
 
-        /// @dev - zkEmail related input arguments:
-        header: zkEmailInputData.header,
-        body: zkEmailInputData.body,
-        pubkey: zkEmailInputData.pubkey,
-        signature: zkEmailInputData.signature,
-        body_hash_index: zkEmailInputData.body_hash_index,
-        dkim_header_sequence: zkEmailInputData.dkim_header_sequence
+        // /// @dev - zkEmail related input arguments:
+        // header: zkEmailInputData.header,
+        // body: zkEmailInputData.body,
+        // pubkey: zkEmailInputData.pubkey,
+        // signature: zkEmailInputData.signature,
+        // body_hash_index: zkEmailInputData.body_hash_index,
+        // dkim_header_sequence: zkEmailInputData.dkim_header_sequence
       });
 
       // Then try to store it (this might fail due to schema issues)
