@@ -22,7 +22,7 @@ We use [zkEmail](https://github.com/zkemail/zkemail.nr) to extract the position 
 
 ## Notes
 
-constraint counts:
-proving time:
+ACIR Opcodes: 43362
+proving time: 30000ms
 
 
