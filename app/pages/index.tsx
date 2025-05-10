@@ -7,7 +7,7 @@ import { supabase, Submission, CompanyRatings as CompanyRatingsType } from "../l
 import { getZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
 
 import CompanyRatings from '../components/CompanyRatings';
-import { extractEmailHeaderAndBody, getDKIMResult } from '../components/ZkEmail';
+import { extractEmailHeaderAndBody, getDKIMResult } from '../lib/zkemail/emailHeaderAndBodyExtractor';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
 import fs from "fs/promises";
