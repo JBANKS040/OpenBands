@@ -4,7 +4,7 @@ OpenBands is a privacy-preserving company reviews and salary reports platform.
 
 We use Zero Knowledge Proofs to verify that users have valid Google Workspace accounts from their claimed organizations, while keeping email addresses and personal details private. This allows employees to share salary information without fear of retaliation or identification.
 
-Introduction video: LINK
+Introduction video: [Introduction Video](https://www.loom.com/share/3e7c91f192be4761bd7871708effc383?sid=bbe7f84d-2a0c-4864-a276-8a5faef0bd59)
 Try it out at [open-bands.vercel.app](https://open-bands.vercel.app)
 
 ## Privacy Primitives Used
