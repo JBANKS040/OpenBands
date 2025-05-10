@@ -1,5 +1,5 @@
 //import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim"; /// [NOTE]: This modules would can work in only server-side. 
-import { ZkEmailSDKProvider } from "@zk-email/zk-email-sdk";
+//import { ZkEmailSDKProvider } from "@zk-email/zk-email-sdk";
 
 import { headers } from "next/headers";
 
@@ -14,13 +14,6 @@ export async function extractEmailHeaderAndBody(
     //let header = "test header";
     //let body = "test body";
 
-    /// @dev - @zk-email/zk-email-sdk
-    const input = await generateInputFromEmail(
-        "<slug-name>",
-        rawEmail,
-        {}
-    );
-    console.log(`input: ${input}`);
 
     const header = rawEmail.match(/^Subject:\s*(.+)$/im);
     //console.log(`header: ${header}`);
@@ -38,8 +31,13 @@ export async function extractEmailHeaderAndBody(
     // const parts = rawEmail.split(/\r?\n\r?\n/); // split at first empty line
     // console.log(`Email Body: ${parts}`);
 
-    //console.log(`eml.split(""): ${rawEmail.split(" ")}`);
-    //console.log(`eml.split("-----BEGIN PGP SIGNATURE-----")[1]: ${rawEmail.split("-----BEGIN PGP SIGNATURE-----")[1]}`);
+    /// @dev - Extract the email header and body, which the HTML part is cut off, from the entire (raw) email text.
+    const delimiter = "Content-Type: text/html;";
+    const index = rawEmail.indexOf(delimiter);
+    if (index === -1) return rawEmail; // Fallback if not found
+    // Return everything before the delimiter
+    const headerAndBodyWithoutHtmlPart = rawEmail.substring(0, index).trim();
+    console.log(`headerAndBodyWithoutHtmlPart: ${headerAndBodyWithoutHtmlPart}`);
 
     return { header, body };
 }
