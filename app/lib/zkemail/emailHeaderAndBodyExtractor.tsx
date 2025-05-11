@@ -39,10 +39,10 @@ export async function extractEmailHeaderAndBody(
  */
 function extractRawEmailWithoutHtmlPart(rawEmail: string) {
     const delimiter = "Content-Type: text/html;";
-    const index = rawEmail.indexOf(delimiter);
-    if (index === -1) return rawEmail; // Fallback if not found
+    const indexOfContentTypeTextHtml = rawEmail.indexOf(delimiter);
+    if (indexOfContentTypeTextHtml === -1) return rawEmail; // Fallback if not found
     // Return everything before the delimiter
-    const rawEmailWithoutHtmlPart = rawEmail.substring(0, index).trim();
+    const rawEmailWithoutHtmlPart = rawEmail.substring(0, indexOfContentTypeTextHtml).trim();
     console.log(`rawEmailWithoutHtmlPart: ${rawEmailWithoutHtmlPart}`);
     return rawEmailWithoutHtmlPart;
 }
