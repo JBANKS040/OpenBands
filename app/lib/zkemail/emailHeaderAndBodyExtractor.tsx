@@ -1,7 +1,3 @@
-//import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim"; /// [NOTE]: This modules would can work in only server-side. 
-//import { ZkEmailSDKProvider } from "@zk-email/zk-email-sdk";
-
-
 /**
  * @dev - This function is used to extract the email header and body from the raw email text.
  * @param rawEmail - The raw email text.
@@ -72,28 +68,4 @@ function extractHeaderWithoutBody(rawEmailWithoutHtmlPart: string) {
     const headerWithoutBody = rawEmailWithoutHtmlPart.substring(0, indexOfContentTypeTextPlain).trim(); // Extract everything before the delimiter
     console.log(`headerWithoutBody: ${headerWithoutBody}`);
     return headerWithoutBody;
-}
-
-
-
-
-
-
-/**
- * @notice - But, this function is not working in client-side. (So, we need to implement another function above)
- * @description Generate a dkimResult from raw email content
- * @param rawEmail Full email content as a buffer or string
- * @param params Arguments to control the input generation
- * @returns a dkimResult
- */
-export async function getDKIMResult(
-    rawEmail: string,
-    //rawEmail: Buffer | string,
-    params: InputGenerationArgs = {}
-) {
-//   const dkimResult = await verifyDKIMSignature(rawEmail, undefined, undefined, true);
-//   console.log("DKIM Result:", dkimResult);
-//   //const { headers, body, bodyHash, publicKey, signature, modulusLength } = dkimResult;
-
-//   return dkimResult;
 }
