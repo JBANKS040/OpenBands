@@ -39,14 +39,18 @@ export async function extractEmailHeaderAndBody(
     const headerAndBodyWithoutHtmlPart = rawEmail.substring(0, index).trim();
     console.log(`headerAndBodyWithoutHtmlPart: ${headerAndBodyWithoutHtmlPart}`);
 
-    /// @dev - Extract the email header and body from the entire (raw) email text.
+    /// @dev - Extract the email body, which the below part of the "Content-Type: text/plain" is cut off from the "headerAndBodyWithoutHtmlPart".
     const marker = 'Content-Type: text/plain;';
     const indexOfContentTypeTextPlain = headerAndBodyWithoutHtmlPart.indexOf(marker);
-    if (indexOfContentTypeTextPlain === -1) return '';
+    if (indexOfContentTypeTextPlain === -1) return ''; // fallback: return full text if marker not found
     // Move past the marker and any trailing newlines or spaces
     const _bodyWithoutHeader = headerAndBodyWithoutHtmlPart.slice(indexOfContentTypeTextPlain + marker.length);
     const bodyWithoutHeader = _bodyWithoutHeader.trimStart();
-    console.log(`_bodyWithoutHeader: ${_bodyWithoutHeader}`);
+    console.log(`bodyWithoutHeader: ${bodyWithoutHeader}`);
+
+    /// @dev - Extract the email header, which the above part of the "Content-Type: text/plain" is cut off from the "headerAndBodyWithoutHtmlPart".  
+    const headerWithoutBody = headerAndBodyWithoutHtmlPart.substring(0, indexOfContentTypeTextPlain).trim(); // everything before the marker
+    console.log(`headerWithoutBody: ${headerWithoutBody}`);
 
     return { header, body };
 }
