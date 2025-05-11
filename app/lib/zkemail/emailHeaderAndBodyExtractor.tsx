@@ -20,13 +20,13 @@ export async function extractEmailHeaderAndBody(
     const rawEmailWithoutHtmlPart = extractRawEmailWithoutHtmlPart(rawEmail);
     console.log(`rawEmailWithoutHtmlPart: ${rawEmailWithoutHtmlPart}`);
 
-    /// @dev - Extract the email body, which the below part of the "Content-Type: text/plain" is cut off from the "headerAndBodyWithoutHtmlPart".
-    const bodyWithoutHeader = extractBodyWithoutHeader(rawEmailWithoutHtmlPart);
-    console.log(`bodyWithoutHeader: ${bodyWithoutHeader}`);
-
     /// @dev - Extract the email header, which the above part of the "Content-Type: text/plain" is cut off from the "headerAndBodyWithoutHtmlPart".  
     const headerWithoutBody = extractHeaderWithoutBody(rawEmailWithoutHtmlPart);
     console.log(`headerWithoutBody: ${headerWithoutBody}`);
+
+    /// @dev - Extract the email body, which the below part of the "Content-Type: text/plain" is cut off from the "headerAndBodyWithoutHtmlPart".
+    const bodyWithoutHeader = extractBodyWithoutHeader(rawEmailWithoutHtmlPart);
+    console.log(`bodyWithoutHeader: ${bodyWithoutHeader}`);
 
     const header = headerWithoutBody;
     const body = bodyWithoutHeader;
