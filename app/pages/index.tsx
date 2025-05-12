@@ -7,7 +7,7 @@ import { supabase, Submission, CompanyRatings as CompanyRatingsType } from "../l
 import { getZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
 
 import CompanyRatings from '../components/CompanyRatings';
-import { extractEmailHeaderAndBody, getDKIMResult } from '../lib/zkemail/emailHeaderAndBodyExtractor';
+import { extractEmailHeaderAndBody } from '../lib/zkemail/emailHeaderAndBodyExtractor';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
 import fs from "fs/promises";
@@ -148,9 +148,6 @@ export default function Home() {
       const { header, body } = await extractEmailHeaderAndBody(eml, inputParams);
       console.log(`header: ${header}`);
       console.log(`body: ${body}`);
-
-      //const dkimResult = await getDKIMResult(eml, inputParams);
-      //console.log(`dkimResult: ${dkimResult}`);
 
       // Set the zkEmailInputData
       setZkEmailInputData({
