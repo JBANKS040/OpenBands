@@ -1,5 +1,4 @@
 import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim"; /// [NOTE]: This modules would can work in only server-side. 
-//import { ZkEmailSDKProvider } from "@zk-email/zk-email-sdk";
 import { generateEmailVerifierInputs } from "@zk-email/zkemail-nr";
 
 

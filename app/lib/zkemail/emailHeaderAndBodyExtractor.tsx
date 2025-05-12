@@ -1,3 +1,5 @@
+import { extractEmailVerifierInputs } from "./server-side-libraries/zkEmailVerifierInputsGenerator.ts";
+
 /**
  * @dev - This function is used to extract the email header and body from the raw email text.
  * @param rawEmail - The raw email text.
@@ -11,6 +13,14 @@ export async function extractEmailHeaderAndBody(
     // const regexForBodyExtraction = /^Content-Type:\s*[text/plain]/im;
     // const header = rawEmail.match(regexForHeaderExtraction);
     // const body = rawEmail.match(regexForBodyExtraction);
+
+    /// @dev - [TEST]: The "zk-email/zkemail-nr" library
+    const zkEmailInputs = await extractEmailVerifierInputs(rawEmail, {
+        maxBodyLength: 1280,
+        maxHeadersLength: 1408,
+        shaPrecomputeSelector: "some string in body up to which you want to hash outside circuit",
+    });
+    console.log("zkEmailInputs:", zkEmailInputs);
 
     /// @dev - Extract the email header and body, which the HTML part is cut off, from the entire (raw) email text.
     const rawEmailWithoutHtmlPart = extractRawEmailWithoutHtmlPart(rawEmail);
