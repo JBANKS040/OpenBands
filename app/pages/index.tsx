@@ -134,13 +134,13 @@ export default function Home() {
 
     setLoading(true)
     try {
-      // Read the file as text
+      // Read an EML file as text
       const eml = await file.text();
       setEmlFile(eml);
       console.log(`eml: ${eml}`);
 
       // @dev - Generate a proof from the raw email, which is extracted from an given eml file, by using the zkEmail Blueprint SDK.
-      const blueprintSlug = "OpenBands/emailSlug@v1"; // [TODO]: Change to the appropreate blueprint slug later.
+      const blueprintSlug = "Bisht13/SuccinctZKResidencyInvite@v3"; // [TODO]: Change to the appropreate blueprint slug later.
       const { proof } = await generateProofFromEmlFile(eml, blueprintSlug);
       console.log(`proof: ${proof}`);
 
