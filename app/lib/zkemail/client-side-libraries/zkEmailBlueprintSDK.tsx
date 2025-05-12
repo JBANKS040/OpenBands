@@ -25,5 +25,34 @@ export async function generateProofFromEmlFile(
     const proof = await prover.generateProof(rawEmail);
     console.log(`proof: ${JSON.stringify(proof, null, 2)}`);// Verify the proof
 
+    // Verify the proof
+    const isProofValid = await prover.verifyProofOfEmlFile(blueprint, proof);
+
     return { proof };
+}
+
+
+/**
+ * @notice - Verify a ZK Proof of the raw email, which is extracted from an EML file. 
+ */
+export async function verifyProofOfEmlFile(
+    blueprint: any,
+    proof: Proof
+): Promise<{ isProofValid: boolean }> {
+    // Verify the proof on chain
+    const isProofValidOnChain = await blueprint.verifyProofOnChain(proof);
+    console.log(`isProofValidOnChain: ${isProofValidOnChain}`);
+
+    // Verify the proof off chain
+    const isProofValidOffChain = await blueprint.verifyProof(proof);
+    console.log(`isProofValidOffChain: ${isProofValidOffChain}`);
+
+    if (!isProofValidOnChain) {
+        throw new Error("Proof is not valid on chain");
+    }
+    if (!isProofValidOffChain) {
+        throw new Error("Proof is not valid off chain");
+    }
+
+    return { isProofValid: true };
 }
