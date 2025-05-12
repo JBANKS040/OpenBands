@@ -26,7 +26,8 @@ export async function generateProofFromEmlFile(
     console.log(`proof: ${JSON.stringify(proof, null, 2)}`);// Verify the proof
 
     // Verify the proof
-    const isProofValid = await prover.verifyProofOfEmlFile(blueprint, proof);
+    const isProofValid = await verifyProofOfEmlFile(blueprint, proof);
+    console.log(`isProofValid: ${JSON.stringify(isProofValid, null, 2)}`);
 
     return { proof };
 }
@@ -41,11 +42,11 @@ export async function verifyProofOfEmlFile(
 ): Promise<{ isProofValid: boolean }> {
     // Verify the proof on chain
     const isProofValidOnChain = await blueprint.verifyProofOnChain(proof);
-    console.log(`isProofValidOnChain: ${isProofValidOnChain}`);
+    console.log(`isProofValidOnChain: ${JSON.stringify(isProofValidOnChain, null, 2)}`);
 
     // Verify the proof off chain
     const isProofValidOffChain = await blueprint.verifyProof(proof);
-    console.log(`isProofValidOffChain: ${isProofValidOffChain}`);
+    console.log(`isProofValidOffChain: ${JSON.stringify(isProofValidOffChain, null, 2)}`);
 
     if (!isProofValidOnChain) {
         throw new Error("Proof is not valid on chain");
