@@ -1,5 +1,5 @@
-import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim"; /// [NOTE]: This modules would can work in only server-side. 
-import { generateEmailVerifierInputs } from "@zk-email/zkemail-nr";
+import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim";   /// [NOTE]: This modules (icl. verifyDKIMSignature() function) would can work in only server-side. 
+import { generateEmailVerifierInputs } from "@zk-email/zkemail-nr";  /// [NOTE]: This generateEmailVerifierInputs() function would can work in only server-side. 
 
 
 /**

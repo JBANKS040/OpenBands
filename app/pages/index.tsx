@@ -8,6 +8,7 @@ import { getZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
 
 import CompanyRatings from '../components/CompanyRatings';
 import { extractEmailHeaderAndBody } from '../lib/zkemail/emailHeaderAndBodyExtractor';
+import { generateProofFromEmlFile } from '../lib/zkemail/client-side-libraries/zkEmailBlueprintSDK';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
 import fs from "fs/promises";
@@ -138,7 +139,12 @@ export default function Home() {
       setEmlFile(eml);
       console.log(`eml: ${eml}`);
 
-      // default header/ body lengths to use for input gen
+      // @dev - Generate a proof from the raw email, which is extracted from an given eml file, by using the zkEmail Blueprint SDK.
+      const blueprintSlug = "OpenBands/emailSlug@v1"; // [TODO]: Change to the appropreate blueprint slug later.
+      const { proof } = await generateProofFromEmlFile(eml, blueprintSlug);
+      console.log(`proof: ${proof}`);
+
+      // Default header/ body lengths to use for input generation.
       const inputParams = {
         maxHeadersLength: 512,
         maxBodyLength: 1024,

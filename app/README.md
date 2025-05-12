@@ -31,3 +31,11 @@ npm run dev
 ```bash
 http://localhost:3000
 ```
+
+<br>
+
+## References
+
+- ZK Email:
+  - ZK Email Blueprint SDK: https://docs.zk.email/zk-email-sdk/setup#repository-templates
+    - `sdk-ts-demo` (in Next.js): https://github.com/zkemail/sdk-ts-demo/tree/main/nextjs
