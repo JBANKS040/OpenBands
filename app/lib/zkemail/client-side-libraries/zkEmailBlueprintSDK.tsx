@@ -13,6 +13,10 @@ export async function generateProofFromEmlFile(
     // Initialize the SDK
     const sdk = zkeSDK()
 
+    // [TEST]: Generate the inputs from the raw email
+    const inputsParsed = await generateProofInputsFromEmlFile(sdk, rawEmail);
+    console.log(`inputsParsed: ${JSON.stringify(inputsParsed, null, 2)}`);
+
     // Get the blueprint
     const blueprint = await sdk.getBlueprint(blueprintSlug);
     console.log(`blueprint: ${JSON.stringify(blueprint, null, 2)}`);
@@ -56,4 +60,102 @@ export async function verifyProofOfEmlFile(
     }
 
     return { isProofValid: true };
+}
+
+
+/**
+ * @notice - Generate the inputs from the raw email using the zkEmail SDK.
+ * @param sdk 
+ * @param rawEmail - Raw email text, which is extracted from an EML file.
+ */
+export async function generateProofInputsFromEmlFile(
+    sdk: any,
+    rawEmail: string
+): Promise<{ parsed: string }> {
+
+    const { decomposedRegex, externalInputs, params } = getTestRegexAndExternalInputs()
+
+    // @ts-ignore
+    const inputs = await sdk.generateProofInputs( /// [Result]: Error - Seems not to be able to call directly.
+        rawEmail,
+        decomposedRegex,
+        [externalInputs],
+        params
+    );
+    const parsed = JSON.parse(inputs);
+    console.log("inputs: ", parsed.pubkey[0]);
+
+    return { parsed };
+}
+
+
+/**
+ * @notice - Test regex and external inputs for the input generation using zkEmail SDK.
+ */
+function getTestRegexAndExternalInputs() {
+    const decomposedRegex = [
+        {
+          name: "emailRecipient",
+          parts: [
+            { regexDef: "(\r\n|^)to:" },
+            { regexDef: "([^\r\n]+<)?" },
+            {
+              isPublic: true,
+              regexDef: "[a-zA-Z0-9!#$%&\\*\\+-/=\\?\\^_`{\\|}~\\.]+@[a-zA-Z0-9_\\.-]+",
+            },
+            { regexDef: ">?\r\n" },
+          ],
+          location: "header",
+          maxLength: 64,
+        },
+        {
+          name: "senderDomain",
+          parts: [
+            { regexDef: "(\r\n|^)from:[^\r\n]*@" },
+            { isPublic: true, regexDef: "[A-Za-z0-9][A-Za-z0-9\\.-]+\\.[A-Za-z]{2,}" },
+            { regexDef: "[>\r\n]" },
+          ],
+          location: "header",
+          maxLength: 64,
+        },
+        {
+          name: "emailTimestamp",
+          parts: [
+            { regexDef: "(\r\n|^)dkim-signature:" },
+            { regexDef: "([a-z]+=[^;]+; )+t=" },
+            { isPublic: true, regexDef: "[0-9]+" },
+            { regexDef: ";" },
+          ],
+          location: "header",
+          maxLength: 64,
+        },
+        {
+          name: "subject",
+          parts: [
+            { regexDef: "(\r\n|^)subject:" },
+            { isPublic: true, regexDef: "[^\r\n]+" },
+            { regexDef: "\r\n" },
+          ],
+          location: "header",
+          maxLength: 128,
+        },
+    ];
+  
+    const externalInputs = {
+        name: "address",
+        value: "0x0000",
+        maxLength: 44,
+    };
+  
+    console.log("externalInput: ", externalInputs);
+  
+    const params = {
+        emailHeaderMaxLength: 1024,
+        emailBodyMaxLength: 0,
+        ignoreBodyHashCheck: true,
+        removeSoftLinebreaks: true,
+        shaPrecomputeSelector: "",
+    };
+
+    return { decomposedRegex, externalInputs, params };
 }
