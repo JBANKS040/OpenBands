@@ -1,4 +1,14 @@
-import zkeSDK, { Proof } from "@zk-email/sdk";  /// @dev - Import the zkEmail Blueprint SDK
+//import zkeSDK, { Proof };
+import zkeSDK, {
+    Proof,
+    testDecomposedRegex,
+    parseEmail,
+    generateProofInputs,  /// @dev - Imported from the relayerUtils.ts of the zkemail/zk-email-sdk-js/src
+    testBlueprint,
+    getMaxEmailBodyLength,
+    extractEMLDetails,
+    generateDfa,
+} from "@zk-email/sdk";  /// @dev - Import the zkEmail Blueprint SDK
 
 
 /**
@@ -35,10 +45,10 @@ export async function generateProofFromEmlFile(
     const prover = blueprint.createProver();
     console.log(`prover: ${JSON.stringify(prover, null, 2)}`);
 
-    
+
     // [TEST]: Generate the inputs from the raw email
-    //const inputsParsed = await generateProofInputsFromEmlFile(prover, rawEmail);
-    //console.log(`inputsParsed: ${JSON.stringify(inputsParsed, null, 2)}`);
+    const inputsParsed = await generateProofInputsFromEmlFile(rawEmail);
+    console.log(`inputsParsed: ${JSON.stringify(inputsParsed, null, 2)}`);
 
 
     // Generate the proof
@@ -81,28 +91,20 @@ export async function verifyProofOfEmlFile(
 
 /**
  * @notice - Generate the inputs from the raw email using the zkEmail SDK.
- * @param prover
  * @param rawEmail - Raw email text, which is extracted from an EML file.
  */
 export async function generateProofInputsFromEmlFile(
-    prover: any,
     rawEmail: string
 ): Promise<{ inputsParsed: string }> {
     const { decomposedRegex, externalInputs, params } = getTestRegexAndExternalInputs()
 
     // @ts-ignore
-    const inputs = await prover.generateProofInputs( /// [Result]: Calliing this function was successful. However, the arguments of the "externalInputs" have to be adjusted. 
-        rawEmail,
-        externalInputs
+    const inputs = await generateProofInputs( /// @dev - This function is defined in the relayerUtils.ts of the zkemail/zk-email-sdk-js/src / [Result]: Error - Seems not to be able to call directly.
+        rawEmail,        
+        decomposedRegex,
+        [externalInputs],
+        params
     );
-
-    // @ts-ignore
-    // const inputs = await generateProofInputs( /// @dev - This function is defined in the relayerUtils.ts of the zkemail/zk-email-sdk-js/src / [Result]: Error - Seems not to be able to call directly.
-    //     rawEmail,        
-    //     decomposedRegex,
-    //     [externalInputs],
-    //     params
-    // );
 
     const inputsParsed = JSON.parse(inputs);
     console.log("inputs: ", inputsParsed.pubkey[0]);
