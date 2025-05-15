@@ -53,8 +53,10 @@ export async function generateProofFromEmlFile(
     console.log(`inputsParsed: ${JSON.stringify(inputsParsed, null, 2)}`);
 
     // [TEST]: Parse the email from the raw email
-    const parsedEmail = await parseEmailFromEmlFile(rawEmail);
+    const { parsedEmail, emailHeader, emailBody } = await parseEmailFromEmlFile(rawEmail);
     console.log(`parsedEmail: ${JSON.stringify(parsedEmail, null, 2)}`);
+    console.log(`emailHeader: ${emailHeader}`);
+    console.log(`emailBody: ${emailBody}`);
 
     // Generate the proof
     const proof = await prover.generateProof(rawEmail);
@@ -198,14 +200,13 @@ function getRegexAndExternalInputsAndParams() {
  */
 export async function parseEmailFromEmlFile(
     rawEmail: string
-): Promise<{ parsedEmail: ParsedEmail }> {
+): Promise<{ parsedEmail: ParsedEmail, emailHeader: string, emailBody: string }> {
     const parsedEmail = await parseEmail(rawEmail, false);
-
     const emailHeader = parsedEmail.canonicalizedHeader;
-    console.log(`emailHeader: ${emailHeader}`);
-
     const emailBody = parsedEmail.cleanedBody;
-    console.log(`emailBody: ${emailBody}`);
+    //console.log(`parsedEmail: ${JSON.stringify(parsedEmail, null, 2)}`);
+    //console.log(`emailHeader: ${emailHeader}`);
+    //console.log(`emailBody: ${emailBody}`);
 
-    return { parsedEmail };
+    return { parsedEmail, emailHeader, emailBody };
 }
