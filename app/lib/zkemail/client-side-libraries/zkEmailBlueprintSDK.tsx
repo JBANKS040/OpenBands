@@ -11,7 +11,7 @@ export async function generateProofFromEmlFile(
     blueprintSlug: string,
 ): Promise<{ proof: Proof }> {
     // Initialize the SDK
-    const sdk = zkeSDK()
+    const sdk = zkeSDK();
 
     // Get the blueprint
     const blueprint = await sdk.getBlueprint(blueprintSlug);
@@ -23,13 +23,13 @@ export async function generateProofFromEmlFile(
 
     
     // [TEST]: Generate the inputs from the raw email
-    const inputsParsed = await generateProofInputsFromEmlFile(prover, rawEmail);
-    console.log(`inputsParsed: ${JSON.stringify(inputsParsed, null, 2)}`);
+    //const inputsParsed = await generateProofInputsFromEmlFile(prover, rawEmail);
+    //console.log(`inputsParsed: ${JSON.stringify(inputsParsed, null, 2)}`);
 
 
     // Generate the proof
     const proof = await prover.generateProof(rawEmail);
-    console.log(`proof: ${JSON.stringify(proof, null, 2)}`);// Verify the proof
+    console.log(`proof: ${JSON.stringify(proof, null, 2)}`);  // Verify the proof
 
     // Verify the proof
     const isProofValid = await verifyProofOfEmlFile(blueprint, proof);
