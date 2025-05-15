@@ -174,8 +174,8 @@ function getTestRegexAndExternalInputs() {
     console.log("externalInput: ", externalInputs);
   
     const params = {
-        emailHeaderMaxLength: 1024,
-        emailBodyMaxLength: 0,
+        emailHeaderMaxLength: 2048,
+        emailBodyMaxLength: 2048,
         ignoreBodyHashCheck: true,
         removeSoftLinebreaks: true,
         shaPrecomputeSelector: "",
