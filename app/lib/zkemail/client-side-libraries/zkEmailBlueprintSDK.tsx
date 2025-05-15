@@ -201,8 +201,11 @@ export async function parseEmailFromEmlFile(
 ): Promise<{ parsedEmail: ParsedEmail }> {
     const parsedEmail = await parseEmail(rawEmail, false);
 
-    const body = parsedEmail.cleanedBody;
-    console.log(`body: ${body}`);
+    const emailHeader = parsedEmail.canonicalizedHeader;
+    console.log(`emailHeader: ${emailHeader}`);
+
+    const emailBody = parsedEmail.cleanedBody;
+    console.log(`emailBody: ${emailBody}`);
 
     return { parsedEmail };
 }
