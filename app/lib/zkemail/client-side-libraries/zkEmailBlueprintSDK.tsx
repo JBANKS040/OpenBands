@@ -118,20 +118,22 @@ export async function generateProofInputsFromEmlFile(
  */
 function getTestRegexAndExternalInputs() {
     const decomposedRegex = [
-        {
-          name: "emailRecipient",
-          parts: [
-            { regexDef: "(\r\n|^)to:" },
-            { regexDef: "([^\r\n]+<)?" },
-            {
-              isPublic: true,
-              regexDef: "[a-zA-Z0-9!#$%&\\*\\+-/=\\?\\^_`{\\|}~\\.]+@[a-zA-Z0-9_\\.-]+",
-            },
-            { regexDef: ">?\r\n" },
-          ],
-          location: "header",
-          maxLength: 64,
-        },
+        // @dev - The following regex for extracting the "emailRecipient" is commentted out. Because, some of the eml files does not contain a "To:" field/item.   
+        //
+        // {
+        //   name: "emailRecipient",
+        //   parts: [
+        //     { regexDef: "(\r\n|^)to:" },
+        //     { regexDef: "([^\r\n]+<)?" },
+        //     {
+        //       isPublic: true,
+        //       regexDef: "[a-zA-Z0-9!#$%&\\*\\+-/=\\?\\^_`{\\|}~\\.]+@[a-zA-Z0-9_\\.-]+",
+        //     },
+        //     { regexDef: ">?\r\n" },
+        //   ],
+        //   location: "header",
+        //   maxLength: 64,
+        // },
         {
           name: "senderDomain",
           parts: [
