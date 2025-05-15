@@ -157,8 +157,8 @@ export default function Home() {
 
       // Set the zkEmailInputData
       setZkEmailInputData({
-        header: eml.split("-----BEGIN PGP SIGNATURE-----")[0],
-        body: eml.split("-----BEGIN PGP SIGNATURE-----")[1],
+        header: "",
+        body: "",
         pubkey: "",
         signature: "",
         body_hash_index: "",

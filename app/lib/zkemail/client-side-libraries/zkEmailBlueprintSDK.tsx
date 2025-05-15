@@ -53,10 +53,11 @@ export async function generateProofFromEmlFile(
     console.log(`inputsParsed: ${JSON.stringify(inputsParsed, null, 2)}`);
 
     // [TEST]: Parse the email from the raw email
-    const { parsedEmail, emailHeader, emailBody } = await parseEmailFromEmlFile(rawEmail);
+    const { parsedEmail, emailHeader, emailBody, dkimHeader } = await parseEmailFromEmlFile(rawEmail);
     console.log(`parsedEmail: ${JSON.stringify(parsedEmail, null, 2)}`);
     console.log(`emailHeader: ${emailHeader}`);
     console.log(`emailBody: ${emailBody}`);
+    console.log(`dkimHeader: ${dkimHeader}`);  // [Log]: a=rsa-sha256; d=example.com; s=selector; c=relaxed/simple; q=dns/txt; h=from:to:subject:date:message-id; bh=...; b=...;
 
     // Generate the proof
     const proof = await prover.generateProof(rawEmail);
@@ -200,13 +201,17 @@ function getRegexAndExternalInputsAndParams() {
  */
 export async function parseEmailFromEmlFile(
     rawEmail: string
-): Promise<{ parsedEmail: ParsedEmail, emailHeader: string, emailBody: string }> {
+): Promise<{ parsedEmail: ParsedEmail, emailHeader: string, emailBody: string, dkimHeader: string }> {
     const parsedEmail = await parseEmail(rawEmail, false);
     const emailHeader = parsedEmail.canonicalizedHeader;
     const emailBody = parsedEmail.cleanedBody;
+    const dkimHeader = parsedEmail.headers.get("DKIM-Signature")?.[0] || "";
+    //const selector = dkimHeader.match(/s=([^;]+)/)?.[1] || "";
     //console.log(`parsedEmail: ${JSON.stringify(parsedEmail, null, 2)}`);
     //console.log(`emailHeader: ${emailHeader}`);
     //console.log(`emailBody: ${emailBody}`);
+    //console.log(`dkimHeader: ${dkimHeader}`);  // [Log]: a=rsa-sha256; d=example.com; s=selector; c=relaxed/simple; q=dns/txt; h=from:to:subject:date:message-id; bh=...; b=...;
+    //console.log(`selector: ${selector}`);      // [Log]: mail
 
-    return { parsedEmail, emailHeader, emailBody };
+    return { parsedEmail, emailHeader, emailBody, dkimHeader };
 }
