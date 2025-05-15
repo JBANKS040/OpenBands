@@ -213,5 +213,13 @@ export async function parseEmailFromEmlFile(
     //console.log(`dkimHeader: ${dkimHeader}`);  // [Log]: a=rsa-sha256; d=example.com; s=selector; c=relaxed/simple; q=dns/txt; h=from:to:subject:date:message-id; bh=...; b=...;
     //console.log(`selector: ${selector}`);      // [Log]: mail
 
+    /// [TEST]:
+    const emailCanonicalizedBody = parsedEmail.canonicalizedBody;
+    const publicKey = parsedEmail.publicKey;
+    const signature = parsedEmail.signature;
+    console.log(`emailCanonicalizedBody: ${emailCanonicalizedBody}`);
+    console.log(`publicKey: ${publicKey}`);
+    console.log(`signature: ${signature}`);
+
     return { parsedEmail, emailHeader, emailBody, dkimHeader };
 }
