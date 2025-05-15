@@ -1,13 +1,15 @@
 //import zkeSDK, { Proof };
 import zkeSDK, {
     Proof,
+    /// @dev - The following modules/methods are imported from the relayerUtils.ts (via the index.ts) of the zkemail/zk-email-sdk-js/src.
     testDecomposedRegex,
     parseEmail,
-    generateProofInputs,  /// @dev - Imported from the relayerUtils.ts of the zkemail/zk-email-sdk-js/src
+    generateProofInputs,
     testBlueprint,
     getMaxEmailBodyLength,
     extractEMLDetails,
     generateDfa,
+    ParsedEmail,
 } from "@zk-email/sdk";  /// @dev - Import the zkEmail Blueprint SDK
 
 
@@ -50,6 +52,9 @@ export async function generateProofFromEmlFile(
     const inputsParsed = await generateProofInputsFromEmlFile(rawEmail);
     console.log(`inputsParsed: ${JSON.stringify(inputsParsed, null, 2)}`);
 
+    // [TEST]: Parse the email from the raw email
+    const parsedEmail = await parseEmailFromEmlFile(rawEmail);
+    console.log(`parsedEmail: ${JSON.stringify(parsedEmail, null, 2)}`);
 
     // Generate the proof
     const proof = await prover.generateProof(rawEmail);
@@ -184,4 +189,20 @@ function getRegexAndExternalInputsAndParams() {
     };
 
     return { decomposedRegex, externalInputs, params };
+}
+
+
+/**
+ * @notice - Test the regex for the email body using the zkEmail SDK.
+ * @param rawEmail - The raw email text, which is extracted from an eml file.
+ */
+export async function parseEmailFromEmlFile(
+    rawEmail: string
+): Promise<{ parsedEmail: ParsedEmail }> {
+    const parsedEmail = await parseEmail(rawEmail, false);
+
+    const body = parsedEmail.cleanedBody;
+    console.log(`body: ${body}`);
+
+    return { parsedEmail };
 }
