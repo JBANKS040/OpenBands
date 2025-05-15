@@ -96,7 +96,7 @@ export async function verifyProofOfEmlFile(
 export async function generateProofInputsFromEmlFile(
     rawEmail: string
 ): Promise<{ inputsParsed: string }> {
-    const { decomposedRegex, externalInputs, params } = getTestRegexAndExternalInputs()
+    const { decomposedRegex, externalInputs, params } = getRegexAndExternalInputsAndParams();
 
     // @ts-ignore
     const inputs = await generateProofInputs( /// @dev - This function is defined in the relayerUtils.ts of the zkemail/zk-email-sdk-js/src / [Result]: Error - Seems not to be able to call directly.
@@ -114,11 +114,11 @@ export async function generateProofInputsFromEmlFile(
 
 
 /**
- * @notice - Test regex and external inputs for the input generation using zkEmail SDK.
+ * @notice - Get the regex, external inputs, params for the input generation using zkEmail SDK.
  */
-function getTestRegexAndExternalInputs() {
+function getRegexAndExternalInputsAndParams() {
     const decomposedRegex = [
-        // @dev - The following regex for extracting the "emailRecipient" is commentted out. Because, some of the eml files does not contain a "To:" field/item.   
+        // @dev - The following regex for the "emailRecipient" is commentted out. Because some of the eml files does not contain a "To:" field/item.   
         //
         // {
         //   name: "emailRecipient",
