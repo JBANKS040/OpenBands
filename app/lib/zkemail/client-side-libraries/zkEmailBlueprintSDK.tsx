@@ -12,18 +12,35 @@ import zkeSDK, {
     ParsedEmail,
 } from "@zk-email/sdk";  /// @dev - Import the zkEmail Blueprint SDK
 
+//import { generateEmailVerifierInputs } from "@zk-email/zkemail-nr";
+
 
 /**
  * @notice - Create new Blueprint with a given props (BlueprintProps struct data).
+ * @dev - This function is referenced from the "zk-email-sdk-js/integration_tests/proof.test.ts"
  */
 export async function createNewBlueprint(
-    props: BlueprintProps
-): Promise<{ blueprint: any }> {
+    //props: BlueprintProps
+): Promise<{ blueprintId: any }> {
+    const props = getBlueprintProps();
+    console.log("got props");
+
     const sdk = zkeSDK();
     const blueprint = await sdk.createBlueprint(props);
     console.log(`blueprint: ${JSON.stringify(blueprint, null, 2)}`);
+    console.log("created blueprint");
+    
+    await blueprint.submitDraft();
+    console.log("submitted blueprint");
 
-    return { blueprint };
+    console.log("wait for status done");
+
+    const blueprintId = blueprint.getId();
+    console.log(`blueprintId: ${blueprintId}}`);
+
+    //blueprintIds.push(blueprintId!);
+
+    return { blueprintId };
 }
 
 
@@ -46,7 +63,6 @@ export async function generateProofFromEmlFile(
     // Create a prover
     const prover = blueprint.createProver();
     console.log(`prover: ${JSON.stringify(prover, null, 2)}`);
-
 
     // [TEST]: Generate the inputs from the raw email
     const inputsParsed = await generateProofInputsFromEmlFile(rawEmail);
@@ -96,6 +112,48 @@ export async function verifyProofOfEmlFile(
     return { isProofValid: true };
 }
 
+
+/**
+ * @notice - Get the blueprint props (BlueprintProps struct data).
+ * @dev - This function is referenced from the "zk-email-sdk-js/integration_tests/proof.test.ts"
+ */
+function getBlueprintProps(
+  title = "OpenBands",
+  circuitName?: string,
+  description?: string,
+  tags?: string[]
+): BlueprintProps {
+  return {
+    title,
+    circuitName: circuitName || ("open-bands" + Math.random()).replace("0.", ""),
+    description,
+    tags,
+    decomposedRegexes: [
+        {
+            name: "subject",
+            parts: [
+            { regexDef: "(\r\n|^)subject:" },
+            { isPublic: true, regexDef: "[^\r\n]+" },
+            { regexDef: "\r\n" },
+            ],
+            location: "header",
+            maxLength: 128,
+        },
+    ],
+    emailHeaderMaxLength: 2816,
+    emailBodyMaxLength: 1024,
+    ignoreBodyHashCheck: false,
+    removeSoftLinebreaks: true,
+  };
+}
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @notice - The following functions are used to generate the "Circuit" inputs for the ZK proof using the zkEmail SDK.  //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * @notice - Generate the inputs from the raw email using the zkEmail SDK.
