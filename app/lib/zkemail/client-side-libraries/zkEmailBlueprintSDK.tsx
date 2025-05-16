@@ -25,7 +25,19 @@ export async function createNewBlueprint(
     const props = getBlueprintProps();
     console.log("got props");
 
-    const sdk = zkeSDK();
+    /// @dev - Example auth token.
+    const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDY4NzU2NzgsImdpdGh1Yl91c2VybmFtZSI6IkRpbWlEdW1vIn0.5291aJQ5vENagdMzo6OtAsaEvAlN_K0L67Di1QbsZ8M";
+   
+    /// @dev - Example configuration for the zkEmail SDK instance.
+    const sdk = zkeSDK({
+        auth: {
+            getToken: async () => authToken,
+            onTokenExpired: async () => {},
+        },
+        baseUrl: "http://localhost:3000"
+    });
+    //const sdk = zkeSDK();
+    
     const blueprint = await sdk.createBlueprint(props);
     console.log(`blueprint: ${JSON.stringify(blueprint, null, 2)}`);
     console.log("created blueprint");
@@ -55,6 +67,9 @@ export async function generateProofFromEmlFile(
 ): Promise<{ proof: Proof }> {
     // Initialize the SDK
     const sdk = zkeSDK();
+
+    // [TEST]:
+    const blueprintId = await createNewBlueprint();
 
     // Get the blueprint
     const blueprint = await sdk.getBlueprint(blueprintSlug);
