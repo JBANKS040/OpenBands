@@ -14,6 +14,9 @@ import zkeSDK, {
 
 //import { generateEmailVerifierInputs } from "@zk-email/zkemail-nr";
 
+//import init, { get_limbs } from "@shieldswap/email_account_utils_rs";
+import { get_limbs } from "@shieldswap/email_account_utils_rs";
+
 
 /**
  * @notice - Create new Blueprint with a given props (BlueprintProps struct data).
@@ -34,7 +37,8 @@ export async function createNewBlueprint(
             getToken: async () => authToken,
             onTokenExpired: async () => {},
         },
-        baseUrl: "http://localhost:3000"
+        //baseUrl: "https://staging-conductor.zk.email"
+        baseUrl: "https://registry.zk.email"
     });
     //const sdk = zkeSDK();
     
@@ -69,7 +73,7 @@ export async function generateProofFromEmlFile(
     const sdk = zkeSDK();
 
     // [TEST]:
-    const blueprintId = await createNewBlueprint();
+    //const blueprintId = await createNewBlueprint();
 
     // Get the blueprint
     const blueprint = await sdk.getBlueprint(blueprintSlug);
@@ -258,7 +262,9 @@ function getRegexAndExternalInputsAndParams() {
   
     const params = {
         emailHeaderMaxLength: 2048,
+        //emailBodyMaxLength: 30720,
         emailBodyMaxLength: 2048,
+        //ignoreBodyHashCheck: false,
         ignoreBodyHashCheck: true,
         removeSoftLinebreaks: true,
         shaPrecomputeSelector: "",
@@ -275,7 +281,10 @@ function getRegexAndExternalInputsAndParams() {
 export async function parseEmailFromEmlFile(
     rawEmail: string
 ): Promise<{ parsedEmail: ParsedEmail, emailHeader: string, emailBody: string, dkimHeader: string }> {
-    const parsedEmail = await parseEmail(rawEmail, false);
+    const ignoreBodyHashCheck = true;
+    //const ignoreBodyHashCheck = false;
+
+    const parsedEmail = await parseEmail(rawEmail, ignoreBodyHashCheck);
     const emailHeader = parsedEmail.canonicalizedHeader;
     const emailBody = parsedEmail.cleanedBody;
     const dkimHeader = parsedEmail.headers.get("DKIM-Signature")?.[0] || "";
@@ -295,4 +304,29 @@ export async function parseEmailFromEmlFile(
     console.log(`signature: ${signature}`);
 
     return { parsedEmail, emailHeader, emailBody, dkimHeader };
+}
+
+
+/**
+ * @notice - 
+ */
+export async function generatePubkeyLimbsAndSignatureLimbs(
+    publicKey: string,
+    dkimHeader: string,
+): Promise<{ public_key_limbs: string, public_key_redc_limbs: string, signature_limbs: string }> {
+    //await init(); // initialize the wasm module
+
+    // base64 encoded public key from email provider
+    //const publicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1ZEfbkf4TbO2TDZI67WhJ6G8Dwk3SJyAbBlE/QKdyXFZB4HfEU7AcuZBzcXSJFE03DlmyOkUAmaaR8yFlwooHyaKRLIaT3epGlL5YGowyfItLly2k0Jj0IOICRxWrB378b7qMeimE8KlH1UNaVpRTTi0XIYjIKAOpTlBmkM9a/3Rl4NWy8pLYApXD+WCkYxPcxoAAgaN8osqGTCJ5r+VHFU7Wm9xqq3MZmnfo0bzInF4UajCKjJAQa+HNuh95DWIYP/wV77/PxkEakOtzkbJMlFJiK/hMJ+HQUvTbtKW2s+t4uDK8DI16Rotsn6e0hS8xuXPmVte9ZzplD0fQgm2qwIDAQAB";
+
+    const signatureBase64 = dkimHeader.b.replace(/\s/g, "");
+    console.log(`signatureBase64: ${signatureBase64}`);
+
+    //let public_key_limbs, public_key_redc_limbs, signature_limbs;
+    const { public_key_limbs, public_key_redc_limbs, signature_limbs } = JSON.parse(get_limbs(publicKey, signatureBase64));
+    console.log("public_key_limbs", "[" + public_key_limbs.join(",") + "]");
+    console.log("public_key_redc_limbs", "[" + public_key_redc_limbs.join(",") + "]", );
+    console.log("signature_limbs", "[" + signature_limbs.join(",") + "]");
+
+    return { public_key_limbs, public_key_redc_limbs, signature_limbs };
 }

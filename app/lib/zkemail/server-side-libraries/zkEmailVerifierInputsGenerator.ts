@@ -36,7 +36,8 @@ export async function getDKIMResult(
 ) {
   const dkimResult = await verifyDKIMSignature(rawEmail, undefined, undefined, true);
   console.log("DKIM Result:", dkimResult);
-  //const { headers, body, bodyHash, publicKey, signature, modulusLength } = dkimResult;
+  
+  const { headers, body, bodyHash, publicKey, signature, modulusLength } = dkimResult;
 
   return dkimResult;
 }
