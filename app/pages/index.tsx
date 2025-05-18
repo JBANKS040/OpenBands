@@ -9,6 +9,7 @@ import { getZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
 import CompanyRatings from '../components/CompanyRatings';
 import { extractEmailHeaderAndBody } from '../lib/zkemail/emailHeaderAndBodyExtractor';
 import { generateProofFromEmlFile } from '../lib/zkemail/client-side-libraries/zkEmailBlueprintSDK';
+import { extractCircuitInputs } from '../lib/zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
 import fs from "fs/promises";
@@ -138,6 +139,11 @@ export default function Home() {
       const eml = await file.text();
       setEmlFile(eml);
       console.log(`eml: ${eml}`);
+
+      // @dev - [Error - node::buffer]: Extract the circuit inputs from the raw email text. 
+      const { circuitInputs } = await extractCircuitInputs(eml);
+      console.log(`circuitInputs: ${circuitInputs}`);
+
 
       // @dev - Generate a proof from the raw email, which is extracted from an given eml file, by using the zkEmail Blueprint SDK.
       const blueprintSlug = "Bisht13/SuccinctZKResidencyInvite@v3"; // [TODO]: Change to the appropreate blueprint slug later.

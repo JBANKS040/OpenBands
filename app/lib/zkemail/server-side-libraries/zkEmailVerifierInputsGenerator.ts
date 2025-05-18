@@ -1,5 +1,20 @@
-import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim";   /// [NOTE]: This modules (icl. verifyDKIMSignature() function) would can work in only server-side. 
-import { generateEmailVerifierInputs } from "@zk-email/zkemail-nr";  /// [NOTE]: This generateEmailVerifierInputs() function would can work in only server-side. 
+import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim";      /// [NOTE]: This modules (icl. verifyDKIMSignature() function) would can work in only server-side. 
+import { generateEmailVerifierInputs } from "@zk-email/zkemail-nr";     /// [NOTE]: This generateEmailVerifierInputs() function would can work in only server-side. 
+import { generateCircuitInputs } from '@zkpersona/noir-social-verify';  /// [NOTE]: This generateCircuitInputs() function would can work in only server-side. 
+
+
+/**
+ * @notice - Extracts the circuit inputs from the raw email text.
+ * @dev - [Result]: "node::buffer" error, meaning that the function can be working in only server-side. 
+ */
+export async function extractCircuitInputs(
+    rawEmail: string,
+): Promise<{ circuitInputs: any }> {
+
+    const circuitInputs = await generateCircuitInputs(rawEmail, 'google');
+
+    return circuitInputs;
+}
 
 
 /**
