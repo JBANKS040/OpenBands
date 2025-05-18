@@ -18,6 +18,7 @@ export async function generateZkEmailInputsFromEmlFile(
       shaPrecomputeSelector: "", // <img to pick the one in html part
       //shaPrecomputeSelector: "you authored the thread.<img", // <img to pick the one in html part
     });
+    console.log(`zkEmailInputs: ${ JSON.stringify(zkEmailInputs, null, 2) }`);
 
     const emailDetails = parseEmail(emailContent);
 
