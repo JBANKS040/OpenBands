@@ -9,7 +9,7 @@ import { getZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
 import CompanyRatings from '../components/CompanyRatings';
 import { extractEmailHeaderAndBody } from '../lib/zkemail/emailHeaderAndBodyExtractor';
 import { generateProofFromEmlFile } from '../lib/zkemail/client-side-libraries/zkEmailBlueprintSDK';
-import { extractEmailVerifierInputs } from '../lib/zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
+import { generateZkEmailVerifierInputs } from '../lib/zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
 import fs from "fs/promises";
@@ -152,7 +152,7 @@ export default function Home() {
 
 
       // @dev - [TEST]: The "zk-email/zkemail-nr" library
-      const { zkEmailInputs } = await extractEmailVerifierInputs(eml);
+      const { zkEmailInputs } = await generateZkEmailVerifierInputs(eml);
       console.log(`zkEmailInputs: ${ JSON.stringify(zkEmailInputs, null, 2) }`);
 
       // Default header/ body lengths to use for input generation.

@@ -1,20 +1,17 @@
-import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim";      /// [NOTE]: This modules (icl. verifyDKIMSignature() function) would can work in only server-side. 
-import { generateEmailVerifierInputs } from "@zk-email/zkemail-nr";     /// [NOTE]: This generateEmailVerifierInputs() function would can work in only server-side. 
-//import { generateCircuitInputs } from '@zkpersona/noir-social-verify';  /// [NOTE]: This generateCircuitInputs() function would can work in only server-side. 
+/// @notice - To call the following functions, the "next.config.mjs" file (icl. "webpack" setting) must be set in the ./app directory in order to allow to run the "node" environment on client-side and prevent from the "node::buffer" error on client-side.
+import { generateEmailVerifierInputs } from "@zk-email/zkemail-nr";
+import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim";
 
 
 /**
- * @notice - [NOTE]: The generateEmailVerifierInputs() in this function is only working in server-side. (So, we may implement the server-side with "express"/"axious", etc going forward to use the generateEmailVerifierInputs())
- * @dev - This function is used to extract the email header and body from the raw email text.
- * @param rawEmail - The raw email text.
+ * @description - This function is used to generate the inputs for the zkEmail based verifier circuit.
+ * @param rawEmail - The raw email text, which is extracted from a EML file (.eml file)
  */
-export async function extractEmailVerifierInputs(
+export async function generateZkEmailVerifierInputs(
     rawEmail: string,
     //rawEmail: Buffer | string,
     //params: InputGenerationArgs = {}
 ): Promise<{ zkEmailInputs: any }> {
-
-    /// @dev - [TEST]: The "zk-email/zkemail-nr" library
     const zkEmailInputs = await generateEmailVerifierInputs(rawEmail, {
         maxBodyLength: 64000,     // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit
         //maxBodyLength: 1280,    // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit (NOTE: This is the original value)
@@ -29,8 +26,7 @@ export async function extractEmailVerifierInputs(
 }
 
 /**
- * @notice - [NOTE]: The verifyDKIMSignature() in this function is only working in server-side. (So, we may implement the server-side with "express"/"axious", etc going forward to use the verifyDKIMSignature())
- * @description Generate a dkimResult from raw email content
+ * @description Generate a dkimResult from raw email content, which is extracted from a EML file (.eml file)
  * @param rawEmail Full email content as a buffer or string
  * @param params Arguments to control the input generation
  * @returns a dkimResult
@@ -47,17 +43,3 @@ export async function getDKIMResult(
 
   return dkimResult;
 }
-
-
-// /**
-//  * @notice - Extracts the circuit inputs from the raw email text.
-//  * @dev - [Result]: "node::buffer" error, meaning that the function can be working in only server-side. 
-//  */
-// export async function extractCircuitInputs(
-//     rawEmail: string,
-// ): Promise<{ circuitInputs: any }> {
-
-//     const circuitInputs = await generateCircuitInputs(rawEmail, 'google');
-
-//     return circuitInputs;
-// }
