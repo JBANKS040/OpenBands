@@ -12,9 +12,9 @@ export async function generateZkEmailInputsFromEmlFile(
     // Generate common inputs using ZK Email SDK
     const zkEmailInputs = await generateEmailVerifierInputs(emailContent, {
       maxBodyLength: 64000,     // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit
-      //maxBodyLength: 1280,    // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit
+      //maxBodyLength: 1280,    // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit (NOTE: This is the original value)
       maxHeadersLength: 2048,   // Same as MAX_EMAIL_HEADER_LENGTH in circuit
-      //maxHeadersLength: 1408, // Same as MAX_EMAIL_HEADER_LENGTH in circuit
+      //maxHeadersLength: 1408, // Same as MAX_EMAIL_HEADER_LENGTH in circuit (NOTE: This is the original value)
       shaPrecomputeSelector: "", // <img to pick the one in html part
       //shaPrecomputeSelector: "you authored the thread.<img", // <img to pick the one in html part
     });

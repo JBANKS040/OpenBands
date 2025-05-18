@@ -42,7 +42,7 @@ export async function generateProofFromEmlFile(
     console.log(`prover: ${JSON.stringify(prover, null, 2)}`);
 
     // [TEST]: Generate the inputs from the raw email
-    const inputsParsed = await generateProofInputsFromEmlFile(rawEmail);
+    const inputsParsed = await generateProofInputsFromEmlFile(rawEmail);  /// @dev - Called from the ./app/utils.ts
     console.log(`inputsParsed: ${JSON.stringify(inputsParsed, null, 2)}`);
 
     // [TEST]: Parse the email from the raw email

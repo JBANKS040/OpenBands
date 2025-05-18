@@ -1,6 +1,6 @@
 import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim";      /// [NOTE]: This modules (icl. verifyDKIMSignature() function) would can work in only server-side. 
 import { generateEmailVerifierInputs } from "@zk-email/zkemail-nr";     /// [NOTE]: This generateEmailVerifierInputs() function would can work in only server-side. 
-import { generateCircuitInputs } from '@zkpersona/noir-social-verify';  /// [NOTE]: This generateCircuitInputs() function would can work in only server-side. 
+//import { generateCircuitInputs } from '@zkpersona/noir-social-verify';  /// [NOTE]: This generateCircuitInputs() function would can work in only server-side. 
 
 
 /**
@@ -11,16 +11,21 @@ import { generateCircuitInputs } from '@zkpersona/noir-social-verify';  /// [NOT
 export async function extractEmailVerifierInputs(
     rawEmail: string,
     //rawEmail: Buffer | string,
-    params: InputGenerationArgs = {}
-): Promise<{ header: string; body: string }> {
+    //params: InputGenerationArgs = {}
+): Promise<{ zkEmailInputs: any }> {
 
     /// @dev - [TEST]: The "zk-email/zkemail-nr" library
     const zkEmailInputs = await generateEmailVerifierInputs(rawEmail, {
-        maxBodyLength: 1280,
-        maxHeadersLength: 1408,
-        shaPrecomputeSelector: "some string in body up to which you want to hash outside circuit",
+        maxBodyLength: 64000,     // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit
+        //maxBodyLength: 1280,    // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit (NOTE: This is the original value)
+        maxHeadersLength: 2048,   // Same as MAX_EMAIL_HEADER_LENGTH in circuit
+        //maxHeadersLength: 1408, // Same as MAX_EMAIL_HEADER_LENGTH in circuit (NOTE: This is the original value)
+        shaPrecomputeSelector: "",
+        //shaPrecomputeSelector: "some string in body up to which you want to hash outside circuit",
     });
+    //console.log(`zkEmailInputs: ${ JSON.stringify(zkEmailInputs, null, 2) }`);
 
+    return { zkEmailInputs };
 }
 
 /**
@@ -44,15 +49,15 @@ export async function getDKIMResult(
 }
 
 
-/**
- * @notice - Extracts the circuit inputs from the raw email text.
- * @dev - [Result]: "node::buffer" error, meaning that the function can be working in only server-side. 
- */
-export async function extractCircuitInputs(
-    rawEmail: string,
-): Promise<{ circuitInputs: any }> {
+// /**
+//  * @notice - Extracts the circuit inputs from the raw email text.
+//  * @dev - [Result]: "node::buffer" error, meaning that the function can be working in only server-side. 
+//  */
+// export async function extractCircuitInputs(
+//     rawEmail: string,
+// ): Promise<{ circuitInputs: any }> {
 
-    const circuitInputs = await generateCircuitInputs(rawEmail, 'google');
+//     const circuitInputs = await generateCircuitInputs(rawEmail, 'google');
 
-    return circuitInputs;
-}
+//     return circuitInputs;
+// }

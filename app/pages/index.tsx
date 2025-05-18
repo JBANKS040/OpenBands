@@ -9,7 +9,7 @@ import { getZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
 import CompanyRatings from '../components/CompanyRatings';
 import { extractEmailHeaderAndBody } from '../lib/zkemail/emailHeaderAndBodyExtractor';
 import { generateProofFromEmlFile } from '../lib/zkemail/client-side-libraries/zkEmailBlueprintSDK';
-//import { extractCircuitInputs } from '../lib/zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
+import { extractEmailVerifierInputs } from '../lib/zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
 import fs from "fs/promises";
@@ -146,9 +146,14 @@ export default function Home() {
 
 
       // @dev - Generate a proof from the raw email, which is extracted from an given eml file, by using the zkEmail Blueprint SDK.
-      const blueprintSlug = "Bisht13/SuccinctZKResidencyInvite@v3"; // [TODO]: Change to the appropreate blueprint slug later.
-      const { proof } = await generateProofFromEmlFile(eml, blueprintSlug);
-      console.log(`proof: ${proof}`);
+      //const blueprintSlug = "Bisht13/SuccinctZKResidencyInvite@v3"; // [TODO]: Change to the appropreate blueprint slug later.
+      //const { proof } = await generateProofFromEmlFile(eml, blueprintSlug);
+      //console.log(`proof: ${proof}`);
+
+
+      // @dev - [TEST]: The "zk-email/zkemail-nr" library
+      const { zkEmailInputs } = await extractEmailVerifierInputs(eml);
+      console.log(`zkEmailInputs: ${ JSON.stringify(zkEmailInputs, null, 2) }`);
 
       // Default header/ body lengths to use for input generation.
       const inputParams = {
