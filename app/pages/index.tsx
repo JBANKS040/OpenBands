@@ -43,12 +43,24 @@ interface UserInfo {
 }
 
 interface ZkEmailInputData {
-  header: string;
-  body: string;
-  pubkey: string;
-  signature: string;
+  header: {
+    storage: any;
+    len: string;
+  };
+  body: {
+    storage: any;
+    len: string;
+  }
+  pubkey: {
+    modulus: any;
+    redc: any;
+  };
+  signature: any;
   body_hash_index :string;
-  dkim_header_sequence: string;
+  dkim_header_sequence: {
+    index: string;
+    length: string;
+  };
 }
 
 const ratingLabels = {
@@ -84,12 +96,24 @@ async function getGooglePublicKey(kid: string): Promise<JsonWebKey> {
 export default function Home() {
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: null, idToken: null });
   const [zkEmailInputData, setZkEmailInputData] = useState<ZkEmailInputData>({
-    header: "",
-    body: "",
-    pubkey: "",
-    signature: "",
+    header: {
+      storage: null,
+      len: ""
+    },
+    body: {
+      storage: null,
+      len: ""
+    },
+    pubkey: {
+      modulus: null,
+      redc: null
+    },
+    signature: null,
     body_hash_index: "",
-    dkim_header_sequence: ""
+    dkim_header_sequence: {
+      index: "",
+      length: "",
+    }
   });
   const [emailBody, setEmailBody] = useState("");
   const [emlFile, setEmlFile] = useState("");
@@ -151,30 +175,44 @@ export default function Home() {
       //console.log(`proof: ${proof}`);
 
 
-      // @dev - [TEST]: The "zk-email/zkemail-nr" library
+      // @dev - Generate the inputs for the zkEmail based verifier circuit.
       const { zkEmailInputs } = await generateZkEmailVerifierInputs(eml);
       console.log(`zkEmailInputs: ${ JSON.stringify(zkEmailInputs, null, 2) }`);
+      console.log(`zkEmailInputs.header.len: ${zkEmailInputs.header.len}`);  // [Log]: 1446
 
-      // Default header/ body lengths to use for input generation.
-      const inputParams = {
-        maxHeadersLength: 512,
-        maxBodyLength: 1024,
-      };
+      // @dev - Default header/ body lengths to use for input generation.
+      // const inputParams = {
+      //   maxHeadersLength: 512,
+      //   maxBodyLength: 1024,
+      // };
 
-      // Extract a position and body from the .eml file
-      const { header, body } = await extractEmailHeaderAndBody(eml, inputParams);
-      console.log(`header: ${header}`);
-      console.log(`body: ${body}`);
+      // @dev - Extract a position and body from the .eml file
+      // const { header, body } = await extractEmailHeaderAndBody(eml, inputParams);
+      // console.log(`header: ${header}`);
+      // console.log(`body: ${body}`);
 
       // Set the zkEmailInputData
       setZkEmailInputData({
-        header: "",
-        body: "",
-        pubkey: "",
-        signature: "",
-        body_hash_index: "",
-        dkim_header_sequence: ""
+        header: {
+          storage: zkEmailInputs.header.storage,
+          len: zkEmailInputs.header.len
+        },
+        body: {
+          storage: zkEmailInputs.body.storage,
+          len: zkEmailInputs.body.len
+        },
+        pubkey: {
+          modulus: zkEmailInputs.pubkey.modulus,
+          redc: zkEmailInputs.pubkey.redc
+        },
+        signature: zkEmailInputs.signature,
+        body_hash_index: zkEmailInputs.body_hash_index,
+        dkim_header_sequence: {
+          index: zkEmailInputs.dkim_header_sequence.index,
+          length: zkEmailInputs.dkim_header_sequence.length
+        }
       });
+      console.log(`zkEmailInputData: ${ JSON.stringify(zkEmailInputData, null, 2) }`);
     } catch (error) {
       console.error("Error uploading/reading an .eml file:", error)
     } finally {
