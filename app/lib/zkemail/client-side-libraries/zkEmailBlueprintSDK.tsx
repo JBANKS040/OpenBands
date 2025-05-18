@@ -12,12 +12,10 @@ import zkeSDK, {
     ParsedEmail,
 } from "@zk-email/sdk";  /// @dev - Import the zkEmail Blueprint SDK
 
+import { generateZkEmailInputsFromEmlFile } from "../../../utils";
 //import { generateEmailVerifierInputs } from "@zk-email/zkemail-nr";
 
-//import init, { get_limbs } from "@shieldswap/email_account_utils_rs";
-//import { get_limbs } from "@shieldswap/email_account_utils_rs";
-
-import { convertToPubkeyLimbsAndSignatureLimbs } from "./zkEmailPubkeyAndSignatureConverter.js";
+//import { convertToPubkeyLimbsAndSignatureLimbs } from "./zkEmailPubkeyAndSignatureConverter.js";
 
 
 /**
@@ -98,11 +96,15 @@ export async function generateProofFromEmlFile(
     console.log(`publicKey: ${publicKey}`);
     console.log(`signature: ${signature}`);  // [Log]: b=...;
 
+    // [TEST]: Generate the inputs for the ZK proof
+    const { zkEmailInputs } = await generateZkEmailInputsFromEmlFile(rawEmail);
+    console.log(`zkEmailInputs: ${zkEmailInputs}`);
+
     // [TEST]: Test to retrieve a converted pubilcKey and signature in limbs type.
-    const { public_key_limbs, public_key_redc_limbs, signature_limbs } = await convertToPubkeyLimbsAndSignatureLimbs(publicKey, dkimHeader);
-    console.log(`public_key_limbs: ${JSON.stringify(public_key_limbs, null, 2)}`);
-    console.log(`public_key_redc_limbs: ${JSON.stringify(public_key_redc_limbs, null, 2)}`);
-    console.log(`signature_limbs: ${JSON.stringify(signature_limbs, null, 2)}`);
+    //const { public_key_limbs, public_key_redc_limbs, signature_limbs } = await convertToPubkeyLimbsAndSignatureLimbs(publicKey, dkimHeader);
+    //console.log(`public_key_limbs: ${JSON.stringify(public_key_limbs, null, 2)}`);
+    //console.log(`public_key_redc_limbs: ${JSON.stringify(public_key_redc_limbs, null, 2)}`);
+    //console.log(`signature_limbs: ${JSON.stringify(signature_limbs, null, 2)}`);
 
 
     // Generate the proof
