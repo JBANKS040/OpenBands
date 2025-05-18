@@ -69,7 +69,8 @@ export async function generateZkEmailInputsFromEmlFile(
       pr_number_length: emailDetails.prNumber.length,
       email_address: Array.from(emailAddressPadded).map((s) => s.toString()),
       email_address_length: emailDetails.ccEmail.length,
-      wallet_address: walletAddressField,
+      wallet_address: ""
+      //wallet_address: walletAddressField,
     };
     console.log("Generating the zkEmail inputs:", inputs);
   
