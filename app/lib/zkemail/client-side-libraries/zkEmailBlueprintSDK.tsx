@@ -15,7 +15,9 @@ import zkeSDK, {
 //import { generateEmailVerifierInputs } from "@zk-email/zkemail-nr";
 
 //import init, { get_limbs } from "@shieldswap/email_account_utils_rs";
-import { get_limbs } from "@shieldswap/email_account_utils_rs";
+//import { get_limbs } from "@shieldswap/email_account_utils_rs";
+
+import { convertToPubkeyLimbsAndSignatureLimbs } from "./zkEmailPubkeyAndSignatureConverter.js";
 
 
 /**
@@ -88,11 +90,20 @@ export async function generateProofFromEmlFile(
     console.log(`inputsParsed: ${JSON.stringify(inputsParsed, null, 2)}`);
 
     // [TEST]: Parse the email from the raw email
-    const { parsedEmail, emailHeader, emailBody, dkimHeader } = await parseEmailFromEmlFile(rawEmail);
+    const { parsedEmail, emailHeader, emailBody, dkimHeader, publicKey, signature } = await parseEmailFromEmlFile(rawEmail);
     console.log(`parsedEmail: ${JSON.stringify(parsedEmail, null, 2)}`);
     console.log(`emailHeader: ${emailHeader}`);
     console.log(`emailBody: ${emailBody}`);
     console.log(`dkimHeader: ${dkimHeader}`);  // [Log]: a=rsa-sha256; d=example.com; s=selector; c=relaxed/simple; q=dns/txt; h=from:to:subject:date:message-id; bh=...; b=...;
+    console.log(`publicKey: ${publicKey}`);
+    console.log(`signature: ${signature}`);  // [Log]: b=...;
+
+    // [TEST]: Test to retrieve a converted pubilcKey and signature in limbs type.
+    const { public_key_limbs, public_key_redc_limbs, signature_limbs } = await convertToPubkeyLimbsAndSignatureLimbs(publicKey, dkimHeader);
+    console.log(`public_key_limbs: ${JSON.stringify(public_key_limbs, null, 2)}`);
+    console.log(`public_key_redc_limbs: ${JSON.stringify(public_key_redc_limbs, null, 2)}`);
+    console.log(`signature_limbs: ${JSON.stringify(signature_limbs, null, 2)}`);
+
 
     // Generate the proof
     const proof = await prover.generateProof(rawEmail);
@@ -280,7 +291,7 @@ function getRegexAndExternalInputsAndParams() {
  */
 export async function parseEmailFromEmlFile(
     rawEmail: string
-): Promise<{ parsedEmail: ParsedEmail, emailHeader: string, emailBody: string, dkimHeader: string }> {
+): Promise<{ parsedEmail: ParsedEmail, emailHeader: string, emailBody: string, dkimHeader: string, publicKey: string, signature: string }> {
     const ignoreBodyHashCheck = true;
     //const ignoreBodyHashCheck = false;
 
@@ -303,30 +314,5 @@ export async function parseEmailFromEmlFile(
     console.log(`publicKey: ${publicKey}`);
     console.log(`signature: ${signature}`);
 
-    return { parsedEmail, emailHeader, emailBody, dkimHeader };
-}
-
-
-/**
- * @notice - 
- */
-export async function generatePubkeyLimbsAndSignatureLimbs(
-    publicKey: string,
-    dkimHeader: string,
-): Promise<{ public_key_limbs: string, public_key_redc_limbs: string, signature_limbs: string }> {
-    //await init(); // initialize the wasm module
-
-    // base64 encoded public key from email provider
-    //const publicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1ZEfbkf4TbO2TDZI67WhJ6G8Dwk3SJyAbBlE/QKdyXFZB4HfEU7AcuZBzcXSJFE03DlmyOkUAmaaR8yFlwooHyaKRLIaT3epGlL5YGowyfItLly2k0Jj0IOICRxWrB378b7qMeimE8KlH1UNaVpRTTi0XIYjIKAOpTlBmkM9a/3Rl4NWy8pLYApXD+WCkYxPcxoAAgaN8osqGTCJ5r+VHFU7Wm9xqq3MZmnfo0bzInF4UajCKjJAQa+HNuh95DWIYP/wV77/PxkEakOtzkbJMlFJiK/hMJ+HQUvTbtKW2s+t4uDK8DI16Rotsn6e0hS8xuXPmVte9ZzplD0fQgm2qwIDAQAB";
-
-    const signatureBase64 = dkimHeader.b.replace(/\s/g, "");
-    console.log(`signatureBase64: ${signatureBase64}`);
-
-    //let public_key_limbs, public_key_redc_limbs, signature_limbs;
-    const { public_key_limbs, public_key_redc_limbs, signature_limbs } = JSON.parse(get_limbs(publicKey, signatureBase64));
-    console.log("public_key_limbs", "[" + public_key_limbs.join(",") + "]");
-    console.log("public_key_redc_limbs", "[" + public_key_redc_limbs.join(",") + "]", );
-    console.log("signature_limbs", "[" + signature_limbs.join(",") + "]");
-
-    return { public_key_limbs, public_key_redc_limbs, signature_limbs };
+    return { parsedEmail, emailHeader, emailBody, dkimHeader, publicKey, signature };
 }

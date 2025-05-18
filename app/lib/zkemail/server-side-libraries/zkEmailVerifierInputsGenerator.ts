@@ -4,20 +4,6 @@ import { generateCircuitInputs } from '@zkpersona/noir-social-verify';  /// [NOT
 
 
 /**
- * @notice - Extracts the circuit inputs from the raw email text.
- * @dev - [Result]: "node::buffer" error, meaning that the function can be working in only server-side. 
- */
-export async function extractCircuitInputs(
-    rawEmail: string,
-): Promise<{ circuitInputs: any }> {
-
-    const circuitInputs = await generateCircuitInputs(rawEmail, 'google');
-
-    return circuitInputs;
-}
-
-
-/**
  * @notice - [NOTE]: The generateEmailVerifierInputs() in this function is only working in server-side. (So, we may implement the server-side with "express"/"axious", etc going forward to use the generateEmailVerifierInputs())
  * @dev - This function is used to extract the email header and body from the raw email text.
  * @param rawEmail - The raw email text.
@@ -55,4 +41,18 @@ export async function getDKIMResult(
   const { headers, body, bodyHash, publicKey, signature, modulusLength } = dkimResult;
 
   return dkimResult;
+}
+
+
+/**
+ * @notice - Extracts the circuit inputs from the raw email text.
+ * @dev - [Result]: "node::buffer" error, meaning that the function can be working in only server-side. 
+ */
+export async function extractCircuitInputs(
+    rawEmail: string,
+): Promise<{ circuitInputs: any }> {
+
+    const circuitInputs = await generateCircuitInputs(rawEmail, 'google');
+
+    return circuitInputs;
 }
