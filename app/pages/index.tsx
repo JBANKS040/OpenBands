@@ -44,22 +44,22 @@ interface UserInfo {
 
 interface ZkEmailInputData {
   header: {
-    storage: any;
-    len: string;
+    storage: any | null;
+    len: string | null;
   };
   body: {
-    storage: any;
-    len: string;
+    storage: any | null;
+    len: string | null;
   }
   pubkey: {
-    modulus: any;
-    redc: any;
+    modulus: any | null;
+    redc: any | null;
   };
-  signature: any;
-  body_hash_index :string;
+  signature: any | null;
+  body_hash_index :string | null;
   dkim_header_sequence: {
-    index: string;
-    length: string;
+    index: string | null;
+    length: string | null;
   };
 }
 
@@ -98,21 +98,21 @@ export default function Home() {
   const [zkEmailInputData, setZkEmailInputData] = useState<ZkEmailInputData>({
     header: {
       storage: null,
-      len: ""
+      len: null
     },
     body: {
       storage: null,
-      len: ""
+      len: null
     },
     pubkey: {
       modulus: null,
       redc: null
     },
     signature: null,
-    body_hash_index: "",
+    body_hash_index: null,
     dkim_header_sequence: {
-      index: "",
-      length: "",
+      index: null,
+      length: null,
     }
   });
   const [emailBody, setEmailBody] = useState("");
@@ -272,9 +272,12 @@ export default function Home() {
 
       const jwtPubkey = await getGooglePublicKey(kid);
 
+      /// @dev - Get the zkEmail inputs data from the zkEmailInputData memory storage
+      const { _header, _body, _pubkey, _signature, _body_hash_index, _dkim_header_sequence } = zkEmailInputData;
+
       /// @dev - Get ZKEmail test values
       const zkEmailTestValues: ZkEmailTestValues = await getZkEmailTestValues();
-      const { header: _header, body: _body, pubkey: _pubkey, signature: _signature, body_hash_index: _body_hash_index, dkim_header_sequence: _dkim_header_sequence } = zkEmailTestValues;
+      //const { header: _header, body: _body, pubkey: _pubkey, signature: _signature, body_hash_index: _body_hash_index, dkim_header_sequence: _dkim_header_sequence } = zkEmailTestValues;
       console.log(`header: ${_header}`);
       console.log(`body: ${_body}`);
       console.log(`pubkey: ${_pubkey}`);
