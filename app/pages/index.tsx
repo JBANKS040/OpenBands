@@ -5,11 +5,11 @@ import { OPENBANDS_CIRCUIT_HELPER } from "../lib/circuits/openbands";
 import { pubkeyModulusFromJWK } from "../lib/utils";
 import { supabase, Submission, CompanyRatings as CompanyRatingsType } from "../lib/supabase";
 import { getZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
-
-import CompanyRatings from '../components/CompanyRatings';
 import { extractEmailHeaderAndBody } from '../lib/zkemail/emailHeaderAndBodyExtractor';
 import { generateProofFromEmlFile } from '../lib/zkemail/client-side-libraries/zkEmailBlueprintSDK';
 import { generateZkEmailVerifierInputs } from '../lib/zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
+
+import CompanyRatings from '../components/CompanyRatings';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
 import fs from "fs/promises";
@@ -42,24 +42,29 @@ interface UserInfo {
   idToken: string | null;
 }
 
+interface ZkEmailInputHeader {
+  storage: any | null;
+  len: string | null;
+}
+
 interface ZkEmailInputData {
   header: {
-    storage: any | null;
-    len: string | null;
+    storage: any | null,
+    len: string | null
   };
   body: {
-    storage: any | null;
-    len: string | null;
-  }
+    storage: any | null,
+    len: string | null
+  };
   pubkey: {
-    modulus: any | null;
-    redc: any | null;
+    modulus: any | null,
+    redc: any | null
   };
   signature: any | null;
   body_hash_index :string | null;
   dkim_header_sequence: {
-    index: string | null;
-    length: string | null;
+    index: string | null,
+    length: string | null
   };
 }
 
@@ -95,6 +100,7 @@ async function getGooglePublicKey(kid: string): Promise<JsonWebKey> {
 
 export default function Home() {
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: null, idToken: null });
+  const [zkEmailInputHeader, setZkEmailInputHeader] = useState<ZkEmailInputHeader>({ storage: null, len: null });
   const [zkEmailInputData, setZkEmailInputData] = useState<ZkEmailInputData>({
     header: {
       storage: null,
@@ -179,6 +185,10 @@ export default function Home() {
       const { zkEmailInputs } = await generateZkEmailVerifierInputs(eml);
       console.log(`zkEmailInputs: ${ JSON.stringify(zkEmailInputs, null, 2) }`);
       console.log(`zkEmailInputs.header.len: ${zkEmailInputs.header.len}`);  // [Log]: 1446
+      setZkEmailInputHeader({ 
+        storage: zkEmailInputs.header.storage,
+        len: zkEmailInputs.header.len
+      });
 
       // @dev - Default header/ body lengths to use for input generation.
       // const inputParams = {
@@ -213,6 +223,7 @@ export default function Home() {
         }
       });
       console.log(`zkEmailInputData: ${ JSON.stringify(zkEmailInputData, null, 2) }`);
+      console.log(`ZkEmailInputHeader: ${ JSON.stringify(zkEmailInputHeader, null, 2) }`);
     } catch (error) {
       console.error("Error uploading/reading an .eml file:", error)
     } finally {
