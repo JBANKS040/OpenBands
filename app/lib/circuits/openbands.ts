@@ -84,12 +84,12 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
     // @dev - Input data for an Email verification /w ZKEmail.nr
     const headerUint8Array = new Uint8Array(MAX_HEADER_LENGTH);
-    headerUint8Array.set(header.storage as Uint8Array);
+    headerUint8Array.set(header.storage);
     //headerUint8Array.set(Uint8Array.from(new TextEncoder().encode(header)));
     console.log(`headerUint8Array: ${headerUint8Array}`);
 
     const bodyUint8Array = new Uint8Array(MAX_BODY_LENGTH);
-    bodyUint8Array.set(body.storage as Uint8Array);
+    bodyUint8Array.set(body.storage);
     //bodyUint8Array.set(Uint8Array.from(new TextEncoder().encode(body)));
     console.log(`bodyUint8Array: ${bodyUint8Array}`);
 

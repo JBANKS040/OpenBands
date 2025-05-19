@@ -141,15 +141,15 @@ fn main(
     verify_rating(operational_efficiency);
 
     // @dev - [TODO]: The following variables are temporary variables. They are just for passing the verify_email_2048_bit_dkim() function. Thus, this should be replaced with a given "header" and "body" going forward.
-    let test_header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = HEADER;
-    let test_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = BODY;
+    //let test_header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = HEADER;
+    //let test_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = BODY;
 
     // @dev - Verify an arbitrary email, which is signed by a 2048-bit RSA DKIM signature
     let return_value: [Field; 2] = verify_email_2048_bit_dkim(
-        test_header,  // [TODO]: Should be replaced with a given "header" in the future.
-        //header,
-        test_body,    // [TODO]: Should be replaced with a given "body" in the future.
-        //body,
+        //test_header,  // [TODO]: Should be replaced with a given "header" in the future.
+        header,
+        //test_body,    // [TODO]: Should be replaced with a given "body" in the future.
+        body,
         pubkey,
         signature,
         body_hash_index,
