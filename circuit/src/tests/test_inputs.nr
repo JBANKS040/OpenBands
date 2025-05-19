@@ -32,9 +32,9 @@ pub(crate) mod EmploymentOfferEmailLarge {
      * @notice - Default input data, which is written in zkEmail.nr repo
      */
     // regular inputs
-    pub(crate) global EMAIL_LARGE_MAX_HEADER_LENGTH: u32 = 2048;
+    pub(crate) global EMAIL_LARGE_MAX_HEADER_LENGTH: u32 = 1504;
     //pub(crate) global EMAIL_LARGE_MAX_HEADER_LENGTH: u32 = 512;
-    pub(crate) global EMAIL_LARGE_MAX_BODY_LENGTH: u32 = 64000;
+    pub(crate) global EMAIL_LARGE_MAX_BODY_LENGTH: u32 = 32000;
     //pub(crate) global EMAIL_LARGE_MAX_BODY_LENGTH: u32 = 1024;
 
 }

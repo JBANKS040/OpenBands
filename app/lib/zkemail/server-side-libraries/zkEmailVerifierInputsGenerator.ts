@@ -2,8 +2,8 @@
 import { generateEmailVerifierInputs } from "@zk-email/zkemail-nr";
 import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim";
 
-export const MAX_HEADER_LENGTH = 2048;
-export const MAX_BODY_LENGTH = 64000;
+export const MAX_HEADER_LENGTH = 1504;
+export const MAX_BODY_LENGTH = 32000;
 
 /**
  * @description - This function is used to generate the inputs for the zkEmail based verifier circuit.
@@ -15,9 +15,9 @@ export async function generateZkEmailVerifierInputs(
     //params: InputGenerationArgs = {}
 ): Promise<{ zkEmailInputs: any }> {
     const zkEmailInputs = await generateEmailVerifierInputs(rawEmail, {
-        maxBodyLength: 64000,     // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit
+        maxBodyLength: 32000,     // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit
         //maxBodyLength: 1280,    // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit (NOTE: This is the original value)
-        maxHeadersLength: 2048,   // Same as MAX_EMAIL_HEADER_LENGTH in circuit
+        maxHeadersLength: 1504,   // Same as MAX_EMAIL_HEADER_LENGTH in circuit
         //maxHeadersLength: 1408, // Same as MAX_EMAIL_HEADER_LENGTH in circuit (NOTE: This is the original value)
         shaPrecomputeSelector: "",
         //shaPrecomputeSelector: "some string in body up to which you want to hash outside circuit",
