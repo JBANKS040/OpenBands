@@ -5,7 +5,7 @@ import { OPENBANDS_CIRCUIT_HELPER } from "../lib/circuits/openbands";
 import { pubkeyModulusFromJWK } from "../lib/utils";
 import { supabase, Submission, CompanyRatings as CompanyRatingsType } from "../lib/supabase";
 import { getZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
-import { extractEmailHeaderAndBody } from '../lib/zkemail/emailHeaderAndBodyExtractor';
+import { extractRawEmailWithoutHtmlPart } from '../lib/zkemail/emailHeaderAndBodyExtractor';
 import { generateProofFromEmlFile } from '../lib/zkemail/client-side-libraries/zkEmailBlueprintSDK';
 import { generateZkEmailVerifierInputs } from '../lib/zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
 
@@ -176,8 +176,12 @@ export default function Home() {
       //const { proof } = await generateProofFromEmlFile(eml, blueprintSlug);
       //console.log(`proof: ${proof}`);
 
+      // @dev - Extract the email header and body, which the HTML part is cut off, from the entire email (eml) text.
+      const rawEmailWithoutHtmlPart = await extractRawEmailWithoutHtmlPart(eml);
+
       // @dev - Generate the inputs for the zkEmail based verifier circuit.
-      const { zkEmailInputs } = await generateZkEmailVerifierInputs(eml);
+      const { zkEmailInputs } = await generateZkEmailVerifierInputs(rawEmailWithoutHtmlPart);
+      //const { zkEmailInputs } = await generateZkEmailVerifierInputs(eml);
       console.log(`zkEmailInputs: ${ JSON.stringify(zkEmailInputs, null, 2) }`);
 
       // @dev - Default header/ body lengths to use for input generation.

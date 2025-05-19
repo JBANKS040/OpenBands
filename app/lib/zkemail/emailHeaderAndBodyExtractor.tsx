@@ -33,7 +33,7 @@ export async function extractEmailHeaderAndBody(
 /** 
  * @dev - Extract the email header and body, which the HTML part is cut off, from the entire (raw) email text.
  */
-function extractRawEmailWithoutHtmlPart(rawEmail: string) {
+export function extractRawEmailWithoutHtmlPart(rawEmail: string) {
     const delimiter = "Content-Type: text/html;";
     const indexOfContentTypeTextHtml = rawEmail.indexOf(delimiter);
     if (indexOfContentTypeTextHtml === -1) return rawEmail; // Fallback if not found
