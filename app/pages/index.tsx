@@ -49,22 +49,22 @@ interface ZkEmailInputHeader {
 
 interface ZkEmailInputData {
   header: {
-    storage: any | null,
-    len: string | null
+    storage: Uint8Array | null,
+    len: number | null
   };
   body: {
-    storage: any | null,
-    len: string | null
+    storage: Uint8Array | null,
+    len: number | null
   };
   pubkey: {
     modulus: any | null,
     redc: any | null
   };
   signature: any | null;
-  body_hash_index :string | null;
+  body_hash_index :number | null;
   dkim_header_sequence: {
-    index: string | null,
-    length: string | null
+    index: number | null,
+    length: number | null
   };
 }
 
@@ -121,6 +121,7 @@ export default function Home() {
       length: null,
     }
   });
+  const [emailHeader, setEmailHeader] = useState("");
   const [emailBody, setEmailBody] = useState("");
   const [emlFile, setEmlFile] = useState("");
   const [position, setPosition] = useState("");
@@ -170,25 +171,14 @@ export default function Home() {
       setEmlFile(eml);
       console.log(`eml: ${eml}`);
 
-      // @dev - [Error - node::buffer]: Extract the circuit inputs from the raw email text. 
-      //const { circuitInputs } = await extractCircuitInputs(eml);
-      //console.log(`circuitInputs: ${circuitInputs}`);
-
-
       // @dev - Generate a proof from the raw email, which is extracted from an given eml file, by using the zkEmail Blueprint SDK.
       //const blueprintSlug = "Bisht13/SuccinctZKResidencyInvite@v3"; // [TODO]: Change to the appropreate blueprint slug later.
       //const { proof } = await generateProofFromEmlFile(eml, blueprintSlug);
       //console.log(`proof: ${proof}`);
 
-
       // @dev - Generate the inputs for the zkEmail based verifier circuit.
       const { zkEmailInputs } = await generateZkEmailVerifierInputs(eml);
       console.log(`zkEmailInputs: ${ JSON.stringify(zkEmailInputs, null, 2) }`);
-      console.log(`zkEmailInputs.header.len: ${zkEmailInputs.header.len}`);  // [Log]: 1446
-      setZkEmailInputHeader({ 
-        storage: zkEmailInputs.header.storage,
-        len: zkEmailInputs.header.len
-      });
 
       // @dev - Default header/ body lengths to use for input generation.
       // const inputParams = {
@@ -222,8 +212,6 @@ export default function Home() {
           length: zkEmailInputs.dkim_header_sequence.length
         }
       });
-      console.log(`zkEmailInputData: ${ JSON.stringify(zkEmailInputData, null, 2) }`);
-      console.log(`ZkEmailInputHeader: ${ JSON.stringify(zkEmailInputHeader, null, 2) }`);
     } catch (error) {
       console.error("Error uploading/reading an .eml file:", error)
     } finally {
@@ -283,18 +271,17 @@ export default function Home() {
 
       const jwtPubkey = await getGooglePublicKey(kid);
 
-      /// @dev - Get the zkEmail inputs data from the zkEmailInputData memory storage
-      const { _header, _body, _pubkey, _signature, _body_hash_index, _dkim_header_sequence } = zkEmailInputData;
-
       /// @dev - Get ZKEmail test values
-      const zkEmailTestValues: ZkEmailTestValues = await getZkEmailTestValues();
-      //const { header: _header, body: _body, pubkey: _pubkey, signature: _signature, body_hash_index: _body_hash_index, dkim_header_sequence: _dkim_header_sequence } = zkEmailTestValues;
-      console.log(`header: ${_header}`);
-      console.log(`body: ${_body}`);
-      console.log(`pubkey: ${_pubkey}`);
-      console.log(`signature: ${_signature}`);
-      console.log(`body_hash_index: ${_body_hash_index}`);
-      console.log(`dkim_header_sequence: ${_dkim_header_sequence}`);
+      //const zkEmailTestValues: ZkEmailTestValues = await getZkEmailTestValues();
+
+      /// @dev - Log of the zkEmailInputData
+      console.log(`zkEmailInputData: ${ JSON.stringify(zkEmailInputData, null, 2) }`);
+      console.log(`header: ${zkEmailInputData.header}`);
+      console.log(`body: ${zkEmailInputData.body}`);
+      console.log(`pubkey: ${zkEmailInputData.pubkey}`);
+      console.log(`signature: ${zkEmailInputData.signature}`);
+      console.log(`body_hash_index: ${zkEmailInputData.body_hash_index}`);
+      console.log(`dkim_header_sequence: ${zkEmailInputData.dkim_header_sequence}`);
 
       // First generate the proof
       const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({  /// @dev - [TODO]: Add the zkEmail related input parameters to the generateProof() of the original file.
@@ -305,12 +292,12 @@ export default function Home() {
         salary,
         ratings,
         // @dev - Input parameters for email verification /w ZKEmail.nr
-        header: zkEmailTestValues.header,
-        body: zkEmailTestValues.body,
-        pubkey: zkEmailTestValues.pubkey,
-        signature: zkEmailTestValues.signature,
-        body_hash_index: zkEmailTestValues.body_hash_index,
-        dkim_header_sequence: zkEmailTestValues.dkim_header_sequence
+        header: zkEmailInputData.header,
+        body: zkEmailInputData.body,
+        pubkey: zkEmailInputData.pubkey,
+        signature: zkEmailInputData.signature,
+        body_hash_index: zkEmailInputData.body_hash_index,
+        dkim_header_sequence: zkEmailInputData.dkim_header_sequence
 
         // /// @dev - zkEmail related input arguments:
         // header: zkEmailInputData.header,

@@ -40,10 +40,14 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       operational_efficiency: number;
     };
     // @dev - Input parameters for email verification /w ZKEmail.nr
-    header: string;
-    //header: BoundedVec; // Entire Email Header (NOTE: Should be the same data type with the "position" and "salary" parameter) 
-    body: string;
-    //body: BoundedVec;   // Entire Email Body   (NOTE: Should be the same data type with the "position" and "salary" parameter) 
+    // header: {
+    //   storage: Uint8Array;
+    //   len: number;
+    // },
+    // body: {
+    //   storage: Uint8Array;
+    //   len: number;
+    // },
     pubkey: {
       modulus: string[];
       redc: string[];
@@ -120,15 +124,17 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       leadership_quality: ratings.leadership_quality,
       operational_efficiency: ratings.operational_efficiency,
 
-      // @dev - Input parameters for email verification /w ZKEmail.nr
-      header: {
-        storage: Array.from(headerUint8Array),
-        len: header.length,
-      },
-      body: {
-        storage: Array.from(bodyUint8Array),
-        len: body.length,
-      },
+      // @dev - Input data for an Email verification /w ZKEmail.nr
+      header,
+      // header: {
+      //   storage: Array.from(headerUint8Array),
+      //   len: header.length,
+      // },
+      body,
+      // body: {
+      //   storage: Array.from(bodyUint8Array),
+      //   len: body.length,
+      // },
       pubkey,
       signature,
       body_hash_index,
