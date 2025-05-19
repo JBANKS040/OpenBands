@@ -276,12 +276,12 @@ export default function Home() {
 
       /// @dev - Log of the zkEmailInputData
       console.log(`zkEmailInputData: ${ JSON.stringify(zkEmailInputData, null, 2) }`);
-      console.log(`header: ${zkEmailInputData.header}`);
-      console.log(`body: ${zkEmailInputData.body}`);
-      console.log(`pubkey: ${zkEmailInputData.pubkey}`);
-      console.log(`signature: ${zkEmailInputData.signature}`);
-      console.log(`body_hash_index: ${zkEmailInputData.body_hash_index}`);
-      console.log(`dkim_header_sequence: ${zkEmailInputData.dkim_header_sequence}`);
+      console.log(`header: ${ JSON.stringify(zkEmailInputData.header, null, 2) }`);
+      console.log(`body: ${ JSON.stringify(zkEmailInputData.body, null, 2) }`);
+      console.log(`pubkey: ${ JSON.stringify(zkEmailInputData.pubkey , null, 2)}`);
+      console.log(`signature: ${ zkEmailInputData.signature }`);
+      console.log(`body_hash_index: ${ zkEmailInputData.body_hash_index }`);
+      console.log(`dkim_header_sequence: ${ JSON.stringify(zkEmailInputData.dkim_header_sequence, null, 2) }`);
 
       // First generate the proof
       const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({  /// @dev - [TODO]: Add the zkEmail related input parameters to the generateProof() of the original file.

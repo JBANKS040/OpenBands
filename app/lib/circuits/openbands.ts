@@ -2,7 +2,8 @@ import { generateInputs } from "noir-jwt";
 import { InputMap, type CompiledCircuit } from "@noir-lang/noir_js";
 import { initProver, initVerifier } from "../lazy-modules";
 import { splitBigIntToLimbs } from "../utils";
-import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH } from "../zkemail/zkEmailTestValueGenerator.tsx";
+import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH } from '../zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
+//import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH } from "../zkemail/zkEmailTestValueGenerator.tsx";
 
 const MAX_DOMAIN_LENGTH = 64;
 const MAX_POSITION_LENGTH = 128;
@@ -48,23 +49,16 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     //   storage: Uint8Array;
     //   len: number;
     // },
-    pubkey: {
-      modulus: string[];
-      redc: string[];
-    };
-    signature: string[];
-    body_hash_index: number;
-    dkim_header_sequence: {
-      index: number;
-      length: number;
-    };
-    // /// @dev - zkEmail related input arguments:
-    // header: zkEmailInputData.header;
-    // body: zkEmailInputData.body;
-    // pubkey: zkEmailInputData.pubkey;
-    // signature: zkEmailInputData.signature;
-    // bodyHashIndex: zkEmailInputData.body_hash_index;
-    // dkimHeaderSequence: zkEmailInputData.dkim_header_sequence;
+    // pubkey: {
+    //   modulus: string[];
+    //   redc: string[];
+    // };
+    // signature: string[];
+    // body_hash_index: number;
+    // dkim_header_sequence: {
+    //   index: number;
+    //   length: number;
+    // };
   }) => {
     if (!idToken || !jwtPubkey) {
       throw new Error(
@@ -88,13 +82,15 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     const salaryUint8Array = new Uint8Array(MAX_SALARY_LENGTH);
     salaryUint8Array.set(Uint8Array.from(new TextEncoder().encode(salary)));
 
-    // @dev - Input parameters for email verification /w ZKEmail.nr
+    // @dev - Input data for an Email verification /w ZKEmail.nr
     const headerUint8Array = new Uint8Array(MAX_HEADER_LENGTH);
-    headerUint8Array.set(Uint8Array.from(new TextEncoder().encode(header)));
+    headerUint8Array.set(header.storage as Uint8Array);
+    //headerUint8Array.set(Uint8Array.from(new TextEncoder().encode(header)));
     console.log(`headerUint8Array: ${headerUint8Array}`);
 
     const bodyUint8Array = new Uint8Array(MAX_BODY_LENGTH);
-    bodyUint8Array.set(Uint8Array.from(new TextEncoder().encode(body)));
+    bodyUint8Array.set(body.storage as Uint8Array);
+    //bodyUint8Array.set(Uint8Array.from(new TextEncoder().encode(body)));
     console.log(`bodyUint8Array: ${bodyUint8Array}`);
 
     const inputs = {
@@ -125,15 +121,21 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       operational_efficiency: ratings.operational_efficiency,
 
       // @dev - Input data for an Email verification /w ZKEmail.nr
-      header,
+      header: {
+        storage: Array.from(headerUint8Array),
+        len: headerUint8Array.length,
+      },
       // header: {
-      //   storage: Array.from(headerUint8Array),
-      //   len: header.length,
+      //   storage: Array.from(header.storage),
+      //   len: header.len,
       // },
-      body,
+      body: {
+        storage: Array.from(bodyUint8Array),
+        len: bodyUint8Array.length,
+      },
       // body: {
-      //   storage: Array.from(bodyUint8Array),
-      //   len: body.length,
+      //   storage: Array.from(body.storage),
+      //   len: body.len,
       // },
       pubkey,
       signature,
