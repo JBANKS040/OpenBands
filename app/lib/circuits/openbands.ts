@@ -164,8 +164,10 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       //   len: body.len,
       // },
       pubkey: {
-        modulus: Array.from(pubkeyModulusUint8Array),
-        redc: Array.from(pubkeyRedcUint8Array),
+        modulus: pubkey.modulus,
+        //modulus: Array.from(pubkeyModulusUint8Array),
+        redc: pubkey.redc,
+        //redc: Array.from(pubkeyRedcUint8Array),
       },
       signature: Array.from(signatureUint8Array),
       body_hash_index,

@@ -7,7 +7,7 @@ pub(crate) mod EmploymentOfferEmailLarge {
 
     use crate::{
         MAX_PARTIAL_DATA_LENGTH, MAX_DOMAIN_LENGTH, MAX_POSITION_LENGTH, MAX_SALARY_LENGTH,    // main.nr
-        utils::email_2048_bit_dkim_verifier::{MAX_EMAIL_BODY_LENGTH, MAX_EMAIL_HEADER_LENGTH},        
+        utils::email_dkim_verifier::{MAX_EMAIL_BODY_LENGTH, MAX_EMAIL_HEADER_LENGTH},        
         // tests::test_inputs::{
         //     EmailLarge, 
         //     EmploymentOfferEmailLarge::{

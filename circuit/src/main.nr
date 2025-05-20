@@ -6,17 +6,20 @@ use jwt::JWT;
 use zkemail::{
     headers::{body_hash::get_body_hash, email_address::get_email_address},
     MAX_EMAIL_ADDRESS_LENGTH, partial_hash::partial_sha256_var_end,
-    dkim::RSAPubkey, KEY_LIMBS_2048, Sequence
+    dkim::RSAPubkey, Sequence,
+    KEY_LIMBS_1024,
+    KEY_LIMBS_2048
 };
 
 use utils::position_and_salary_extractor::{
     extract_position_from_email_body, // @dev - extract_position_from_email_body() function
     extract_salary_from_email_body    // @dev - extract_salary_from_body() function
 }; 
-use utils::email_2048_bit_dkim_verifier::{
+use utils::email_dkim_verifier::{
     MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, 
     //verify_email_2048_bit_dkim,                       // @dev - verify_email_2048_bit_dkim() function
-    verify_email_2048_bit_dkim_without_body_hash_check  // @dev - verify_email_2048_bit_dkim_without_body_hash_check() function
+    verify_email_1024_bit_dkim_without_body_hash_check  // @dev - verify_email_1024_bit_dkim_without_body_hash_check() function
+    //verify_email_2048_bit_dkim_without_body_hash_check  // @dev - verify_email_2048_bit_dkim_without_body_hash_check() function
 };
 
 // @dev - [NOTE]: The following imported-variables are temporary variables. They are stored into the "test_header" and "test_body" for passing the verify_email_2048_bit_dkim() function. Thus, this should be removed once appropreate implementation will be done in the future.
@@ -88,8 +91,10 @@ fn main(
     // @dev - Input parameters for email verification /w ZKEmail.nr
     header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,  // Entire Email Header
     //body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,    // Entire Email Body
-    pubkey: RSAPubkey<KEY_LIMBS_2048>,
-    signature: [Field; KEY_LIMBS_2048],
+    pubkey: RSAPubkey<KEY_LIMBS_1024>,
+    //pubkey: RSAPubkey<KEY_LIMBS_2048>,
+    signature: [Field; KEY_LIMBS_1024],
+    //signature: [Field; KEY_LIMBS_2048],
     //body_hash_index: u32,
     dkim_header_sequence: Sequence
 ) {
@@ -146,7 +151,8 @@ fn main(
     //let test_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = BODY;
 
     // @dev - Verify an arbitrary email, which is signed by a 2048-bit RSA DKIM signature - without (skipping) body hash check
-    let return_value: [Field; 2] = verify_email_2048_bit_dkim_without_body_hash_check(
+    let return_value: [Field; 2] = verify_email_1024_bit_dkim_without_body_hash_check(
+    //let return_value: [Field; 2] = verify_email_2048_bit_dkim_without_body_hash_check(
         test_header,  // [TODO]: Should be replaced with a given "header" in the future.
         //header,
         pubkey,
