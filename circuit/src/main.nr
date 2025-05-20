@@ -15,7 +15,8 @@ use utils::position_and_salary_extractor::{
 }; 
 use utils::email_2048_bit_dkim_verifier::{
     MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, 
-    verify_email_2048_bit_dkim,        // @dev - verify_email_2048_bit_dkim() function
+    //verify_email_2048_bit_dkim,                       // @dev - verify_email_2048_bit_dkim() function
+    verify_email_2048_bit_dkim_without_body_hash_check  // @dev - verify_email_2048_bit_dkim_without_body_hash_check() function
 };
 
 // @dev - [NOTE]: The following imported-variables are temporary variables. They are stored into the "test_header" and "test_body" for passing the verify_email_2048_bit_dkim() function. Thus, this should be removed once appropreate implementation will be done in the future.
@@ -86,10 +87,10 @@ fn main(
 
     // @dev - Input parameters for email verification /w ZKEmail.nr
     header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,  // Entire Email Header
-    body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,      // Entire Email Body
+    //body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,    // Entire Email Body
     pubkey: RSAPubkey<KEY_LIMBS_2048>,
     signature: [Field; KEY_LIMBS_2048],
-    body_hash_index: u32,
+    //body_hash_index: u32,
     dkim_header_sequence: Sequence
 ) {
     // Init JWT struct and verify signature
@@ -144,17 +145,24 @@ fn main(
     //let test_header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = HEADER;
     //let test_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = BODY;
 
-    // @dev - Verify an arbitrary email, which is signed by a 2048-bit RSA DKIM signature
-    let return_value: [Field; 2] = verify_email_2048_bit_dkim(
+    // @dev - Verify an arbitrary email, which is signed by a 2048-bit RSA DKIM signature - without (skipping) body hash check
+    let return_value: [Field; 2] = verify_email_2048_bit_dkim_without_body_hash_check(
         //test_header,  // [TODO]: Should be replaced with a given "header" in the future.
         header,
-        //test_body,    // [TODO]: Should be replaced with a given "body" in the future.
-        body,
         pubkey,
         signature,
-        body_hash_index,
         dkim_header_sequence
     );
+    // let return_value: [Field; 2] = verify_email_2048_bit_dkim(
+    //     //test_header,  // [TODO]: Should be replaced with a given "header" in the future.
+    //     header,
+    //     //test_body,    // [TODO]: Should be replaced with a given "body" in the future.
+    //     body,
+    //     pubkey,
+    //     signature,
+    //     body_hash_index,
+    //     dkim_header_sequence
+    // );
 
     // @dev - [TODO]: The following variables are temporary variables. They are just for passing the is_position_found_in_email_body() and is_salary_found_in_email_body() function. Thus, this should be replaced with a given "body"/"position"/"salary" going forward.
     let test_email_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = EMPLOYMENT_OFFER_EMAIL_BODY;
