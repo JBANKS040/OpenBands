@@ -105,15 +105,15 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     //bodyUint8Array.set(Uint8Array.from(new TextEncoder().encode(body)));
     console.log(`bodyUint8Array: ${bodyUint8Array}`);
 
-    const pubkeyModulusUint8Array = new Uint32Array(pubkey.modulus.length);
+    const pubkeyModulusUint8Array = new Uint8Array(pubkey.modulus.length);
     pubkeyModulusUint8Array.set(pubkey.modulus);
     console.log(`pubkeyModulusUint8Array: ${pubkeyModulusUint8Array}`);
 
-    const pubkeyRedcUint8Array = new Uint32Array(pubkey.redc.length);
+    const pubkeyRedcUint8Array = new Uint8Array(pubkey.redc.length);
     pubkeyRedcUint8Array.set(pubkey.redc);
     console.log(`pubkeyRedcUint8Array: ${pubkeyRedcUint8Array}`);
 
-    const signatureUint8Array = new Uint32Array(signature.length);
+    const signatureUint8Array = new Uint8Array(signature.length);
     signatureUint8Array.set(signature);
     console.log(`signatureUint8Array: ${signatureUint8Array}`);
 
@@ -170,8 +170,8 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       signature: Array.from(signatureUint8Array),
       body_hash_index,
       dkim_header_sequence: {
-        index: Array.from(dkim_header_sequence.index),
-        length: Array.from(dkim_header_sequence.length),
+        index: dkim_header_sequence.index,
+        length: dkim_header_sequence.length,
       }
     };
 
