@@ -50,10 +50,10 @@ mod test_zkemail_integration_success {
 
         // @dev - Input parameters for email verification /w ZKEmail.nr
         let header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = EMPLOYMENT_OFFER_EMAIL_HEADER;  // Entire Email Header
-        let body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = EMPLOYMENT_OFFER_EMAIL_BODY;        // Entire Email Body
+        //let body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = EMPLOYMENT_OFFER_EMAIL_BODY;        // Entire Email Body
         let pubkey: RSAPubkey<KEY_LIMBS_2048> = PUBKEY;             // RSA Public Key
         let signature: [Field; KEY_LIMBS_2048] = SIGNATURE;         // RSA Signature
-        let body_hash_index: u32 = BODY_HASH_INDEX;                 // Index of the body hash in the DKIM-signed header
+        //let body_hash_index: u32 = BODY_HASH_INDEX;                 // Index of the body hash in the DKIM-signed header
         let dkim_header_sequence: Sequence = DKIM_HEADER_SEQUENCE;  // DKIM header sequence
  
         // @dev - Run the main function (ZK circuit) with the input parameters above.
@@ -77,10 +77,10 @@ mod test_zkemail_integration_success {
 
             // @dev - Input parameters for email verification /w ZKEmail.nr
             header,
-            body,
+            //body,
             pubkey,
             signature,
-            body_hash_index,
+            //body_hash_index,
             dkim_header_sequence
         );
     }
