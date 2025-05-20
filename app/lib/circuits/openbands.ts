@@ -105,6 +105,19 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     //bodyUint8Array.set(Uint8Array.from(new TextEncoder().encode(body)));
     console.log(`bodyUint8Array: ${bodyUint8Array}`);
 
+    const pubkeyModulusUint8Array = new Uint32Array(pubkey.modulus.length);
+    pubkeyModulusUint8Array.set(pubkey.modulus);
+    console.log(`pubkeyModulusUint8Array: ${pubkeyModulusUint8Array}`);
+
+    const pubkeyRedcUint8Array = new Uint32Array(pubkey.redc.length);
+    pubkeyRedcUint8Array.set(pubkey.redc);
+    console.log(`pubkeyRedcUint8Array: ${pubkeyRedcUint8Array}`);
+
+    const signatureUint8Array = new Uint32Array(signature.length);
+    signatureUint8Array.set(signature);
+    console.log(`signatureUint8Array: ${signatureUint8Array}`);
+
+
     const inputs = {
       partial_data: jwtInputs.partial_data,
       partial_hash: jwtInputs.partial_hash,
@@ -150,10 +163,16 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       //   storage: Array.from(body.storage),
       //   len: body.len,
       // },
-      pubkey,
-      signature,
+      pubkey: {
+        modulus: Array.from(pubkeyModulusUint8Array),
+        redc: Array.from(pubkeyRedcUint8Array),
+      },
+      signature: Array.from(signatureUint8Array),
       body_hash_index,
-      dkim_header_sequence
+      dkim_header_sequence: {
+        index: Array.from(dkim_header_sequence.index),
+        length: Array.from(dkim_header_sequence.length),
+      }
     };
 
     console.log("ZKLevels circuit inputs", inputs);
