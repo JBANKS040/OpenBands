@@ -153,8 +153,8 @@ fn main(
     // @dev - Verify an arbitrary email, which is signed by a 2048-bit RSA DKIM signature - without (skipping) body hash check
     let return_value: [Field; 2] = verify_email_1024_bit_dkim_without_body_hash_check(
     //let return_value: [Field; 2] = verify_email_2048_bit_dkim_without_body_hash_check(
-        test_header,  // [TODO]: Should be replaced with a given "header" in the future.
-        //header,
+        //test_header,  // [TODO]: Should be replaced with a given "header" in the future.
+        header,
         pubkey,
         signature,
         dkim_header_sequence
