@@ -133,6 +133,7 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       operational_efficiency: ratings.operational_efficiency,
 
       // @dev - Input data for an Email verification /w ZKEmail.nr
+      // @dev - The "body" property is commented out - because it is too big size (~30000) to generate a proof in ZK circuit.
       header: {
         storage: Array.from(headerUint8Array),
         len: headerUint8Array.length,
@@ -141,10 +142,10 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       //   storage: Array.from(header.storage),
       //   len: header.len,
       // },
-      body: {
-        storage: Array.from(bodyUint8Array),
-        len: bodyUint8Array.length,
-      },
+      // body: {
+      //   storage: Array.from(bodyUint8Array),
+      //   len: bodyUint8Array.length,
+      // },
       // body: {
       //   storage: Array.from(body.storage),
       //   len: body.len,
@@ -153,10 +154,6 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       signature,
       body_hash_index,
       dkim_header_sequence
-      // pubkey: pubkeyLimbs2048,
-      // signature: signatureLimbs2048,
-      // body_hash_index: bodyHashIndex,
-      // dkim_header_sequence: dkimHeaderSequence
     };
 
     console.log("ZKLevels circuit inputs", inputs);
