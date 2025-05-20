@@ -4,6 +4,7 @@ import { initProver, initVerifier } from "../lazy-modules";
 import { splitBigIntToLimbs } from "../utils";
 import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH } from '../zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
 //import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH } from "../zkemail/zkEmailTestValueGenerator.tsx";
+import { convertUint8ArrayToString } from "../converters/uint8ArrayToStringConverter";
 
 const MAX_DOMAIN_LENGTH = 64;
 const MAX_POSITION_LENGTH = 128;
@@ -82,6 +83,13 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     const salaryUint8Array = new Uint8Array(MAX_SALARY_LENGTH);
     salaryUint8Array.set(Uint8Array.from(new TextEncoder().encode(salary)));
 
+
+    // @dev - [TEST]: Convert Uint8Array to String
+    const headerString = await convertUint8ArrayToString(header.storage);
+    console.log(`headerString: ${ JSON.stringify(headerString, null, 2) }`);
+
+
+    
     // @dev - Input data for an Email verification /w ZKEmail.nr
     const headerUint8Array = new Uint8Array(MAX_HEADER_LENGTH);
     headerUint8Array.set(header.storage);

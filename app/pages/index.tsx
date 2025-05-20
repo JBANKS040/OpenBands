@@ -176,12 +176,12 @@ export default function Home() {
       //const { proof } = await generateProofFromEmlFile(eml, blueprintSlug);
       //console.log(`proof: ${proof}`);
 
-      // @dev - Extract the email header and body, which the HTML part is cut off, from the entire email (eml) text.
+      // @dev - Extract the email header and body, which the HTML part is cut off, from a given eml (rawEmail) text.
       const rawEmailWithoutHtmlPart = await extractRawEmailWithoutHtmlPart(eml);
 
       // @dev - Generate the inputs for the zkEmail based verifier circuit.
-      const { zkEmailInputs } = await generateZkEmailVerifierInputs(rawEmailWithoutHtmlPart);
-      //const { zkEmailInputs } = await generateZkEmailVerifierInputs(eml);
+      const { zkEmailInputs } = await generateZkEmailVerifierInputs(eml);
+      //const { zkEmailInputs } = await generateZkEmailVerifierInputs(rawEmailWithoutHtmlPart);
       console.log(`zkEmailInputs: ${ JSON.stringify(zkEmailInputs, null, 2) }`);
 
       // @dev - Default header/ body lengths to use for input generation.
