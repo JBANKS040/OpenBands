@@ -88,16 +88,20 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     const headerString = await convertUint8ArrayToString(header.storage);
     console.log(`headerString: ${ JSON.stringify(headerString, null, 2) }`);
 
+    const bodyString = await convertUint8ArrayToString(body.storage);
+    console.log(`bodyString: ${ JSON.stringify(bodyString, null, 2) }`);
 
-    
+
     // @dev - Input data for an Email verification /w ZKEmail.nr
     const headerUint8Array = new Uint8Array(MAX_HEADER_LENGTH);
-    headerUint8Array.set(header.storage);
+    //headerUint8Array.set(header.storage);
+    headerUint8Array.set(Uint8Array.from(new TextEncoder().encode(headerString)));
     //headerUint8Array.set(Uint8Array.from(new TextEncoder().encode(header)));
     console.log(`headerUint8Array: ${headerUint8Array}`);
 
     const bodyUint8Array = new Uint8Array(MAX_BODY_LENGTH);
-    bodyUint8Array.set(body.storage);
+    //bodyUint8Array.set(body.storage);
+    bodyUint8Array.set(Uint8Array.from(new TextEncoder().encode(bodyString)));
     //bodyUint8Array.set(Uint8Array.from(new TextEncoder().encode(body)));
     console.log(`bodyUint8Array: ${bodyUint8Array}`);
 
