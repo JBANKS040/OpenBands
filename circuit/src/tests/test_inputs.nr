@@ -52,7 +52,8 @@ pub(crate) mod EmailLarge {
      * @notice - Default input data, which is written in zkEmail.nr repo
      */
     // regular inputs
-    pub(crate) global EMAIL_LARGE_MAX_HEADER_LENGTH: u32 = 512;
+    pub(crate) global EMAIL_LARGE_MAX_HEADER_LENGTH: u32 = 1504;
+    //pub(crate) global EMAIL_LARGE_MAX_HEADER_LENGTH: u32 = 512;
     pub(crate) global EMAIL_LARGE_MAX_BODY_LENGTH: u32 = 1024;
     pub(crate) global HEADER: BoundedVec<u8, EMAIL_LARGE_MAX_HEADER_LENGTH> = BoundedVec::from([
         102, 114, 111, 109, 58, 114, 117, 110, 110, 105, 101, 114, 46, 108, 101, 97, 103, 117, 101,
