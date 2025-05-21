@@ -19,8 +19,8 @@ export async function generateZkEmailVerifierInputs(
         //maxBodyLength: 1280,    // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit (NOTE: This is the original value)
         maxHeadersLength: 1504,   // Same as MAX_EMAIL_HEADER_LENGTH in circuit
         //maxHeadersLength: 1408, // Same as MAX_EMAIL_HEADER_LENGTH in circuit (NOTE: This is the original value)
-        shaPrecomputeSelector: "Content-Type: text/html",
-        //shaPrecomputeSelector: "",
+        shaPrecomputeSelector: "",
+        //shaPrecomputeSelector: "Content-Type: text/html",
         //shaPrecomputeSelector: "some string in body up to which you want to hash outside circuit",
     });
     //console.log(`zkEmailInputs: ${ JSON.stringify(zkEmailInputs, null, 2) }`);
