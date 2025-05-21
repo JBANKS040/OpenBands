@@ -85,11 +85,11 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
 
     // @dev - [TEST]: Convert Uint8Array to String
-    const headerString = await convertUint8ArrayToString(header.storage);
-    console.log(`headerString: ${ JSON.stringify(headerString, null, 2) }`);
+    //const headerString = await convertUint8ArrayToString(header.storage);
+    //console.log(`headerString: ${ JSON.stringify(headerString, null, 2) }`);
 
-    const bodyString = await convertUint8ArrayToString(body.storage);
-    console.log(`bodyString: ${ JSON.stringify(bodyString, null, 2) }`);
+    //const bodyString = await convertUint8ArrayToString(body.storage);
+    //console.log(`bodyString: ${ JSON.stringify(bodyString, null, 2) }`);
 
 
     // @dev - Input data for an Email verification /w ZKEmail.nr
@@ -106,15 +106,15 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     console.log(`bodyUint8Array: ${bodyUint8Array}`);
 
     // @dev - Padding
-    const pubkeyModulusStringArray: string[] = new Array(18).fill("0");
+    const pubkeyModulusStringArray: string[] = new Array(18).fill("0x000000000000000000000000000000");
     pubkeyModulusStringArray.splice(0, pubkey.modulus.length, ...pubkey.modulus);
     console.log(`pubkeyModulusStringArray: ${pubkeyModulusStringArray}`);
     
-    const pubkeyRedcStringArray: string[] = new Array(18).fill("0");
+    const pubkeyRedcStringArray: string[] = new Array(18).fill("0x000000000000000000000000000000");
     pubkeyRedcStringArray.splice(0, pubkey.redc.length, ...pubkey.redc);
     console.log(`pubkeyRedcStringArray: ${pubkeyRedcStringArray}`);
 
-    const signatureStringArray: string[] = new Array(18).fill("0");
+    const signatureStringArray: string[] = new Array(18).fill("0x000000000000000000000000000000");
     signatureStringArray.splice(0, signature.length, ...signature);
     console.log(`signatureStringArray: ${signatureStringArray}`);
 
