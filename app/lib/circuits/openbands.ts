@@ -106,17 +106,23 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     console.log(`bodyUint8Array: ${bodyUint8Array}`);
 
     // @dev - Padding
-    const pubkeyModulusStringArray: string[] = new Array(18).fill("0x000000000000000000000000000000");
-    pubkeyModulusStringArray.splice(0, pubkey.modulus.length, ...pubkey.modulus);
-    console.log(`pubkeyModulusStringArray: ${pubkeyModulusStringArray}`);
+    const pubkeyModulusArray = new Array(18).fill(0);
+    for (let i = 0; i < pubkey.modulus!.length; i++) {
+      pubkeyModulusArray[i] = pubkey.modulus![i];
+    }
+    console.log(`pubkeyModulusArray: ${pubkeyModulusArray}`);
     
-    const pubkeyRedcStringArray: string[] = new Array(18).fill("0x000000000000000000000000000000");
-    pubkeyRedcStringArray.splice(0, pubkey.redc.length, ...pubkey.redc);
-    console.log(`pubkeyRedcStringArray: ${pubkeyRedcStringArray}`);
+    const pubkeyRedcArray = new Array(18).fill(0);
+    for (let i = 0; i < pubkey.redc!.length; i++) {
+      pubkeyRedcArray[i] = pubkey.redc![i];
+    }
+    console.log(`pubkeyRedcArray: ${pubkeyRedcArray}`);
 
-    const signatureStringArray: string[] = new Array(18).fill("0x000000000000000000000000000000");
-    signatureStringArray.splice(0, signature.length, ...signature);
-    console.log(`signatureStringArray: ${signatureStringArray}`);
+    const signatureArray = new Array(18).fill(0);
+    for (let i = 0; i < signature!.length; i++) {
+      signatureArray[i] = signature![i];
+    }
+    console.log(`signatureArray: ${signatureArray}`);
 
     const inputs = {
       partial_data: jwtInputs.partial_data,
@@ -165,12 +171,12 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       // },
       pubkey: {
         //modulus: pubkey.modulus,
-        modulus: pubkeyModulusStringArray,
+        modulus: Array.from(pubkeyModulusArray).map((s) => s.toString()),
         //redc: pubkey.redc,
-        redc: pubkeyRedcStringArray,
+        redc: Array.from(pubkeyRedcArray).map((s) => s.toString()),
       },
-      signature: signatureStringArray,
       //signature: signature,
+      signature: Array.from(signatureArray).map((s) => s.toString()),
       body_hash_index,
       dkim_header_sequence: {
         index: dkim_header_sequence.index,
