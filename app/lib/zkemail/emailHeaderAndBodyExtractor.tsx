@@ -46,7 +46,7 @@ export function extractRawEmailWithoutHtmlPart(rawEmail: string) {
 /** 
  * @dev - Extract the email body, which the below part of the "Content-Type: text/plain" is cut off from the "headerAndBodyWithoutHtmlPart".
  */
-function extractBodyWithoutHeader(rawEmailWithoutHtmlPart: string) {
+export function extractBodyWithoutHeader(rawEmailWithoutHtmlPart: string) {
     const delimiter = 'Content-Type: text/plain;';
     const indexOfContentTypeTextPlain = rawEmailWithoutHtmlPart.indexOf(delimiter);
     if (indexOfContentTypeTextPlain === -1) return ''; // fallback: return full text if delimiter not found
@@ -60,7 +60,7 @@ function extractBodyWithoutHeader(rawEmailWithoutHtmlPart: string) {
 /** 
  * @dev - Extract the email header, which the above part of the "Content-Type: text/plain" is cut off from the "headerAndBodyWithoutHtmlPart".
  */
-function extractHeaderWithoutBody(rawEmailWithoutHtmlPart: string) {
+export function extractHeaderWithoutBody(rawEmailWithoutHtmlPart: string) {
     const delimiter = 'Content-Type: text/plain;';
     const indexOfContentTypeTextPlain = rawEmailWithoutHtmlPart.indexOf(delimiter);
     if (indexOfContentTypeTextPlain === -1) return ''; // fallback: return full text if delimiter not found

@@ -6,7 +6,7 @@ import { pubkeyModulusFromJWK } from "../lib/utils";
 import { supabase, Submission, CompanyRatings as CompanyRatingsType } from "../lib/supabase";
 import { getZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
 //import { getZkEmailTestValues, ZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
-import { extractRawEmailWithoutHtmlPart } from '../lib/zkemail/emailHeaderAndBodyExtractor';
+import { extractRawEmailWithoutHtmlPart, extractBodyWithoutHeader } from '../lib/zkemail/emailHeaderAndBodyExtractor';
 import { generateProofFromEmlFile } from '../lib/zkemail/client-side-libraries/zkEmailBlueprintSDK';
 import { generateZkEmailVerifierInputs } from '../lib/zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
 
@@ -187,6 +187,11 @@ export default function Home() {
 
       // @dev - Extract the email header and body, which the HTML part is cut off, from a given eml (rawEmail) text.
       const rawEmailWithoutHtmlPart = await extractRawEmailWithoutHtmlPart(eml);
+      console.log(`rawEmailWithoutHtmlPart: ${ rawEmailWithoutHtmlPart }`);
+
+      // @dev - Extract the email body, which the email header is cut off, from a given "rawEmailWithoutHtmlPart" text.
+      const bodyWithoutHeader = await extractBodyWithoutHeader(rawEmailWithoutHtmlPart);
+      console.log(`bodyWithoutHeader: ${ bodyWithoutHeader }`);
 
       // @dev - Generate the inputs for the zkEmail based verifier circuit.
       const { zkEmailInputs } = await generateZkEmailVerifierInputs(eml);
