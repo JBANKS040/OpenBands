@@ -296,9 +296,12 @@ export default function Home() {
   const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // Only allow numbers
-    if (value === '' || /^\d+$/.test(value)) {
-      setSalary(value);
-    }
+    // if (value === '' || /^\d+$/.test(value)) {
+    //   setSalary(value);
+    // }
+
+    // Allow strings to recognize some special characters (i.e. comma, dollar sign, etc.)
+    setSalary(value);
   };
 
   const generateProof = async () => {
