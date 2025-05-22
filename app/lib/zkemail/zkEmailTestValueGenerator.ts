@@ -25,7 +25,7 @@ export const MAX_BODY_LENGTH = 1024;
 
 // @dev - Input parameters for email verification /w ZKEmail.nr
 //export type ZkEmailTestValues = {
-interface ZkEmailTestValues {
+export interface ZkEmailTestValues {
   header: string,
   //header: BoundedVec,  // Entire Email Header
   body: string,
