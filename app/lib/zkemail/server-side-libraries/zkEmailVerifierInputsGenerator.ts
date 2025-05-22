@@ -4,6 +4,7 @@ import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim";
 
 export const MAX_HEADER_LENGTH = 1504;
 export const MAX_BODY_LENGTH = 32000;
+export const MAX_BODY_TRIMMED_LENGTH = 2048;
 
 /**
  * @description - This function is used to generate the inputs for the zkEmail based verifier circuit.

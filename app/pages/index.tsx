@@ -100,7 +100,6 @@ async function getGooglePublicKey(kid: string): Promise<JsonWebKey> {
 
 export default function Home() {
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: null, idToken: null });
-  const [zkEmailInputHeader, setZkEmailInputHeader] = useState<ZkEmailInputHeader>({ storage: null, len: null });
   const [zkEmailInputData, setZkEmailInputData] = useState<ZkEmailInputData>({
     header: {
       storage: null,
@@ -121,8 +120,8 @@ export default function Home() {
       length: null,
     }
   });
-  const [emailHeader, setEmailHeader] = useState("");
-  const [emailBody, setEmailBody] = useState("");
+  const [emailBodyTrimmed, setEmailBodyTrimmed] = useState("");
+
   const [emlFile, setEmlFile] = useState("");
   const [emlFileName, setEmlFileName] = useState<string | null>(null);
   const [position, setPosition] = useState("");
@@ -191,6 +190,7 @@ export default function Home() {
 
       // @dev - Extract the email body, which the email header is cut off, from a given "rawEmailWithoutHtmlPart" text.
       const bodyWithoutHeader = await extractBodyWithoutHeader(rawEmailWithoutHtmlPart);
+      setEmailBodyTrimmed(bodyWithoutHeader);
       console.log(`bodyWithoutHeader: ${ bodyWithoutHeader }`);
 
       // @dev - Generate the inputs for the zkEmail based verifier circuit.
@@ -310,7 +310,7 @@ export default function Home() {
   };
 
   const generateProof = async () => {
-    if (!userInfo.idToken || !zkEmailInputData || !emlFile || !position || !salary) return;
+    if (!userInfo.idToken || !zkEmailInputData || !emailBodyTrimmed || !emlFile || !position || !salary) return;
 
     setLoading(true);
     setError(null);
@@ -337,6 +337,8 @@ export default function Home() {
       console.log(`body_hash_index: ${ zkEmailInputData.body_hash_index }`);
       console.log(`dkim_header_sequence: ${ JSON.stringify(zkEmailInputData.dkim_header_sequence, null, 2) }`);
 
+      console.log(`emailBodyTrimmed: ${ emailBodyTrimmed }`);
+
       // First generate the proof
       const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({  /// @dev - [TODO]: Add the zkEmail related input parameters to the generateProof() of the original file.
         idToken: userInfo.idToken,
@@ -351,7 +353,8 @@ export default function Home() {
         pubkey: zkEmailInputData.pubkey,
         signature: zkEmailInputData.signature,
         body_hash_index: zkEmailInputData.body_hash_index,
-        dkim_header_sequence: zkEmailInputData.dkim_header_sequence
+        dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
+        emailBodyTrimmed
 
         // /// @dev - zkEmail related input arguments:
         // header: zkEmailInputData.header,

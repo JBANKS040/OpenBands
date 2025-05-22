@@ -16,7 +16,7 @@ use utils::position_and_salary_extractor::{
     extract_salary_from_email_body    // @dev - extract_salary_from_body() function
 }; 
 use utils::email_dkim_verifier::{
-    MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, 
+    MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, MAX_BODY_TRIMMED_LENGTH,
     //verify_email_2048_bit_dkim,                         // @dev - verify_email_2048_bit_dkim() function
     //verify_email_1024_bit_dkim_without_body_hash_check  // @dev - verify_email_1024_bit_dkim_without_body_hash_check() function
     verify_email_2048_bit_dkim_without_body_hash_check    // @dev - verify_email_2048_bit_dkim_without_body_hash_check() function
@@ -96,7 +96,8 @@ fn main(
     //signature: [Field; KEY_LIMBS_1024],
     signature: [Field; KEY_LIMBS_2048],
     //body_hash_index: u32,
-    dkim_header_sequence: Sequence
+    dkim_header_sequence: Sequence,
+    body_trimmed: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH>, // Trimmed Email Body, which the Header and HTML parts are cut off.
 ) {
     // Init JWT struct and verify signature
     let jwt = JWT::init_with_partial_hash(
@@ -170,6 +171,11 @@ fn main(
     //     body_hash_index,
     //     dkim_header_sequence
     // );
+
+    // @dev - [Log]:
+    println(f"body_trimmed: {body_trimmed}\n");
+    println(f"position: {position}\n");
+    println(f"salary: {salary}\n");
 
     // @dev - [TODO]: The following variables are temporary variables. They are just for passing the is_position_found_in_email_body() and is_salary_found_in_email_body() function. Thus, this should be replaced with a given "body"/"position"/"salary" going forward.
     let test_email_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = EMPLOYMENT_OFFER_EMAIL_BODY;

@@ -12,6 +12,7 @@ global MAX_EMAIL_HEADER_LENGTH: u32 = 1504;
 global MAX_EMAIL_BODY_LENGTH: u32 = 32000;
 //global MAX_EMAIL_BODY_LENGTH: u32 = 1024;
 
+global MAX_BODY_TRIMMED_LENGTH: u32 = 2048;
 
 /**
  * Verify an arbitrary email signed by a 2048-bit RSA DKIM signature

@@ -2,7 +2,7 @@ import { generateInputs } from "noir-jwt";
 import { InputMap, type CompiledCircuit } from "@noir-lang/noir_js";
 import { initProver, initVerifier } from "../lazy-modules";
 import { splitBigIntToLimbs } from "../utils";
-import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH } from '../zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
+import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH, MAX_BODY_TRIMMED_LENGTH } from '../zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
 //import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH } from "../zkemail/zkEmailTestValueGenerator.tsx";
 import { convertUint8ArrayToString } from "../converters/uint8ArrayToStringConverter";
 
@@ -27,6 +27,7 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     signature,
     body_hash_index,
     dkim_header_sequence,
+    bodyTrimmed
   }: {
     idToken: string;
     jwtPubkey: JsonWebKey;
@@ -82,6 +83,9 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
     const salaryUint8Array = new Uint8Array(MAX_SALARY_LENGTH);
     salaryUint8Array.set(Uint8Array.from(new TextEncoder().encode(salary)));
+
+    const bodyTrimmedUint8Array = new Uint8Array(MAX_BODY_TRIMMED_LENGTH);
+    bodyTrimmedUint8Array.set(Uint8Array.from(new TextEncoder().encode(bodyTrimmed)));
 
 
     // @dev - [TEST]: Convert Uint8Array to String
@@ -183,6 +187,10 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       dkim_header_sequence: {
         index: dkim_header_sequence.index,
         length: dkim_header_sequence.length,
+      },
+      body_trimmed: {
+        storage: Array.from(bodyTrimmedUint8Array),
+        len: bodyTrimmedUint8Array.length
       }
     };
 
