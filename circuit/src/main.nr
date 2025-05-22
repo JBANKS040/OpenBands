@@ -184,14 +184,14 @@ fn main(
 
     /// @dev - Validate to check whether a given "position" is included in the entire email body or not.
     /// @dev - Compare a given "position" (BoundedVec<u8, MAX_POSITION_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
-    let is_position_found_in_email_body: bool = unsafe { is_position_found_in_email_body(test_position, test_email_body) };
-    //let is_position_found_in_email_body: bool = unsafe { is_position_found_in_email_body(position, body) };
+    let is_position_found_in_email_body: bool = unsafe { is_position_found_in_email_body(position, body_trimmed) };
+    //let is_position_found_in_email_body: bool = unsafe { is_position_found_in_email_body(test_position, test_email_body) };
     assert(is_position_found_in_email_body == true, "Position can not be found in email body");
 
     /// @dev - Validate to check whether a given "salary" is included in the entire email body or not.
     /// @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
-    let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(test_salary, test_email_body) };
-    //let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(salary, body) };
+    let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(salary, body_trimmed) };
+    //let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(test_salary, test_email_body) };
     assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
 }
 
@@ -217,7 +217,7 @@ unconstrained fn get_domain_start_index_in_email(email: BoundedVec<u8, MAX_EMAIL
  */
 unconstrained fn is_position_found_in_email_body(
     position: BoundedVec<u8, MAX_POSITION_LENGTH>, 
-    body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>
+    body: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH>
 ) -> bool {
     /// @dev - Logging
     let position_storage = position.storage(); 
@@ -267,7 +267,7 @@ unconstrained fn is_position_found_in_email_body(
  */
 unconstrained fn is_salary_found_in_email_body(
     salary: BoundedVec<u8, MAX_SALARY_LENGTH>, 
-    body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>
+    body: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH>
 ) -> bool {
     let mut is_salary_found_in_email_body: bool = false;
     for i in 0..body.len() {
