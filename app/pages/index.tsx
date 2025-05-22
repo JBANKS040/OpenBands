@@ -354,7 +354,7 @@ export default function Home() {
         signature: zkEmailInputData.signature,
         body_hash_index: zkEmailInputData.body_hash_index,
         dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
-        emailBodyTrimmed
+        bodyTrimmed: emailBodyTrimmed
 
         // /// @dev - zkEmail related input arguments:
         // header: zkEmailInputData.header,

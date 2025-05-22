@@ -86,6 +86,8 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
     const bodyTrimmedUint8Array = new Uint8Array(MAX_BODY_TRIMMED_LENGTH);
     bodyTrimmedUint8Array.set(Uint8Array.from(new TextEncoder().encode(bodyTrimmed)));
+    console.log(`bodyTrimmed: ${ bodyTrimmed }`);
+    console.log(`bodyTrimmedUint8Array: ${ bodyTrimmedUint8Array }`);
 
 
     // @dev - [TEST]: Convert Uint8Array to String
