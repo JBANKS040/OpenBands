@@ -18,7 +18,7 @@ use utils::position_and_salary_extractor::{
 use utils::email_dkim_verifier::{
     MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, MAX_BODY_TRIMMED_LENGTH,
     //verify_email_2048_bit_dkim,                         // @dev - verify_email_2048_bit_dkim() function
-    //verify_email_1024_bit_dkim_without_body_hash_check  // @dev - verify_email_1024_bit_dkim_without_body_hash_check() function
+    verify_email_1024_bit_dkim_without_body_hash_check,   // @dev - verify_email_1024_bit_dkim_without_body_hash_check() function
     verify_email_2048_bit_dkim_without_body_hash_check    // @dev - verify_email_2048_bit_dkim_without_body_hash_check() function
 };
 
@@ -91,10 +91,12 @@ fn main(
     // @dev - Input parameters for email verification /w ZKEmail.nr
     header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,  // Entire Email Header
     //body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,    // Entire Email Body
-    //pubkey: RSAPubkey<KEY_LIMBS_1024>,
-    pubkey: RSAPubkey<KEY_LIMBS_2048>,
-    //signature: [Field; KEY_LIMBS_1024],
-    signature: [Field; KEY_LIMBS_2048],
+
+    is1024BitRsa: bool,                               // True: 1024-bit RSA, False: 2048-bit RSA
+    pubkey_limbs_1024: RSAPubkey<KEY_LIMBS_1024>,
+    pubkey_limbs_2048: RSAPubkey<KEY_LIMBS_2048>,
+    signature_limbs_1024: [Field; KEY_LIMBS_1024],
+    signature_limbs_2048: [Field; KEY_LIMBS_2048],
     //body_hash_index: u32,
     dkim_header_sequence: Sequence,
     body_trimmed: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH>, // Trimmed Email Body, which the Header and HTML parts are cut off.
@@ -151,26 +153,30 @@ fn main(
     let test_header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = HEADER;
     //let test_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = BODY;
 
-    // @dev - Verify an arbitrary email, which is signed by a 2048-bit RSA DKIM signature - without (skipping) body hash check
-    //let return_value: [Field; 2] = verify_email_1024_bit_dkim_without_body_hash_check(
-    let return_value: [Field; 2] = verify_email_2048_bit_dkim_without_body_hash_check(
-        //test_header,  // [TODO]: Should be replaced with a given "header" in the future.
-        header,
-        pubkey,
-        signature,
-        dkim_header_sequence
-    );
-    
-    // let return_value: [Field; 2] = verify_email_2048_bit_dkim(
-    //     //test_header,  // [TODO]: Should be replaced with a given "header" in the future.
-    //     header,
-    //     //test_body,    // [TODO]: Should be replaced with a given "body" in the future.
-    //     body,
-    //     pubkey,
-    //     signature,
-    //     body_hash_index,
-    //     dkim_header_sequence
-    // );
+    if is1024BitRsa == true {
+        let return_value: [Field; 2] = verify_email_1024_bit_dkim_without_body_hash_check(
+            //test_header,  // [TODO]: Should be replaced with a given "header" in the future.
+            header,
+            //test_body,    // [TODO]: Should be replaced with a given "body" in the future.
+            //body,
+            pubkey_limbs_1024,
+            signature_limbs_1024,
+            dkim_header_sequence
+        );
+    } else {
+        let pubkey: RSAPubkey<KEY_LIMBS_2048> = pubkey_limbs_2048;
+        let signature: [Field; KEY_LIMBS_2048] = signature_limbs_2048;
+
+        let return_value: [Field; 2] = verify_email_2048_bit_dkim_without_body_hash_check(
+            //test_header,  // [TODO]: Should be replaced with a given "header" in the future.
+            header,
+            //test_body,    // [TODO]: Should be replaced with a given "body" in the future.
+            //body,
+            pubkey_limbs_2048,
+            signature_limbs_2048,
+            dkim_header_sequence
+        );
+    }
 
     // @dev - [Log]:
     println(f"body_trimmed: {body_trimmed}\n");
