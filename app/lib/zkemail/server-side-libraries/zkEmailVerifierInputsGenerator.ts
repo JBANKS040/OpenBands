@@ -12,7 +12,7 @@ export const KEY_LIMBS_2048_LENGTH = 18;
 //export const EMPTY_KEY_LIMBS_1024 = new Uint8Array(KEY_LIMBS_1024_LENGTH);
 //export const EMPTY_KEY_LIMBS_1024 = Uint8Array.from(["", "", "", "", "", "", "", "", ""]);
 //export const EMPTY_KEY_LIMBS_1024 = ["0x", "0x", "0x", "0x", "0x", "0x", "0x", "0x", "0x"];
-export const EMPTY_KEY_LIMBS_1024 = [
+export const EMPTY_KEY_LIMBS_1024 = [    // @dev - Dummy value (Source: noir-rsa library)
     "0x8d5e7d9daedd6cfd1c9bdf0227e05b",
     "0xbfb937fc4d3cf02cc0af780f3cab44",
     "0xd20637ef7adcf5d238ee87bccc9bca",
@@ -27,7 +27,7 @@ export const EMPTY_KEY_LIMBS_1024 = [
 //export const EMPTY_KEY_LIMBS_2048 = new Uint8Array(KEY_LIMBS_2048_LENGTH);
 //export const EMPTY_KEY_LIMBS_2048 = Uint8Array.from(["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]);
 //export const EMPTY_KEY_LIMBS_2048 = ["0x", "0x", "0x", "0x", "0x", "0x", "0x", "0x", "0x", "0x", "0x", "0x", "0x", "0x", "0x", "0x", "0x", "0x"];
-export const EMPTY_KEY_LIMBS_2048 = [
+export const EMPTY_KEY_LIMBS_2048 = [   // @dev - Dummy value (Source: noir-rsa library)
     "0x8d5e7d9daedd6cfd1c9bdf0227e05b",
     "0xbfb937fc4d3cf02cc0af780f3cab44",
     "0xd20637ef7adcf5d238ee87bccc9bca",
