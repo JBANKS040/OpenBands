@@ -199,7 +199,8 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     console.log("Openbands circuit inputs", inputs);
 
     const { Noir, UltraHonkBackend } = await initProver();
-    const circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
+    const circuitArtifact = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.0.1/openbands.json`);
+    //const circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
     const backend = new UltraHonkBackend(circuitArtifact.bytecode, { threads: 8 });
     const noir = new Noir(circuitArtifact as CompiledCircuit);
 

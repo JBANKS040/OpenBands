@@ -22,14 +22,14 @@ mkdir -p "../../app/assets/openbands-$VERSION"
 mkdir -p "target/vk"
 
 echo "Copying circuit.json to app/assets/openbands-$VERSION..."
-cp target/openbands.json "../../app/assets/openbands-$VERSION/openbands.json"
+cp target/openbands.json "../../app/assets/openbands-zkemail-2048-bit-dkim-$VERSION/openbands.json"
 #cp target/openbands.json "../app/assets/openbands-$VERSION/openbands.json"
 
 echo "Generating verification key..."
 bb write_vk -b ./target/openbands.json -o ./target/vk
 
 echo "Generating vk.json to app/assets/openbands-$VERSION..."
-node -e "const fs = require('fs'); fs.writeFileSync('../../app/assets/openbands-$VERSION/vk.json', JSON.stringify(Array.from(Uint8Array.from(fs.readFileSync('./target/vk/vk')))));"
+node -e "const fs = require('fs'); fs.writeFileSync('../../app/assets/openbands-zkemail-2048-bit-dkim-$VERSION/vk.json', JSON.stringify(Array.from(Uint8Array.from(fs.readFileSync('./target/vk/vk')))));"
 #node -e "const fs = require('fs'); fs.writeFileSync('../app/assets/openbands-$VERSION/vk.json', JSON.stringify(Array.from(Uint8Array.from(fs.readFileSync('./target/vk/vk')))));"
 
 echo "Done" 
