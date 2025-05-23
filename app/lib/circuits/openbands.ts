@@ -2,7 +2,7 @@ import { generateInputs } from "noir-jwt";
 import { InputMap, type CompiledCircuit } from "@noir-lang/noir_js";
 import { initProver, initVerifier } from "../lazy-modules";
 import { splitBigIntToLimbs } from "../utils";
-import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH, MAX_BODY_TRIMMED_LENGTH } from '../zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
+import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH, MAX_BODY_TRIMMED_LENGTH, EMPTY_KEY_LIMBS_1024, EMPTY_KEY_LIMBS_2048 } from '../zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
 //import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH } from "../zkemail/zkEmailTestValueGenerator.tsx";
 import { convertUint8ArrayToString } from "../converters/uint8ArrayToStringConverter";
 
@@ -130,6 +130,9 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     // }
     // console.log(`signatureArray: ${signatureArray}`);
 
+    // @dev - 1024 bit RSA has 9 limbs. While 2048 bit RSA has 18 limbs. Hence, if the signature length is 9, it is 1024 bit RSA. Otherwise, it is 2048 bit RSA.
+    const is1024BitRsa = signature.length == 9 ? 0 : 1;  // 0: "True", 1: "False"
+
     const inputs = {
       partial_data: jwtInputs.partial_data,
       partial_hash: jwtInputs.partial_hash,
@@ -177,14 +180,18 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       //   storage: Array.from(body.storage),
       //   len: body.len,
       // },
-      pubkey: {
-        modulus: pubkey.modulus,
-        //modulus: Array.from(pubkeyModulusArray).map((s) => s.toString()),
-        redc: pubkey.redc,
-        //redc: Array.from(pubkeyRedcArray).map((s) => s.toString()),
+
+      is_1024_bit_rsa: is1024BitRsa,
+      pubkey_limbs_1024: {
+        modulus: is1024BitRsa == 0 ? pubkey.modulus : Array.from(EMPTY_KEY_LIMBS_1024),
+        redc: is1024BitRsa == 0 ? pubkey.redc : Array.from(EMPTY_KEY_LIMBS_1024),
       },
-      signature: signature,
-      //signature: Array.from(signatureArray).map((s) => s.toString()),
+      pubkey_limbs_2048: {
+        modulus: is1024BitRsa == 1 ? pubkey.modulus : Array.from(EMPTY_KEY_LIMBS_2048),
+        redc: is1024BitRsa == 1 ? pubkey.redc : Array.from(EMPTY_KEY_LIMBS_2048),
+      },
+      signature_limbs_1024: is1024BitRsa == 0 ? signature : EMPTY_KEY_LIMBS_1024,
+      signature_limbs_2048: is1024BitRsa == 1 ? signature : EMPTY_KEY_LIMBS_2048,
       body_hash_index,
       dkim_header_sequence: {
         index: dkim_header_sequence.index,

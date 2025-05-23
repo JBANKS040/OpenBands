@@ -92,7 +92,7 @@ fn main(
     header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,  // Entire Email Header
     //body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,    // Entire Email Body
 
-    is1024BitRsa: bool,                               // True: 1024-bit RSA, False: 2048-bit RSA
+    is_1024_bit_rsa: bool,                               // True: 1024-bit RSA, False: 2048-bit RSA
     pubkey_limbs_1024: RSAPubkey<KEY_LIMBS_1024>,
     pubkey_limbs_2048: RSAPubkey<KEY_LIMBS_2048>,
     signature_limbs_1024: [Field; KEY_LIMBS_1024],
@@ -153,7 +153,7 @@ fn main(
     let test_header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = HEADER;
     //let test_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = BODY;
 
-    if is1024BitRsa == true {
+    if is_1024_bit_rsa == true {
         let return_value: [Field; 2] = verify_email_1024_bit_dkim_without_body_hash_check(
             //test_header,  // [TODO]: Should be replaced with a given "header" in the future.
             header,
