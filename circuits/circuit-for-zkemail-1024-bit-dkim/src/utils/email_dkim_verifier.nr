@@ -15,7 +15,7 @@ global MAX_EMAIL_BODY_LENGTH: u32 = 32000;
 global MAX_BODY_TRIMMED_LENGTH: u32 = 2048;
 
 /**
- * Verify an arbitrary email signed by a 2048-bit RSA DKIM signature
+ * Verify an arbitrary email signed by a 1024-bit RSA DKIM signature
  * @dev TOTAL CONSTRAINTS: ~222,783
  *
  * @param header - The email header, 0-padded at end to the MAX_EMAIL_HEADER_LENGTH

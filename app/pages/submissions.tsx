@@ -16,6 +16,7 @@ interface Submission {
   isVerifying?: boolean;
   verificationResult?: boolean | null;
   ratings?: CompanyRatingsType;
+  rsa_key_limbs?: number; // 9 or 18
 }
 
 interface CompanyData {

@@ -229,7 +229,9 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       salary,
       jwtPubKey,
       ratings,
-    }: {
+    },
+    rsa_key_limbs // 9 or 18
+    : {
       domain: string;
       position: string;
       salary: string;
@@ -267,8 +269,16 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
       const { UltraHonkBackend } = await initVerifier();
 
+      let vkey;
       try {
-        const vkey = await import(`../../assets/openbands-0.0.1/vk.json`);
+        if (rsa_key_limbs == 9) {
+          vkey = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.0.1/vk.json`);
+        } else if (rsa_key_limbs == 18) {
+          vkey = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.0.1/vk.json`);
+        } else {
+          throw new Error("Invalid rsa_key_limbs value. Must be 9 or 18.");
+        }
+        //const vkey = await import(`../../assets/openbands-0.0.1/vk.json`);
         console.log("Loaded verification key");
       } catch (err) {
         console.error("Failed to load verification key:", err);

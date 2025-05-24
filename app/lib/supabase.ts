@@ -27,4 +27,5 @@ export interface Submission {
   proof: Uint8Array;
   jwt_pub_key: JsonWebKey;
   ratings?: CompanyRatings;
+  rsa_key_limbs?: number;   // 9 or 18
 } 
