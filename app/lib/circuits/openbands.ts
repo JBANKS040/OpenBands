@@ -199,8 +199,15 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     console.log("Openbands circuit inputs", inputs);
 
     const { Noir, UltraHonkBackend } = await initProver();
-    const circuitArtifact = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.0.1/openbands.json`);
+
+    let circuitArtifact;
+    if (signature.length == 9) {          // 1024-bit RSA key
+      circuitArtifact = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.0.1/openbands.json`);
+    } else if (signature.length == 18) {  // 2048-bit RSA key
+      circuitArtifact = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.0.1/openbands.json`);
+    }
     //const circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
+    
     const backend = new UltraHonkBackend(circuitArtifact.bytecode, { threads: 8 });
     const noir = new Noir(circuitArtifact as CompiledCircuit);
 
