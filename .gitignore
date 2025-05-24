@@ -3,7 +3,11 @@ node_modules
 
 .DS_Store
 circuit/target
+circuits/circuit-for-zkemail-1024-bit-dkim/target
+circuits/circuit-for-zkemail-2048-bit-dkim/target
 circuit/Prover.toml
+circuit/circuit-for-zkemail-1024-bit-dkim/Prover.toml
+circuit/circuit-for-zkemail-2048-bit-dkim/Prover.toml
 
 .env
 
