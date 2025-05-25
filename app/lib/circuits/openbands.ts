@@ -230,7 +230,7 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       jwtPubKey,
       ratings,
     },
-    rsa_key_limbs // 9 or 18
+    rsa_signature_length // 9 or 18
     : {
       domain: string;
       position: string;
@@ -271,12 +271,12 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
       let vkey;
       try {
-        if (rsa_key_limbs == 9) {
+        if (rsa_signature_length == 9) {
           vkey = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.0.1/vk.json`);
-        } else if (rsa_key_limbs == 18) {
+        } else if (rsa_signature_length == 18) {
           vkey = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.0.1/vk.json`);
         } else {
-          throw new Error("Invalid rsa_key_limbs value. Must be 9 or 18.");
+          throw new Error("Invalid rsa_signature_length value. Must be 9 or 18.");
         }
         //const vkey = await import(`../../assets/openbands-0.0.1/vk.json`);
         console.log("Loaded verification key");

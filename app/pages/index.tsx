@@ -376,7 +376,7 @@ export default function Home() {
             proof: Array.from(generatedProof.proof).join(','),
             jwt_pub_key: JSON.stringify(jwtPubkey),
             ratings: JSON.stringify(ratings),
-            rsa_key_limbs: zkEmailInputData.signature.length, // 9 or 18
+            rsa_signature_length: zkEmailInputData.signature.length, // 9 or 18
             created_at: new Date().toISOString()
           }]);
         
@@ -431,7 +431,7 @@ export default function Home() {
             operational_efficiency: 3
           }
         },
-        proofToVerify.rsa_key_limbs, // 9 or 18
+        proofToVerify.rsa_signature_length, // 9 or 18
       );
 
       setRecentSubmissions(prevSubmissions => {
