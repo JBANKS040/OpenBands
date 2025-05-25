@@ -143,30 +143,14 @@ fn main(
     verify_rating(leadership_quality);
     verify_rating(operational_efficiency);
 
-    // @dev - [TODO]: The following variables are temporary variables. They are just for passing the verify_email_1024_bit_dkim() function. Thus, this should be replaced with a given "header" and "body" going forward.
-    let test_header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = HEADER;
-    //let test_body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = BODY;
-
     // @dev - Verify an arbitrary email, which is signed by a 1024-bit RSA DKIM signature - without (skipping) body hash check
     let return_value: [Field; 2] = verify_email_1024_bit_dkim_without_body_hash_check(
-        //test_header,  // [TODO]: Should be replaced with a given "header" in the future.
         header,
         pubkey,
         signature,
         dkim_header_sequence
     );
     
-    // let return_value: [Field; 2] = verify_email_1024_bit_dkim(
-    //     //test_header,  // [TODO]: Should be replaced with a given "header" in the future.
-    //     header,
-    //     //test_body,    // [TODO]: Should be replaced with a given "body" in the future.
-    //     body,
-    //     pubkey,
-    //     signature,
-    //     body_hash_index,
-    //     dkim_header_sequence
-    // );
-
     // @dev - [Log]:
     println(f"body_trimmed: {body_trimmed}\n");
     println(f"position: {position}\n");
@@ -180,13 +164,11 @@ fn main(
     /// @dev - Validate to check whether a given "position" is included in the entire email body or not.
     /// @dev - Compare a given "position" (BoundedVec<u8, MAX_POSITION_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
     let is_position_found_in_email_body: bool = unsafe { is_position_found_in_email_body(position, body_trimmed) };
-    //let is_position_found_in_email_body: bool = unsafe { is_position_found_in_email_body(test_position, test_email_body) };
     assert(is_position_found_in_email_body == true, "Position can not be found in email body");
 
     /// @dev - Validate to check whether a given "salary" is included in the entire email body or not.
     /// @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
     let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(salary, body_trimmed) };
-    //let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(test_salary, test_email_body) };
     assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
 }
 
