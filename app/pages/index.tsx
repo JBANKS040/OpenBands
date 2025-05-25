@@ -195,7 +195,6 @@ export default function Home() {
 
       // @dev - Generate the inputs for the zkEmail based verifier circuit.
       const { zkEmailInputs } = await generateZkEmailVerifierInputs(eml);
-      //const { zkEmailInputs } = await generateZkEmailVerifierInputs(rawEmailWithoutHtmlPart);
       console.log(`zkEmailInputs: ${ JSON.stringify(zkEmailInputs, null, 2) }`);
 
       // @dev - Default header/ body lengths to use for input generation.
@@ -206,8 +205,6 @@ export default function Home() {
 
       // @dev - Extract a position and body from the .eml file
       // const { header, body } = await extractEmailHeaderAndBody(eml, inputParams);
-      // console.log(`header: ${header}`);
-      // console.log(`body: ${body}`);
 
       // Set the zkEmailInputData
       setZkEmailInputData({
@@ -355,14 +352,6 @@ export default function Home() {
         body_hash_index: zkEmailInputData.body_hash_index,
         dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
         bodyTrimmed: emailBodyTrimmed
-
-        // /// @dev - zkEmail related input arguments:
-        // header: zkEmailInputData.header,
-        // body: zkEmailInputData.body,
-        // pubkey: zkEmailInputData.pubkey,
-        // signature: zkEmailInputData.signature,
-        // body_hash_index: zkEmailInputData.body_hash_index,
-        // dkim_header_sequence: zkEmailInputData.dkim_header_sequence
       });
 
       // Then try to store it (this might fail due to schema issues)

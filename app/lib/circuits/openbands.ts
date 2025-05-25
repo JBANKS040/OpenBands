@@ -89,47 +89,6 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     console.log(`bodyTrimmed: ${ bodyTrimmed }`);
     console.log(`bodyTrimmedUint8Array: ${ bodyTrimmedUint8Array }`);
 
-
-    // @dev - [TEST]: Convert Uint8Array to String
-    //const headerString = await convertUint8ArrayToString(header.storage);
-    //console.log(`headerString: ${ JSON.stringify(headerString, null, 2) }`);
-
-    //const bodyString = await convertUint8ArrayToString(body.storage);
-    //console.log(`bodyString: ${ JSON.stringify(bodyString, null, 2) }`);
-
-
-    // @dev - Input data for an Email verification /w ZKEmail.nr
-    // const headerUint8Array = new Uint8Array(MAX_HEADER_LENGTH);
-    // headerUint8Array.set(header.storage);
-    // //headerUint8Array.set(Uint8Array.from(new TextEncoder().encode(headerString)));
-    // //headerUint8Array.set(Uint8Array.from(new TextEncoder().encode(header)));
-    // console.log(`headerUint8Array: ${headerUint8Array}`);
-
-    // const bodyUint8Array = new Uint8Array(MAX_BODY_LENGTH);
-    // bodyUint8Array.set(body.storage);
-    // //bodyUint8Array.set(Uint8Array.from(new TextEncoder().encode(bodyString)));
-    // //bodyUint8Array.set(Uint8Array.from(new TextEncoder().encode(body)));
-    // console.log(`bodyUint8Array: ${bodyUint8Array}`);
-
-    // @dev - Padding
-    // const pubkeyModulusArray = new Array(18).fill(0);
-    // for (let i = 0; i < pubkey.modulus!.length; i++) {
-    //   pubkeyModulusArray[i] = pubkey.modulus![i];
-    // }
-    // console.log(`pubkeyModulusArray: ${pubkeyModulusArray}`);
-    
-    // const pubkeyRedcArray = new Array(18).fill(0);
-    // for (let i = 0; i < pubkey.redc!.length; i++) {
-    //   pubkeyRedcArray[i] = pubkey.redc![i];
-    // }
-    // console.log(`pubkeyRedcArray: ${pubkeyRedcArray}`);
-
-    // const signatureArray = new Array(18).fill(0);
-    // for (let i = 0; i < signature!.length; i++) {
-    //   signatureArray[i] = signature![i];
-    // }
-    // console.log(`signatureArray: ${signatureArray}`);
-
     const inputs = {
       partial_data: jwtInputs.partial_data,
       partial_hash: jwtInputs.partial_hash,
@@ -161,30 +120,17 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       // @dev - The "body" property is commented out - because it is too big size (~30000) to generate a proof in ZK circuit.
       header: {
         storage: header.storage,
-        //storage: Array.from(headerUint8Array),
         len: header.len,
-        //len: headerUint8Array.length,
       },
-      // header: {
-      //   storage: Array.from(header.storage),
-      //   len: header.len,
-      // },
       // body: {
-      //   storage: Array.from(bodyUint8Array),
-      //   len: bodyUint8Array.length,
-      // },
-      // body: {
-      //   storage: Array.from(body.storage),
+      //   storage: body.storage,
       //   len: body.len,
       // },
       pubkey: {
         modulus: pubkey.modulus,
-        //modulus: Array.from(pubkeyModulusArray).map((s) => s.toString()),
         redc: pubkey.redc,
-        //redc: Array.from(pubkeyRedcArray).map((s) => s.toString()),
       },
       signature: signature,
-      //signature: Array.from(signatureArray).map((s) => s.toString()),
       body_hash_index,
       dkim_header_sequence: {
         index: dkim_header_sequence.index,
