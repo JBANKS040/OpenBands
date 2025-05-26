@@ -273,8 +273,16 @@ export const OPENBANDS_CIRCUIT_HELPER = {
         publicInputs,
       };
 
+      let circuitArtifact;
       try {
-        const circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
+        if (rsa_signature_length == 9) {
+          circuitArtifact = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.0.1/openbands.json`);
+        } else if (rsa_signature_length == 18) {
+          circuitArtifact = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.0.1/openbands.json`);
+        } else {
+          throw new Error("Invalid rsa_signature_length value. Must be 9 or 18.");
+        }
+        //const circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
         console.log("Loaded circuit artifact");
         
         const backend = new UltraHonkBackend(circuitArtifact.bytecode, { threads: 8 });
