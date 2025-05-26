@@ -8,13 +8,13 @@ mod test_zkemail_integration_success {
 
     use crate::{
         main, MAX_PARTIAL_DATA_LENGTH, MAX_DOMAIN_LENGTH, MAX_POSITION_LENGTH, MAX_SALARY_LENGTH,  // main.nr
-        utils::email_dkim_verifier::{MAX_EMAIL_BODY_LENGTH, MAX_EMAIL_HEADER_LENGTH},        
+        utils::email_dkim_verifier::{MAX_EMAIL_BODY_LENGTH, MAX_EMAIL_HEADER_LENGTH, MAX_BODY_TRIMMED_LENGTH},        
         tests::test_inputs::{
             EmailLarge::{
                 PUBKEY, SIGNATURE, BODY_HASH_INDEX, DKIM_HEADER_SEQUENCE,
             }, 
             EmploymentOfferEmailLarge::{
-                EMPLOYMENT_OFFER_EMAIL_HEADER, EMPLOYMENT_OFFER_EMAIL_BODY,
+                EMPLOYMENT_OFFER_EMAIL_HEADER, EMPLOYMENT_OFFER_EMAIL_BODY, EMPLOYMENT_OFFER_EMAIL_BODY_TRIMMED,
                 POSITION_BODY, SALARY_BODY,
             },
         }
@@ -24,14 +24,13 @@ mod test_zkemail_integration_success {
         headers::{body_hash::get_body_hash, email_address::get_email_address},
         MAX_EMAIL_ADDRESS_LENGTH, partial_hash::partial_sha256_var_end,
         dkim::RSAPubkey, Sequence,
-        KEY_LIMBS_1024,
-        KEY_LIMBS_2048
+        KEY_LIMBS_1024
     };
 
     use std::hash::sha256_var;
 
     #[test]
-    fn test_verify_position_and_salary_and_verify_email_2048_bit_dkim() {
+    fn test_verify_position_and_salary_and_verify_email_1024_bit_dkim() {
 
         let partial_data: BoundedVec<u8, MAX_PARTIAL_DATA_LENGTH> = BoundedVec::from_array([106, 98, 50, 48, 105, 76, 67, 74, 122, 100, 87, 73, 105, 79, 105, 74, 66, 81, 107, 78, 69, 77, 84, 73, 122, 77, 84, 73, 122, 73, 105, 119, 105, 90, 87, 49, 104, 97, 87, 120, 102, 100, 109, 86, 121, 97, 87, 90, 112, 90, 87, 81, 105, 79, 110, 82, 121, 100, 87, 85, 115, 73, 109, 53, 118, 98, 109, 78, 108, 73, 106, 111, 105, 77, 84, 73, 122, 77, 84, 73, 122, 77, 84, 73, 122, 73, 105, 119, 105, 90, 87, 49, 104, 97, 87, 119, 105, 79, 105, 74, 104, 98, 71, 108, 106, 90, 85, 66, 48, 90, 88, 78, 48, 76, 109, 78, 118, 98, 83, 73, 115, 73, 109, 108, 104, 100, 67, 73, 54, 77, 84, 99, 122, 78, 122, 89, 48, 77, 106, 73, 120, 78, 121, 119, 105, 89, 88, 86, 107, 73, 106, 111, 105, 77, 84, 73, 122, 77, 84, 73, 122, 77, 84, 73, 122, 76, 106, 81, 49, 78, 106, 81, 49, 78, 106, 81, 49, 78, 105, 73, 115, 73, 109, 86, 52, 99, 67, 73, 54, 77, 84, 99, 53, 79, 84, 107, 53, 79, 84, 107, 53, 79, 88, 48]);
         let partial_hash: [u32; 8] = [2065651337, 2814693704, 862745553, 2384319000, 1412758034, 3553265356, 3156727610, 4160738201];
@@ -51,42 +50,41 @@ mod test_zkemail_integration_success {
         let operational_efficiency: u8 = 3;
 
         // @dev - Input parameters for email verification /w ZKEmail.nr
-        let header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = EMPLOYMENT_OFFER_EMAIL_HEADER;  // Entire Email Header
-        //let body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = EMPLOYMENT_OFFER_EMAIL_BODY;        // Entire Email Body
-        //let pubkey: RSAPubkey<KEY_LIMBS_1024> = PUBKEY;             // RSA Public Key (1024-bit)
-        //let pubkey: RSAPubkey<KEY_LIMBS_2048> = PUBKEY;           // RSA Public Key (2048-bit)
-        //let signature: [Field; KEY_LIMBS_1024] = SIGNATURE;         // RSA Signature (1024-bit)
-        //let signature: [Field; KEY_LIMBS_2048] = SIGNATURE;       // RSA Signature (2048-bit)
-        //let body_hash_index: u32 = BODY_HASH_INDEX;               // Index of the body hash in the DKIM-signed header
-        let dkim_header_sequence: Sequence = DKIM_HEADER_SEQUENCE;  // DKIM header sequence
+        let header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = EMPLOYMENT_OFFER_EMAIL_HEADER;  // Entire Email Header - [TODO]: Replace with an appropreate header value, which is aligned with a PubKey that key length is 9.
+        //let body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = EMPLOYMENT_OFFER_EMAIL_BODY;      // Entire Email Body
+        let pubkey: RSAPubkey<KEY_LIMBS_1024> = PUBKEY;                                       // RSA Public Key (1024-bit) - [TODO]: Replace the PUBKEY from the length of 18 to the length of 9.
+        let signature: [Field; KEY_LIMBS_1024] = SIGNATURE;                                   // RSA Signature (1024-bit)  - [TODO]: Replace the PUBKEY from the length of 18 to the length of 9.
+        //let body_hash_index: u32 = BODY_HASH_INDEX;                                         // Index of the body hash in the DKIM-signed header
+        let dkim_header_sequence: Sequence = DKIM_HEADER_SEQUENCE;                            // DKIM header sequence
+        let body_trimmed: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH> = EMPLOYMENT_OFFER_EMAIL_BODY_TRIMMED; // Trimmed body of the email
  
         // @dev - Run the main function (ZK circuit) with the input parameters above.
-    //     main(
-    //         partial_data,
-    //         partial_hash,
-    //         full_data_length,
-    //         base64_decode_offset,
-    //         jwt_pubkey_modulus_limbs,
-    //         jwt_pubkey_redc_params_limbs,
-    //         jwt_signature_limbs,
-    //         domain,
-    //         position,
-    //         salary,
-    //         work_life_balance,
-    //         culture_values,
-    //         career_growth,
-    //         compensation_benefits,
-    //         leadership_quality,
-    //         operational_efficiency,
-
-    //         // @dev - Input parameters for email verification /w ZKEmail.nr
-    //         header,
-    //         //body,
-    //         pubkey,
-    //         signature,
-    //         //body_hash_index,
-    //         dkim_header_sequence
-    //     );
+        main(
+            partial_data,
+            partial_hash,
+            full_data_length,
+            base64_decode_offset,
+            jwt_pubkey_modulus_limbs,
+            jwt_pubkey_redc_params_limbs,
+            jwt_signature_limbs,
+            domain,
+            position,
+            salary,
+            work_life_balance,
+            culture_values,
+            career_growth,
+            compensation_benefits,
+            leadership_quality,
+            operational_efficiency,
+            // @dev - The following input parameters would be for email verification /w ZKEmail.nr
+            header,
+            //body,
+            pubkey,
+            signature,
+            //body_hash_index,
+            dkim_header_sequence,
+            body_trimmed
+        );
     }
 }
 

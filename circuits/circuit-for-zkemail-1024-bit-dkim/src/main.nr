@@ -85,8 +85,7 @@ fn main(
     compensation_benefits: pub u8,
     leadership_quality: pub u8,
     operational_efficiency: pub u8,
-
-    // @dev - Input parameters for email verification /w ZKEmail.nr
+    // @dev - The following input parameters would be for email verification /w ZKEmail.nr
     header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,  // Entire Email Header
     //body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,    // Entire Email Body
     pubkey: RSAPubkey<KEY_LIMBS_1024>,                // 1024-bit RSA public key
