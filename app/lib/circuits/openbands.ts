@@ -42,25 +42,6 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       leadership_quality: number;
       operational_efficiency: number;
     };
-    // @dev - Input parameters for email verification /w ZKEmail.nr
-    // header: {
-    //   storage: Uint8Array;
-    //   len: number;
-    // },
-    // body: {
-    //   storage: Uint8Array;
-    //   len: number;
-    // },
-    // pubkey: {
-    //   modulus: string[];
-    //   redc: string[];
-    // };
-    // signature: string[];
-    // body_hash_index: number;
-    // dkim_header_sequence: {
-    //   index: number;
-    //   length: number;
-    // };
   }) => {
     if (!idToken || !jwtPubkey) {
       throw new Error(
