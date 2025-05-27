@@ -196,6 +196,7 @@ export default function Home() {
       // @dev - Generate the inputs for the zkEmail based verifier circuit.
       const { zkEmailInputs } = await generateZkEmailVerifierInputs(eml);
       console.log(`zkEmailInputs: ${ JSON.stringify(zkEmailInputs, null, 2) }`);
+      console.log(`zkEmailInputs.header.storage: ${ zkEmailInputs.header.storage }`);
 
       // @dev - Default header/ body lengths to use for input generation.
       // const inputParams = {

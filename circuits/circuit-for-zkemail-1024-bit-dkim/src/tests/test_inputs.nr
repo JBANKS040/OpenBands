@@ -2,7 +2,7 @@ pub(crate) mod EmploymentOfferEmailLarge {
 
     use zkemail::{
         dkim::RSAPubkey, headers::body_hash::get_body_hash, 
-        KEY_LIMBS_2048, Sequence,
+        KEY_LIMBS_1024, KEY_LIMBS_2048, Sequence,
     };
 
     use crate::{
@@ -28,7 +28,6 @@ pub(crate) mod EmploymentOfferEmailLarge {
     pub(crate) global POSITION_BODY: BoundedVec<u8, MAX_POSITION_LENGTH> = BoundedVec::from([83,101,110,105,111,114,32,83,111,102,116,119,97,114,101,32,69,110,103,105,110,101,101,114]);  // "Senior Software Engineer"
     pub(crate) global SALARY_BODY: BoundedVec<u8, MAX_SALARY_LENGTH> = BoundedVec::from([36,49,48,48,44,48,48,48]);  // "$100,000"
 
-
     /**
      * @notice - Default input data, which is written in zkEmail.nr repo
      */
@@ -38,8 +37,19 @@ pub(crate) mod EmploymentOfferEmailLarge {
     pub(crate) global EMAIL_LARGE_MAX_BODY_LENGTH: u32 = 32000;
     //pub(crate) global EMAIL_LARGE_MAX_BODY_LENGTH: u32 = 1024;
 
-}
+    /**
+     * @notice - Example of a 1024-bit RSA's header/public key/signature, which is extracted from a example email's eml file.
+     * @dev - [TODO]: Store example values into the following 1024-bit RSA's header/public key/signature variables.
+     */
+    pub(crate) global HEADER_1024_BIT: BoundedVec<u8, EMAIL_LARGE_MAX_HEADER_LENGTH> = BoundedVec::from([]);
 
+    pub(crate) global PUBKEY_1024_BIT: RSAPubkey<KEY_LIMBS_1024> = RSAPubkey::new(
+        [],
+        [],
+    );
+
+    pub(crate) global SIGNATURE_1024_BIT: [Field; KEY_LIMBS_1024] = [];
+}
 
 
 pub(crate) mod EmailLarge {
