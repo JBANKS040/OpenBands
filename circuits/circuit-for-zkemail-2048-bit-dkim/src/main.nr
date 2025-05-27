@@ -7,7 +7,6 @@ use zkemail::{
     headers::{body_hash::get_body_hash, email_address::get_email_address},
     MAX_EMAIL_ADDRESS_LENGTH, partial_hash::partial_sha256_var_end,
     dkim::RSAPubkey, Sequence,
-    KEY_LIMBS_1024,
     KEY_LIMBS_2048
 };
 
@@ -86,8 +85,7 @@ fn main(
     compensation_benefits: pub u8,
     leadership_quality: pub u8,
     operational_efficiency: pub u8,
-
-    // @dev - Input parameters for email verification /w ZKEmail.nr
+    // @dev - The following input parameters would be for email verification /w ZKEmail.nr
     header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,  // Entire Email Header
     //body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,    // Entire Email Body
     pubkey: RSAPubkey<KEY_LIMBS_2048>,
@@ -145,7 +143,6 @@ fn main(
     verify_rating(operational_efficiency);
 
     // @dev - Verify an arbitrary email, which is signed by a 2048-bit RSA DKIM signature - without (skipping) body hash check
-    //let return_value: [Field; 2] = verify_email_1024_bit_dkim_without_body_hash_check(
     let return_value: [Field; 2] = verify_email_2048_bit_dkim_without_body_hash_check(
         header,
         pubkey,
