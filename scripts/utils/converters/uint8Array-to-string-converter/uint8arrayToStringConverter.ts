@@ -17,8 +17,8 @@ async function main(): Promise<String> { // Mark the function as async
     const decoder = new TextDecoder();
     const emailHeaderInString = decoder.decode(emailHeaderInUint8array);
     const emailBodyInString = decoder.decode(emailBodyInUint8array);
-    console.log(`Email Header (in String):\n ${ emailHeaderInString }`); // Output: "Hello, World!"
-    console.log(`Email Body (in String):\n ${ emailBodyInString }`); // Output: "Hello, World!"
+    console.log(`\nEmail Header (in String):\n${ emailHeaderInString }`); // Output: "Hello, World!"
+    console.log(`\nEmail Body (in String):\n${ emailBodyInString }`); // Output: "Hello, World!"
 
     /// @dev - Export as a JSON file
     const result = {
