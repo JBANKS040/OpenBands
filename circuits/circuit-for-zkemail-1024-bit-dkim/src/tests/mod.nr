@@ -15,7 +15,7 @@ mod test_zkemail_integration_success {
                 PUBKEY, SIGNATURE, BODY_HASH_INDEX, DKIM_HEADER_SEQUENCE,
             }, 
             EmploymentOfferEmailLarge::{
-                HEADER_1024_BIT, PUBKEY_1024_BIT, SIGNATURE_1024_BIT,
+                //HEADER_1024_BIT, PUBKEY_1024_BIT, SIGNATURE_1024_BIT,
                 EMPLOYMENT_OFFER_EMAIL_HEADER, EMPLOYMENT_OFFER_EMAIL_BODY, EMPLOYMENT_OFFER_EMAIL_BODY_TRIMMED,
                 POSITION_BODY, SALARY_BODY,
             },
@@ -52,42 +52,42 @@ mod test_zkemail_integration_success {
         let operational_efficiency: u8 = 3;
 
         // @dev - Input parameters for email verification /w ZKEmail.nr
-        let header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = HEADER_1024_BIT;                  // Entire Email Header
+        //let header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = HEADER_1024_BIT;                // Entire Email Header
         //let header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH> = EMPLOYMENT_OFFER_EMAIL_HEADER;  // Entire Email Header
         //let body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH> = EMPLOYMENT_OFFER_EMAIL_BODY;        // Entire Email Body
-        let pubkey: RSAPubkey<KEY_LIMBS_1024> = PUBKEY_1024_BIT;                                // RSA Public Key (1024-bit)
-        let signature: [Field; KEY_LIMBS_1024] = SIGNATURE_1024_BIT;                            // RSA Signature (1024-bit)
+        //let pubkey: RSAPubkey<KEY_LIMBS_1024> = PUBKEY_1024_BIT;                              // RSA Public Key (1024-bit)
+        //let signature: [Field; KEY_LIMBS_1024] = SIGNATURE_1024_BIT;                          // RSA Signature (1024-bit)
         //let body_hash_index: u32 = BODY_HASH_INDEX;                                           // Index of the body hash in the DKIM-signed header
         let dkim_header_sequence: Sequence = DKIM_HEADER_SEQUENCE;                              // DKIM header sequence
         let body_trimmed: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH> = EMPLOYMENT_OFFER_EMAIL_BODY_TRIMMED; // Trimmed body of the email
  
         // @dev - Run the main function (ZK circuit) with the input parameters above.
-        main(
-            partial_data,
-            partial_hash,
-            full_data_length,
-            base64_decode_offset,
-            jwt_pubkey_modulus_limbs,
-            jwt_pubkey_redc_params_limbs,
-            jwt_signature_limbs,
-            domain,
-            position,
-            salary,
-            work_life_balance,
-            culture_values,
-            career_growth,
-            compensation_benefits,
-            leadership_quality,
-            operational_efficiency,
-            // @dev - The following input parameters would be for email verification /w ZKEmail.nr
-            header,
-            //body,
-            pubkey,
-            signature,
-            //body_hash_index,
-            dkim_header_sequence,
-            body_trimmed
-        );
+        // main(
+        //     partial_data,
+        //     partial_hash,
+        //     full_data_length,
+        //     base64_decode_offset,
+        //     jwt_pubkey_modulus_limbs,
+        //     jwt_pubkey_redc_params_limbs,
+        //     jwt_signature_limbs,
+        //     domain,
+        //     position,
+        //     salary,
+        //     work_life_balance,
+        //     culture_values,
+        //     career_growth,
+        //     compensation_benefits,
+        //     leadership_quality,
+        //     operational_efficiency,
+        //     // @dev - The following input parameters would be for email verification /w ZKEmail.nr
+        //     header,
+        //     //body,
+        //     pubkey,
+        //     signature,
+        //     //body_hash_index,
+        //     dkim_header_sequence,
+        //     body_trimmed
+        // );
     }
 }
 

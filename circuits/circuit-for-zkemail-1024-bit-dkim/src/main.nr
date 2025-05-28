@@ -15,9 +15,11 @@ use utils::position_and_salary_extractor::{
     extract_salary_from_email_body    // @dev - extract_salary_from_body() function
 }; 
 use utils::email_dkim_verifier::{
-    MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, MAX_BODY_TRIMMED_LENGTH,
-    //verify_email_1024_bit_dkim,                       // @dev - verify_email_1024_bit_dkim() function
-    verify_email_1024_bit_dkim_without_body_hash_check  // @dev - verify_email_1024_bit_dkim_without_body_hash_check() function
+    MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, MAX_PARTIAL_EMAIL_BODY_LENGTH,
+    MAX_BODY_TRIMMED_LENGTH,
+    //verify_email_1024_bit_dkim,                            // @dev - verify_email_1024_bit_dkim() function
+    verify_email_1024_bit_dkim_with_partial_body_hash_check, // @dev - verify_email_1024_bit_dkim_with_partial_body_hash_check() function
+    //verify_email_1024_bit_dkim_without_body_hash_check     // @dev - verify_email_1024_bit_dkim_without_body_hash_check() function
 };
 
 // @dev - [NOTE]: The following imported-variables are temporary variables. They are stored into the "test_header" and "test_body" for passing the verify_email_2048_bit_dkim() function. Thus, this should be removed once appropreate implementation will be done in the future.
@@ -88,9 +90,12 @@ fn main(
     // @dev - The following input parameters would be for email verification /w ZKEmail.nr
     header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,  // Entire Email Header
     //body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,    // Entire Email Body
+    partial_body: BoundedVec<u8, MAX_PARTIAL_EMAIL_BODY_LENGTH>, // Partial Email Body Hash
     pubkey: RSAPubkey<KEY_LIMBS_1024>,                // 1024-bit RSA public key
     signature: [Field; KEY_LIMBS_1024],               // 1024-bit RSA signature
-    //body_hash_index: u32,
+    body_hash_index: u32,
+    partial_body_real_length: u64, // The real length of the partial body hash
+    partial_body_hash: [u32; 8],
     dkim_header_sequence: Sequence,
     body_trimmed: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH>, // Trimmed Email Body, which the Header and HTML parts are cut off.
 ) {
@@ -143,11 +148,16 @@ fn main(
     verify_rating(operational_efficiency);
 
     // @dev - Verify an arbitrary email, which is signed by a 1024-bit RSA DKIM signature - without (skipping) body hash check
-    let return_value: [Field; 2] = verify_email_1024_bit_dkim_without_body_hash_check(
+    let return_value: [Field; 2] = verify_email_1024_bit_dkim_with_partial_body_hash_check(
+    //let return_value: [Field; 2] = verify_email_1024_bit_dkim_without_body_hash_check(
         header,
+        partial_body,
         pubkey,
         signature,
-        dkim_header_sequence
+        body_hash_index,
+        dkim_header_sequence,
+        partial_body_hash,
+        partial_body_real_length
     );
     
     // @dev - [Log]:
