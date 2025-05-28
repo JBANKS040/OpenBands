@@ -4,6 +4,7 @@ import { verifyDKIMSignature } from "@zk-email/helpers/dist/dkim";
 
 export const MAX_HEADER_LENGTH = 1504;
 export const MAX_BODY_LENGTH = 32000;
+export const MAX_PARTIAL_BODY_LENGTH = 2048;
 export const MAX_BODY_TRIMMED_LENGTH = 2048;
 
 /**
@@ -16,12 +17,12 @@ export async function generateZkEmailVerifierInputs(
     //params: InputGenerationArgs = {}
 ): Promise<{ zkEmailInputs: any }> {
     const zkEmailInputs = await generateEmailVerifierInputs(rawEmail, {
-        maxBodyLength: 32000,     // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit
+        maxBodyLength: 32000,   // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit
         //maxBodyLength: 1280,    // Same as MAX_PARTIAL_EMAIL_BODY_LENGTH in circuit (NOTE: This is the original value)
         maxHeadersLength: 1504,   // Same as MAX_EMAIL_HEADER_LENGTH in circuit
         //maxHeadersLength: 1408, // Same as MAX_EMAIL_HEADER_LENGTH in circuit (NOTE: This is the original value)
-        shaPrecomputeSelector: "",
-        //shaPrecomputeSelector: "Content-Type: text/html",
+        //shaPrecomputeSelector: "",
+        shaPrecomputeSelector: "Content-Type: text/html",
         //shaPrecomputeSelector: "some string in body up to which you want to hash outside circuit",
     });
     //console.log(`zkEmailInputs: ${ JSON.stringify(zkEmailInputs, null, 2) }`);

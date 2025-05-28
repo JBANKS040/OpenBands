@@ -2,7 +2,7 @@ import { generateInputs } from "noir-jwt";
 import { InputMap, type CompiledCircuit } from "@noir-lang/noir_js";
 import { initProver, initVerifier } from "../lazy-modules";
 import { splitBigIntToLimbs } from "../utils";
-import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH, MAX_BODY_TRIMMED_LENGTH } from '../zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
+import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH, MAX_PARTIAL_BODY_LENGTH, MAX_BODY_TRIMMED_LENGTH } from '../zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
 //import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH } from "../zkemail/zkEmailTestValueGenerator.tsx";
 import { convertUint8ArrayToString } from "../converters/uint8ArrayToStringConverter";
 
@@ -26,6 +26,8 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     pubkey,
     signature,
     body_hash_index,
+    partial_body_real_length,
+    partial_body_hash,
     dkim_header_sequence,
     bodyTrimmed
   }: {
@@ -70,6 +72,13 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     console.log(`bodyTrimmed: ${ bodyTrimmed }`);
     console.log(`bodyTrimmedUint8Array: ${ bodyTrimmedUint8Array }`);
 
+    // @dev - Partial body padded (Which a given entire body is cut off at 1280 bytes)
+    const partialBodyUint8Array = new Uint8Array(MAX_PARTIAL_BODY_LENGTH);
+    for (let i = 0; i < body.storage!.length; i++) {
+      partialBodyUint8Array[i] = body.storage![i];
+    }
+    console.log(`partialBodyUint8Array: ${ partialBodyUint8Array }`);
+
     const inputs = {
       partial_data: jwtInputs.partial_data,
       partial_hash: jwtInputs.partial_hash,
@@ -107,12 +116,18 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       //   storage: body.storage,
       //   len: body.len,
       // },
+      partial_body: {
+        storage: Array.from(partialBodyUint8Array),
+        len: partialBodyUint8Array.length, // Use the length of the original body storage
+      },
       pubkey: {
         modulus: pubkey.modulus,
         redc: pubkey.redc,
       },
       signature: signature,
-      body_hash_index,
+      body_hash_index: body_hash_index,
+      partial_body_real_length: partial_body_real_length,
+      partial_body_hash: partial_body_hash,
       dkim_header_sequence: {
         index: dkim_header_sequence.index,
         length: dkim_header_sequence.length,

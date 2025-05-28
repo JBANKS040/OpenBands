@@ -115,6 +115,8 @@ export default function Home() {
     },
     signature: null,
     body_hash_index: null,
+    partial_body_real_length: null,
+    partial_body_hash: null,
     dkim_header_sequence: {
       index: null,
       length: null,
@@ -223,6 +225,8 @@ export default function Home() {
         },
         signature: zkEmailInputs.signature,
         body_hash_index: zkEmailInputs.body_hash_index,
+        partial_body_real_length: zkEmailInputs.partial_body_real_length,
+        partial_body_hash: zkEmailInputs.partial_body_hash,
         dkim_header_sequence: {
           index: zkEmailInputs.dkim_header_sequence.index,
           length: zkEmailInputs.dkim_header_sequence.length
@@ -351,6 +355,8 @@ export default function Home() {
         pubkey: zkEmailInputData.pubkey,
         signature: zkEmailInputData.signature,
         body_hash_index: zkEmailInputData.body_hash_index,
+        partial_body_real_length: zkEmailInputData.partial_body_real_length,
+        partial_body_hash: zkEmailInputData.partial_body_hash,
         dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
         bodyTrimmed: emailBodyTrimmed
       });
