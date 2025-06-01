@@ -10,15 +10,19 @@ use zkemail::{
     KEY_LIMBS_2048
 };
 
-use utils::position_and_salary_extractor::{
-    extract_position_from_email_body, // @dev - extract_position_from_email_body() function
-    extract_salary_from_email_body    // @dev - extract_salary_from_body() function
-}; 
-use utils::email_dkim_verifier::{
-    MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, MAX_BODY_TRIMMED_LENGTH,
-    //verify_email_2048_bit_dkim,                         // @dev - verify_email_2048_bit_dkim() function
-    verify_email_2048_bit_dkim_without_body_hash_check    // @dev - verify_email_2048_bit_dkim_without_body_hash_check() function
+use utils::{
+    position_and_salary_extractor::{
+        extract_position_from_email_body, // @dev - extract_position_from_email_body() function
+        extract_salary_from_email_body    // @dev - extract_salary_from_body() function
+    },
+    email_dkim_verifier::{
+        MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, MAX_BODY_TRIMMED_LENGTH,
+        //verify_email_2048_bit_dkim,                         // @dev - verify_email_2048_bit_dkim() function
+        verify_email_2048_bit_dkim_without_body_hash_check    // @dev - verify_email_2048_bit_dkim_without_body_hash_check() function
+    },
+    openbanking_integrator::{verify_openbanking_payment}
 };
+
 
 // @dev - [NOTE]: The following imported-variables are temporary variables. They are stored into the "test_header" and "test_body" for passing the verify_email_2048_bit_dkim() function. Thus, this should be removed once appropreate implementation will be done in the future.
 use tests::test_inputs::{
