@@ -1,6 +1,6 @@
 use openbanking_verifier::{
-    verify_openbanking_payment,
-    OpenbankingVerifierParams, OpenbankingVerifierReturn
+    verify::{verify_openbanking_payment},
+    io::{OpenbankingVerifierParams, OpenbankingVerifierReturn}
 };
 
 
