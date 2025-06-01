@@ -9,7 +9,7 @@ use dep::openbanking_verifier::{
 /**
  * @notice - Verify an Openbanking payment with some custom logic.
  */
-fn verify_openbanking_payment(
+fn verify_openbanking_payment_proof(
     params: OpenbankingVerifierParams
 ) -> pub OpenbankingVerifierReturn {
     // @dev - [TODO]: Add some custom logic here.
