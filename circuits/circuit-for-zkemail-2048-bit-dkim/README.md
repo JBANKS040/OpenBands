@@ -66,3 +66,10 @@ sh build.sh
 cd circuits
 sh info.sh
 ```
+
+<br>
+
+## Notes
+
+Proving time: 39709ms
+Circuit size: 286738
