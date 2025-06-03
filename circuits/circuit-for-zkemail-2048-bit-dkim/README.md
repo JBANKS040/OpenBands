@@ -58,3 +58,11 @@ nargo check
 cd circuits
 sh build.sh
 ```
+
+<br>
+
+## Show the size of ZK circuit
+```bash
+cd circuits
+sh info.sh
+```
