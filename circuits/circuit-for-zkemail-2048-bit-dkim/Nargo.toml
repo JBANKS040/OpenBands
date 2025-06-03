@@ -13,7 +13,7 @@ jwt = { tag = "v0.4.4", git = "https://github.com/saleel/noir-jwt" }
 
 # zkEmail
 zkemail = { tag = "v0.4.3", git = "https://github.com/zkemail/zkemail.nr", directory = "lib" }
-#zkemail = { tag = "v0.4.3", path = "./libs/zkemail.nr" }
+#zkemail = { tag = "feat/update-packages", git = "https://github.com/zkemail/zkemail.nr", directory = "lib"} 
 
 # Openbanking.nr
 openbanking_verifier = { tag = "main", git = "https://github.com/attested-frontiers/openbanking.nr-circuit", directory = "./lib" }

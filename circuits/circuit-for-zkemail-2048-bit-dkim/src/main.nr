@@ -20,7 +20,7 @@ use utils::{
         //verify_email_2048_bit_dkim,                         // @dev - verify_email_2048_bit_dkim() function
         verify_email_2048_bit_dkim_without_body_hash_check    // @dev - verify_email_2048_bit_dkim_without_body_hash_check() function
     },
-    openbanking_integrator::{verify_openbanking_payment_proof} // @dev - verify_openbanking_payment_proof() function
+    //openbanking_integrator::{verify_openbanking_payment_proof} // @dev - verify_openbanking_payment_proof() function
 };
 
 
