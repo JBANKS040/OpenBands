@@ -58,3 +58,18 @@ nargo check
 cd circuits
 sh build.sh
 ```
+
+<br>
+
+## Show the size of ZK circuit
+```bash
+cd circuits
+sh info.sh
+```
+
+<br>
+
+## Notes
+
+Proving time: 39709ms
+Circuit size: 286738
