@@ -2,6 +2,7 @@
  * @notice - Generate an email header data in Uint8Array format
  */
 export function getEmailHeaderInUint8Array() {
+    /// @dev - This HEADER data is come from the test_inputs.nr in the zkemail.nr (https://github.com/zkemail/zkemail.nr/blob/main/lib/src/tests/test_inputs.nr#L8-L32)
     let HEADER = [
         102, 114, 111, 109, 58, 114, 117, 110, 110, 105, 101, 114, 46, 108, 101, 97, 103, 117, 101,
         115, 46, 48, 106, 64, 105, 99, 108, 111, 117, 100, 46, 99, 111, 109, 13, 10, 99, 111, 110,
@@ -28,6 +29,17 @@ export function getEmailHeaderInUint8Array() {
         103, 101, 45, 73, 100, 58, 68, 97, 116, 101, 58, 116, 111, 59, 32, 98, 61,
     ];
     
+    // [Log]: Here is the HEADER data in String format, which is converted from the HEADER data above in Uint8Array format.
+    //
+    // from:runnier.leagues.0j@icloud.com
+    // content-type:text/plain; charset=utf-8
+    // mime-version:1.0 (Mac OS X Mail 16.0 \(3731.500.231\))
+    // subject:Bitcoin
+    // message-id:<12800A90-4ECC-4513-9298-A33546122920@me.com>
+    // date:Wed, 3 Apr 2024 16:23:48 +0530
+    // to:zkewtest@gmail.com
+    // dkim-signature:v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com; s=1a1hai; t=1712141644; bh=2JsdK4BMzzt9w4Zlz2TdyVCFc+l7vNyT5aAgGDYf7fM=; h=from:Content-Type:Mime-Version:Subject:Message-Id:Date:to; b=
+
     return HEADER;
 }
 
@@ -35,6 +47,7 @@ export function getEmailHeaderInUint8Array() {
  * @notice - Generate an email body data in Uint8Array format
  */
 export async function getEmailBodyInUint8Array() {
+    /// @dev - This BODY data is come from the test_inputs.nr in the zkemail.nr (https://github.com/zkemail/zkemail.nr/blob/main/lib/src/tests/test_inputs.nr#L33-L72)
     let BODY = [
         84, 104, 101, 32, 84, 105, 109, 101, 115, 32, 48, 51, 47, 74, 97, 110, 47, 50, 48, 48, 57,
         32, 67, 104, 97, 110, 99, 101, 108, 108, 111, 114, 32, 111, 110, 32, 98, 114, 105, 110, 107,
@@ -75,6 +88,23 @@ export async function getEmailBodyInUint8Array() {
         111, 102, 32, 116, 104, 111, 117, 115, 97, 110, 100, 115, 32, 111, 102, 32, 98, 108, 111,
         99, 107, 115, 46, 13, 10,
     ];
-    
+
+    // [Log]: Here is the BODY data in String format, which is converted from the BODY data above in Uint8Array format.
+    //
+    //     The Times 03/Jan/2009 Chancellor on brink of second bailout for banks
+    //
+    // 15 years ago, Satoshi mined the first block of the Bitcoin blockchain =
+    // After the Bitcoin white paper appeared on October 31, 2008, on a =
+    // cryptography mailing list, the Genesis Block =E2=80=94 the first bitcoin =
+    // block and the basis of the entire Bitcoin trading system in place to =
+    // this day =E2=80=94 was mined on January 3, 2009.=20
+    //
+    // The Genesis Block is also known as Block 0 or Block 1, and is still in =
+    // the Bitcoin network, where it will remain as long as there is a computer =
+    // running the Bitcoin software.=20
+    //
+    // All nodes in the Bitcoin network can consult it, even if it is at the =
+    // other end of the network with hundreds of thousands of blocks.
+
     return BODY;
 }

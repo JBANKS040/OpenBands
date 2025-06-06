@@ -1,5 +1,5 @@
 echo "Load the environment variables from the .env file..."
-source ../.env
+source ../../.env
 #. ./.env
 
 echo "Run the test of ZK circuit"
