@@ -35,10 +35,10 @@ node -e "const fs = require('fs'); fs.writeFileSync('../../app/assets/openbands-
 echo "Generate a Solidity Verifier contract from the vkey..."
 bb write_solidity_verifier -k ./target/vk -o ./target/Verifier.sol
 
-echo "Copy a Solidity Verifier contract-generated (Verifier.sol) into the ./contracts/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier directory"
-cp ./target/Verifier.sol ../../contracts/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier
+echo "Copy a Solidity Verifier contract-generated (Verifier.sol) into the ./contracts/circuits/circuit-for-zkemail-2048-bit-dkim/honk-verifier directory"
+cp ./target/Verifier.sol ../../contracts/circuits/circuit-for-zkemail-2048-bit-dkim/honk-verifier
 
 echo "Rename the Verifier.sol with the plonk_vk.sol in the ./contracts/circuit/ultra-verifier directory"
-mv ../../contracts/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier/Verifier.sol ../../contracts/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier/plonk_vk.sol
+mv ../../contracts/circuits/circuit-for-zkemail-2048-bit-dkim/honk-verifier/Verifier.sol ../../contracts/circuits/circuit-for-zkemail-2048-bit-dkim/honk-verifier/plonk_vk.sol
 
 echo "Done" 

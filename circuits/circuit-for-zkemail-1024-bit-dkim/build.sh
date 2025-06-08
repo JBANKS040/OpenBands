@@ -32,4 +32,13 @@ echo "Generating vk.json to app/assets/openbands-$VERSION..."
 node -e "const fs = require('fs'); fs.writeFileSync('../../app/assets/openbands-zkemail-1024-bit-dkim-$VERSION/vk.json', JSON.stringify(Array.from(Uint8Array.from(fs.readFileSync('./target/vk/vk')))));"
 #node -e "const fs = require('fs'); fs.writeFileSync('../app/assets/openbands-$VERSION/vk.json', JSON.stringify(Array.from(Uint8Array.from(fs.readFileSync('./target/vk/vk')))));"
 
+echo "Generate a Solidity Verifier contract from the vkey..."
+bb write_solidity_verifier -k ./target/vk -o ./target/Verifier.sol
+
+echo "Copy a Solidity Verifier contract-generated (Verifier.sol) into the ./contracts/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier directory"
+cp ./target/Verifier.sol ../../contracts/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier
+
+echo "Rename the Verifier.sol with the plonk_vk.sol in the ./contracts/circuit/ultra-verifier directory"
+mv ../../contracts/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier/Verifier.sol ../../contracts/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier/plonk_vk.sol
+
 echo "Done" 
