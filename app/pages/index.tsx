@@ -167,7 +167,8 @@ export default function Home() {
   const fetchSubmissions = async () => {
     try {
       const { data, error } = await supabase
-        .from('submissions')
+        //.from('submissions')        // @dev - The "production" environment should use 'submissions' table.
+        .from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -246,7 +247,8 @@ export default function Home() {
       // Then try to store it (this might fail due to schema issues)
       try {
         await supabase
-          .from('submissions')
+          //.from('submissions')        // @dev - The "production" environment should use 'submissions' table.
+          .from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
           .insert([{
             domain,
             position,
