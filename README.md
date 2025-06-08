@@ -24,5 +24,5 @@ We use [zkEmail](https://github.com/zkemail/zkemail.nr) to extract the position 
 
 ACIR Opcodes: 43362
 proving time: 30000ms
-
+Circuit size: 286738
 
