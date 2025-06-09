@@ -20,7 +20,7 @@ contract PositionAndSalaryProof2048Manager {
     }
 
     /**
-     * @notice - Record a PositionAndSalaryProof on-chain /w publicInput.
+     * @notice - Record a PositionAndSalaryProof for a 1024-bit DKIM signature on-chain /w publicInput.
      */
     function recordPositionAndSalaryProof(bytes calldata proof, bytes32[] calldata publicInputs) public returns (bool) {
         // Verify a PositionAndSalaryProof
@@ -49,4 +49,10 @@ contract PositionAndSalaryProof2048Manager {
         nullifiers[publicInput.nullifierHash] = true;
     }
 
+    /**
+     * @notice - Retrieve a publicInput of a given PositionAndSalaryProof from on-chain.
+     */
+    function getPublicInputsOfPositionAndSalaryProof(address user, bytes calldata proof) public view returns (DataType.PublicInput memory _publicInput) {
+        return publicInputsOfPositionAndSalaryProofs[user][proof];
+    }
 }
