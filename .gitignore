@@ -1,15 +1,18 @@
-# Dependencies
-node_modules
-
-.DS_Store
+# Foundry
 cache
 broadcast
+
+# ZK circuits in Noir
 circuits/circuit-for-zkemail-1024-bit-dkim/target
 circuits/circuit-for-zkemail-2048-bit-dkim/target
 circuits/circuit-for-zkemail-1024-bit-dkim/Prover.toml
 circuits/circuit-for-zkemail-2048-bit-dkim/Prover.toml
 
+# Environment variables
 .env
+
+# Dependencies
+node_modules
 
 /.pnp
 .pnp.js
