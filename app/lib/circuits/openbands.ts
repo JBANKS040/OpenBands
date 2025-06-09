@@ -147,7 +147,7 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
     const { Noir, UltraHonkBackend } = await initProver();
 
-    let circuitArtifact;
+    let circuitArtifact: any;
     if (signature.length == 9) {          // 1024-bit RSA key
       circuitArtifact = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.0.1/openbands.json`);
     } else if (signature.length == 18) {  // 2048-bit RSA key
