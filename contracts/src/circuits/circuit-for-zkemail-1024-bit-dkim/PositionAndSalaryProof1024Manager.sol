@@ -11,8 +11,8 @@ contract PositionAndSalaryProof1024Manager {
 
     PositionAndSalaryProof1024Verifier public positionAndSalaryProof1024Verifier;
 
-    mapping(bytes32 nulifierHash => DataType.PublicInput) public publicInputsOfPositionAndSalaryProofs;  // nulifierHash -> PublicInput
-    mapping(bytes32 hash => bool isNullified) public nullifiers;
+    mapping(bytes32 nullifierHash => DataType.PublicInput) public publicInputsOfPositionAndSalaryProofs;  // nullifierHash -> PublicInput
+    mapping(bytes32 nullifierHash => bool isNullified) public nullifiers;
 
     constructor(PositionAndSalaryProof1024Verifier _positionAndSalaryProof1024Verifier) {
         positionAndSalaryProof1024Verifier = _positionAndSalaryProof1024Verifier;
@@ -21,7 +21,10 @@ contract PositionAndSalaryProof1024Manager {
     /**
      * @notice - Record the publicInputs of a given proof (1024-bit DKIM signature) on-chain.
      */
-    function recordPublicInputsOfPositionAndSalaryProof(bytes calldata proof, bytes32[] calldata publicInputs) public returns (bool) {
+    function recordPublicInputsOfPositionAndSalaryProof(
+        bytes calldata proof, 
+        bytes32[] calldata publicInputs
+    ) public returns (bool) {
         // Verify a PositionAndSalaryProof
         bool result = positionAndSalaryProof1024Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
         require(result, "A given position and salary proof is not valid");

@@ -11,8 +11,8 @@ contract PositionAndSalaryProof2048Manager {
 
     PositionAndSalaryProof2048Verifier public positionAndSalaryProof2048Verifier;
 
-    mapping(bytes32 nulifierHash => DataType.PublicInput) public publicInputsOfPositionAndSalaryProofs;  // nulifierHash -> PublicInput
-    mapping(bytes32 hash => bool isNullified) public nullifiers;
+    mapping(bytes32 nullifierHash => DataType.PublicInput) public publicInputsOfPositionAndSalaryProofs;  // nullifierHash -> PublicInput
+    mapping(bytes32 nullifierHash => bool isNullified) public nullifiers;
 
     constructor(PositionAndSalaryProof2048Verifier _positionAndSalaryProof2048Verifier) {
         positionAndSalaryProof2048Verifier = _positionAndSalaryProof2048Verifier;
