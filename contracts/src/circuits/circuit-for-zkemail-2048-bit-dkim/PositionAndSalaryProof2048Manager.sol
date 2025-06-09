@@ -21,7 +21,7 @@ contract PositionAndSalaryProof2048Manager {
     /**
      * @notice - Record a PositionAndSalaryProof for a 1024-bit DKIM signature on-chain /w publicInput.
      */
-    function recordPositionAndSalaryProof(bytes calldata proof, bytes32[] calldata publicInputs) public returns (bool) {
+    function recordPublicInputsOfPositionAndSalaryProof(bytes calldata proof, bytes32[] calldata publicInputs) public returns (bool) {
         // Verify a PositionAndSalaryProof
         bool result = positionAndSalaryProof2048Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
         require(result, "A given position and salary proof is not valid is not valid");
