@@ -93,7 +93,7 @@ fn main(
     //body_hash_index: u32,
     dkim_header_sequence: Sequence,
     body_trimmed: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH>, // Trimmed Email Body, which the Header and HTML parts are cut off.
-) {
+) -> pub Field {
     // Init JWT struct and verify signature
     let jwt = JWT::init_with_partial_hash(
         partial_data,
@@ -149,7 +149,9 @@ fn main(
         signature,
         dkim_header_sequence
     );
-    
+    let pubkey_hash: Field = return_value[0];
+    let email_nullifier: Field = return_value[1];
+
     // @dev - [Log]:
     println(f"body_trimmed: {body_trimmed}\n");
     println(f"position: {position}\n");
@@ -169,6 +171,9 @@ fn main(
     /// @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
     let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(salary, body_trimmed) };
     assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
+
+    // @dev - Return value
+    email_nullifier
 }
 
 
