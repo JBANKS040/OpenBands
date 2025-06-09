@@ -1,6 +1,6 @@
 [profile.default]
-src = "contracts"
-#src = "src"
+#src = "contracts"
+src = "src"
 out = "out"
 libs = ["lib"]
 fs_permissions = [{ access = "read-write", path = "./"},{ access = "read-write", path = "/tmp/"}]
