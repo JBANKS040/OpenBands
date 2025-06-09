@@ -42,6 +42,25 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       leadership_quality: number;
       operational_efficiency: number;
     };
+    /// @dev - Data type of zkEmail related input parameters
+    header: {
+      storage: Uint8Array | null,
+      len: number | null
+    };
+    body: {
+      storage: Uint8Array | null,
+      len: number | null
+    };
+    pubkey: {
+      modulus: any | null,
+      redc: any | null
+    };
+    signature: any | null;
+    body_hash_index :number | null;
+    dkim_header_sequence: {
+      index: number | null,
+      length: number | null
+    };
   }) => {
     if (!idToken || !jwtPubkey) {
       throw new Error(
