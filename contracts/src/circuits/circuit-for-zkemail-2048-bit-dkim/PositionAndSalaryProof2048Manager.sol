@@ -53,8 +53,11 @@ contract PositionAndSalaryProof2048Manager {
 
     /**
      * @notice - Retrieve a publicInput of a given PositionAndSalaryProof from on-chain.
+     * @dev - When a proof is stored with publicInput into the this smart contract via the recordPositionAndSalaryProof(), the given proof is verfied by the validation. 
+     *        Hence, the publicInput is guaranteed to be valid and a proof does not need to be specified in this function.
      */
     function getPublicInputsOfPositionAndSalaryProof(address user, bytes32 nullifierHash) public view returns (DataType.PublicInput memory _publicInput) {
+        require(nullifiers[nullifierHash] == true, "A given nullifierHash is invalid"); // Double spending (of proof) prevention
         return publicInputsOfPositionAndSalaryProofs[user][nullifierHash];
     }
 }
