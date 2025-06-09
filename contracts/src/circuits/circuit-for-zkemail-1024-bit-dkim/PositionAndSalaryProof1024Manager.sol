@@ -4,7 +4,7 @@ import { PositionAndSalaryProof1024Verifier } from "./PositionAndSalaryProof1024
 import { DataType } from "../../dataType/DataType.sol";
 
 /**
- * @notice - This contract is used to manage the position and salary proof for a 1024-bit DKIM signature.
+ * @notice - This contract is used to manage the position and salary proof (1024-bit DKIM signature) with its publicInputs.
  */
 contract PositionAndSalaryProof1024Manager {
     using DataType for DataType.PublicInput;
@@ -19,7 +19,7 @@ contract PositionAndSalaryProof1024Manager {
     }
 
     /**
-     * @notice - Record a PositionAndSalaryProof for a 2048-bit DKIM signature on-chain /w publicInput.
+     * @notice - Record the publicInputs of a given proof (1024-bit DKIM signature) on-chain.
      */
     function recordPublicInputsOfPositionAndSalaryProof(bytes calldata proof, bytes32[] calldata publicInputs) public returns (bool) {
         // Verify a PositionAndSalaryProof
@@ -48,7 +48,7 @@ contract PositionAndSalaryProof1024Manager {
     }
 
     /**
-     * @notice - Retrieve a publicInput of a given PositionAndSalaryProof from on-chain.
+     * @notice - Retrieve the publicInputs of a given proof from on-chain.
      * @dev - When a proof is stored with publicInput into the this smart contract via the recordPositionAndSalaryProof(), the given proof is verfied by the validation. 
      *        Hence, the publicInput is guaranteed to be valid and a proof does not need to be specified in this function.
      */
