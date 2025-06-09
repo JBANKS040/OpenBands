@@ -1,21 +1,27 @@
 pragma solidity >=0.8.21;
 
-import { PositionAndSalaryProof1024Verifier } from "./PositionAndSalaryProof1024Verifier.sol";
-import { DataType } from "../../dataType/DataType.sol";
+import { PositionAndSalaryProof1024Verifier } from "./circuit-for-zkemail-1024-bit-dkim/PositionAndSalaryProof1024Verifier.sol";
+import { PositionAndSalaryProof2048Verifier } from "./circuit-for-zkemail-2048-bit-dkim/PositionAndSalaryProof2048Verifier.sol";
+import { DataType } from "../dataType/DataType.sol";
 
 /**
  * @notice - This contract is used to manage the position and salary proof (1024-bit DKIM signature) with its publicInputs.
  */
-contract PositionAndSalaryProof1024Manager {
+contract PositionAndSalaryProofManager {
     using DataType for DataType.PublicInput;
 
     PositionAndSalaryProof1024Verifier public positionAndSalaryProof1024Verifier;
+    PositionAndSalaryProof2048Verifier public positionAndSalaryProof2048Verifier;
 
     mapping(bytes32 nullifierHash => DataType.PublicInput) public publicInputsOfPositionAndSalaryProofs;  // nullifierHash -> PublicInput
     mapping(bytes32 nullifierHash => bool isNullified) public nullifiers;
 
-    constructor(PositionAndSalaryProof1024Verifier _positionAndSalaryProof1024Verifier) {
+    constructor(
+        PositionAndSalaryProof1024Verifier _positionAndSalaryProof1024Verifier, 
+        PositionAndSalaryProof2048Verifier _positionAndSalaryProof2048Verifier
+    ) {
         positionAndSalaryProof1024Verifier = _positionAndSalaryProof1024Verifier;
+        positionAndSalaryProof2048Verifier = _positionAndSalaryProof2048Verifier;
     }
 
     /**
@@ -23,11 +29,19 @@ contract PositionAndSalaryProof1024Manager {
      */
     function recordPublicInputsOfPositionAndSalaryProof(
         bytes calldata proof, 
-        bytes32[] calldata publicInputs
+        bytes32[] calldata publicInputs,
+        uint16 rsaSignatureLength // 9 or 18
     ) public returns (bool) {
         // Verify a PositionAndSalaryProof
-        bool result = positionAndSalaryProof1024Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
-        require(result, "A given position and salary proof is not valid");
+        if (rsaSignatureLength == 9) {
+            bool result = positionAndSalaryProof1024Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
+            require(result, "A given position and salary proof (1024-bit RSA signature) is not valid");
+        } else if (rsaSignatureLength == 18) {
+            bool result = positionAndSalaryProof2048Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
+            require(result, "A given position and salary proof (2048-bit RSA signature) is not valid");
+        } else {
+            revert("Unsupported RSA signature length");
+        }
 
         // Record a publicInput of a given PositionAndSalaryProof
         DataType.PublicInput memory publicInput;
