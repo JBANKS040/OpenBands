@@ -11,7 +11,7 @@ contract PositionAndSalaryProof2048Manager {
 
     PositionAndSalaryProof2048Verifier public positionAndSalaryProof2048Verifier;
 
-    mapping(address => mapping(bytes => DataType.PublicInput)) public publicInputsOfPositionAndSalaryProofs;
+    mapping(address => mapping(bytes32 => DataType.PublicInput)) public publicInputsOfPositionAndSalaryProofs;
     mapping(address => mapping(bytes => bool)) public positionAndSalaryProofRecords;
     mapping(bytes32 hash => bool isNullified) public nullifiers;
 
@@ -43,7 +43,9 @@ contract PositionAndSalaryProof2048Manager {
         publicInput.leadershipQuality = publicInputs[8];
         publicInput.operationalEfficiency = publicInputs[9];
         publicInput.nullifierHash = publicInputs[10];
-        publicInputsOfPositionAndSalaryProofs[msg.sender][proof] = publicInput;
+
+        // Store the publicInput of a given PositionAndSalaryProof
+        publicInputsOfPositionAndSalaryProofs[msg.sender][publicInput.nullifierHash] = publicInput;
 
         // Store the nullifierHash to prevent double submission of the same email
         nullifiers[publicInput.nullifierHash] = true;
@@ -52,7 +54,7 @@ contract PositionAndSalaryProof2048Manager {
     /**
      * @notice - Retrieve a publicInput of a given PositionAndSalaryProof from on-chain.
      */
-    function getPublicInputsOfPositionAndSalaryProof(address user, bytes calldata proof) public view returns (DataType.PublicInput memory _publicInput) {
-        return publicInputsOfPositionAndSalaryProofs[user][proof];
+    function getPublicInputsOfPositionAndSalaryProof(address user, bytes32 nullifierHash) public view returns (DataType.PublicInput memory _publicInput) {
+        return publicInputsOfPositionAndSalaryProofs[user][nullifierHash];
     }
 }
