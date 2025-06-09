@@ -2,7 +2,10 @@ pragma solidity >=0.8.21;
 
 import { HonkVerifier } from "./honk-verifier/plonk_vk_for_1024-bit-dkim.sol";
 
-contract PositionAndSalaryProofVerifier {
+/**
+ * @notice - This contract is used to verify the position and salary proof for a 1024-bit DKIM signature.
+ */
+contract PositionAndSalaryProof1024Verifier {
     HonkVerifier public verifier;
 
     constructor(HonkVerifier _verifier) {
