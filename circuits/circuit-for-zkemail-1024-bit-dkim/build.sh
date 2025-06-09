@@ -39,6 +39,6 @@ echo "Copy a Solidity Verifier contract-generated (Verifier.sol) into the ./cont
 cp ./target/Verifier.sol ../../contracts/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier
 
 echo "Rename the Verifier.sol with the plonk_vk.sol in the ./contracts/circuit/ultra-verifier directory"
-mv ../../contracts/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier/Verifier.sol ../../contracts/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier/plonk_vk.sol
+mv ../../contracts/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier/Verifier.sol ../../contracts/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier/plonk_vk_for_1024-bit-dkim.sol
 
 echo "Done" 

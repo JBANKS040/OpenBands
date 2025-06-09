@@ -1,6 +1,6 @@
 pragma solidity >=0.8.21;
 
-import { HonkVerifier } from "./honk-verifier/plonk_vk.sol";
+import { HonkVerifier } from "./honk-verifier/plonk_vk_for_1024-bit-dkim.sol";
 
 contract PositionAndSalaryProofVerifier {
     HonkVerifier public verifier;
