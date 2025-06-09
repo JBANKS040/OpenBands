@@ -11,7 +11,7 @@ contract PositionAndSalaryProof1024Manager {
 
     PositionAndSalaryProof1024Verifier public positionAndSalaryProof1024Verifier;
 
-    mapping(address => mapping(bytes32 => DataType.PublicInput)) public publicInputsOfPositionAndSalaryProofs;
+    mapping(bytes32 nulifierHash => DataType.PublicInput) public publicInputsOfPositionAndSalaryProofs;  // nulifierHash -> PublicInput
     mapping(bytes32 hash => bool isNullified) public nullifiers;
 
     constructor(PositionAndSalaryProof1024Verifier _positionAndSalaryProof1024Verifier) {
@@ -41,7 +41,7 @@ contract PositionAndSalaryProof1024Manager {
         publicInput.nullifierHash = publicInputs[10];
 
         // Store the publicInput of a given PositionAndSalaryProof
-        publicInputsOfPositionAndSalaryProofs[msg.sender][publicInput.nullifierHash] = publicInput;
+        publicInputsOfPositionAndSalaryProofs[publicInput.nullifierHash] = publicInput;
 
         // Store the nullifierHash to prevent double submission of the same email
         nullifiers[publicInput.nullifierHash] = true;
@@ -52,9 +52,9 @@ contract PositionAndSalaryProof1024Manager {
      * @dev - When a proof is stored with publicInput into the this smart contract via the recordPositionAndSalaryProof(), the given proof is verfied by the validation. 
      *        Hence, the publicInput is guaranteed to be valid and a proof does not need to be specified in this function.
      */
-    function getPublicInputsOfPositionAndSalaryProof(address user, bytes32 nullifierHash) public view returns (DataType.PublicInput memory _publicInput) {
+    function getPublicInputsOfPositionAndSalaryProof(bytes32 nullifierHash) public view returns (DataType.PublicInput memory _publicInput) {
         require(nullifiers[nullifierHash] == true, "A given nullifierHash is invalid"); // Double spending (of proof) prevention
-        return publicInputsOfPositionAndSalaryProofs[user][nullifierHash];
+        return publicInputsOfPositionAndSalaryProofs[nullifierHash];
     }
 
 }
