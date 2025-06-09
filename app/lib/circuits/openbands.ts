@@ -61,6 +61,7 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       index: number | null,
       length: number | null
     };
+    bodyTrimmed: string | null;
   }) => {
     if (!idToken || !jwtPubkey) {
       throw new Error(
