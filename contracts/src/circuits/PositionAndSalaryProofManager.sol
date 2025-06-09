@@ -13,8 +13,10 @@ contract PositionAndSalaryProofManager {
     PositionAndSalaryProof1024Verifier public positionAndSalaryProof1024Verifier;
     PositionAndSalaryProof2048Verifier public positionAndSalaryProof2048Verifier;
 
+    // @dev - Storages
     mapping(bytes32 nullifierHash => DataType.PublicInput) public publicInputsOfPositionAndSalaryProofs;  // nullifierHash -> PublicInput
     mapping(bytes32 nullifierHash => bool isNullified) public nullifiers;
+    DataType.PublicInput[] public publicInputsOfAllProofs;  // The publicInputs of all PositionAndSalaryProofs to show the list of all proofs related data on FE (front-end).
 
     constructor(
         PositionAndSalaryProof1024Verifier _positionAndSalaryProof1024Verifier, 
@@ -62,6 +64,9 @@ contract PositionAndSalaryProofManager {
 
         // Store the nullifierHash to prevent double submission of the same email
         nullifiers[publicInput.nullifierHash] = true;
+
+        // Store the publicInputs into the list of all proofs to be displayed on the UI (front-end).
+        publicInputsOfAllProofs.push(publicInput);
     }
 
     /**
@@ -74,4 +79,10 @@ contract PositionAndSalaryProofManager {
         return publicInputsOfPositionAndSalaryProofs[nullifierHash];
     }
 
+    /**
+     * @notice - Retrieve the publicInputs of all proofs from on-chain to be displayed on the UI (front-end).
+     */
+    function getPublicInputsOfAllProofs() public view returns (DataType.PublicInput[] memory) {
+        return publicInputsOfAllProofs;
+    }
 }
