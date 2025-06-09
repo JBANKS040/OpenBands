@@ -12,7 +12,6 @@ contract PositionAndSalaryProof2048Manager {
     PositionAndSalaryProof2048Verifier public positionAndSalaryProof2048Verifier;
 
     mapping(address => mapping(bytes32 => DataType.PublicInput)) public publicInputsOfPositionAndSalaryProofs;
-    mapping(address => mapping(bytes => bool)) public positionAndSalaryProofRecords;
     mapping(bytes32 hash => bool isNullified) public nullifiers;
 
     constructor(PositionAndSalaryProof2048Verifier _positionAndSalaryProof2048Verifier) {
@@ -26,9 +25,6 @@ contract PositionAndSalaryProof2048Manager {
         // Verify a PositionAndSalaryProof
         bool result = positionAndSalaryProof2048Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
         require(result, "A given position and salary proof is not valid is not valid");
-
-        // Record a PositionAndSalaryProof
-        positionAndSalaryProofRecords[msg.sender][proof] = true;
 
         // Record a publicInput of a given PositionAndSalaryProof
         DataType.PublicInput memory publicInput;

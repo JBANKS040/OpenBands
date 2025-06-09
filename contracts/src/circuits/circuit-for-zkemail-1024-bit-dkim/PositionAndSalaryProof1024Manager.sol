@@ -12,7 +12,6 @@ contract PositionAndSalaryProof1024Manager {
     PositionAndSalaryProof1024Verifier public positionAndSalaryProof1024Verifier;
 
     mapping(address => mapping(bytes32 => DataType.PublicInput)) public publicInputsOfPositionAndSalaryProofs;
-    mapping(address => mapping(bytes => bool)) public positionAndSalaryProofRecords;
     mapping(bytes32 hash => bool isNullified) public nullifiers;
 
     constructor(PositionAndSalaryProof1024Verifier _positionAndSalaryProof1024Verifier) {
@@ -26,9 +25,6 @@ contract PositionAndSalaryProof1024Manager {
         // Verify a PositionAndSalaryProof
         bool result = positionAndSalaryProof1024Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
         require(result, "A given position and salary proof is not valid");
-
-        // Record a PositionAndSalaryProof
-        positionAndSalaryProofRecords[msg.sender][proof] = true;
 
         // Record a publicInput of a given PositionAndSalaryProof
         DataType.PublicInput memory publicInput;
