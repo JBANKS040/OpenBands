@@ -25,7 +25,7 @@ contract PositionAndSalaryProof2048Manager {
     function recordPositionAndSalaryProof(bytes calldata proof, bytes32[] calldata publicInputs) public returns (bool) {
         // Verify a PositionAndSalaryProof
         bool result = positionAndSalaryProof2048Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
-        require(result, "Travel History Proof is not valid");
+        require(result, "A given position and salary proof is not valid is not valid");
 
         // Record a PositionAndSalaryProof
         positionAndSalaryProofRecords[msg.sender][proof] = true;
