@@ -234,9 +234,9 @@ function getRegexAndExternalInputsAndParams() {
         {
           name: "senderDomain",
           parts: [
-            { regexDef: "(\r\n|^)from:[^\r\n]*@" },
+            { regexDef: "(\r\n|^)from:[^\r\n]*@", isPublic: false },
             { isPublic: true, regexDef: "[A-Za-z0-9][A-Za-z0-9\\.-]+\\.[A-Za-z]{2,}" },
-            { regexDef: "[>\r\n]" },
+            { regexDef: "[>\r\n]", isPublic: false },
           ],
           location: "header",
           maxLength: 64,
@@ -244,10 +244,10 @@ function getRegexAndExternalInputsAndParams() {
         {
           name: "emailTimestamp",
           parts: [
-            { regexDef: "(\r\n|^)dkim-signature:" },
-            { regexDef: "([a-z]+=[^;]+; )+t=" },
+            { regexDef: "(\r\n|^)dkim-signature:", isPublic: false },
+            { regexDef: "([a-z]+=[^;]+; )+t=", isPublic: false },
             { isPublic: true, regexDef: "[0-9]+" },
-            { regexDef: ";" },
+            { regexDef: ";", isPublic: false },
           ],
           location: "header",
           maxLength: 64,
