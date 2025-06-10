@@ -295,7 +295,7 @@ function getRegexAndExternalInputsAndParams(): {decomposedRegex: any, externalIn
  */
 export async function parseEmailFromEmlFile(
     rawEmail: string
-): Promise<{ parsedEmail: ParsedEmail, emailHeader: string, emailBody: string, dkimHeader: string, publicKey: string, signature: string }> {
+): Promise<{ parsedEmail: ParsedEmail, emailHeader: string, emailBody: string, dkimHeader: string, publicKey: any, signature: any }> {
     const ignoreBodyHashCheck = true;
     //const ignoreBodyHashCheck = false;
 
