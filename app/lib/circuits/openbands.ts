@@ -171,14 +171,13 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
   verifyProof: async (
     proof: Uint8Array,
-    { domain,
+    { 
+      domain,
       position,
       salary,
       jwtPubKey,
       ratings,
-    },
-    rsa_signature_length // 9 or 18
-    : {
+    }: {
       domain: string;
       position: string;
       salary: string;
@@ -191,7 +190,8 @@ export const OPENBANDS_CIRCUIT_HELPER = {
         leadership_quality: number;
         operational_efficiency: number;
       };
-    }
+    },
+    rsa_signature_length: number // 9 or 18
   ) => {
     try {
       if (!domain || !position || !salary || !jwtPubKey || !ratings) {
