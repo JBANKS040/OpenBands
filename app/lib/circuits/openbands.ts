@@ -120,7 +120,7 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       // @dev - Input data for an Email verification /w ZKEmail.nr
       // @dev - The "body" property is commented out - because it is too big size (~30000) to generate a proof in ZK circuit.
       header: {
-        storage: header.storage,
+        storage: Array.from(header.storage),
         len: header.len,
       },
       // body: {
