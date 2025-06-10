@@ -213,7 +213,7 @@ export async function generateProofInputsFromEmlFile(
 /**
  * @notice - Get the regex, external inputs, params for the input generation using zkEmail SDK.
  */
-function getRegexAndExternalInputsAndParams() {
+function getRegexAndExternalInputsAndParams(): {decomposedRegex: any, externalInputs: any, params: any} {
     const decomposedRegex = [
         // @dev - The following regex for the "emailRecipient" is commentted out. Because some of the eml files does not contain a "To:" field/item.   
         //
