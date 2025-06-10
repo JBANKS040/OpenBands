@@ -1,3 +1,8 @@
+type InputGenerationArgs = {
+  // add expected properties here
+};
+
+
 /**
  * @dev - This function is used to extract the email header and body from the raw email text.
  * @param rawEmail - The raw email text.
