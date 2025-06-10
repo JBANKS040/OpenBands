@@ -44,21 +44,19 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     };
     /// @dev - Data type of zkEmail related input parameters
     header: {
-      storage: Array,
-      //storage: Uint8Array,
+      storage: Uint8Array,
       len: number
     };
-    body: {
-      storage: Array,
-      //storage: Uint8Array,
-      len: number
-    };
+    // body: {
+    //   storage: Uint8Array,
+    //   len: number
+    // };
     pubkey: {
       modulus: any,
       redc: any
     };
     signature: any;
-    body_hash_index :number;
+    //body_hash_index :number;
     dkim_header_sequence: {
       index: number,
       length: number
@@ -134,7 +132,7 @@ export const OPENBANDS_CIRCUIT_HELPER = {
         redc: pubkey.redc,
       },
       signature: signature,
-      body_hash_index,
+      //body_hash_index,
       dkim_header_sequence: {
         index: dkim_header_sequence.index,
         length: dkim_header_sequence.length,

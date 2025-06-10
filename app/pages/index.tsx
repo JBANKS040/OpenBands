@@ -347,10 +347,10 @@ export default function Home() {
         ratings,
         // @dev - Input parameters for email verification /w ZKEmail.nr
         header: zkEmailInputData.header,
-        body: zkEmailInputData.body,
+        //body: zkEmailInputData.body,
         pubkey: zkEmailInputData.pubkey,
         signature: zkEmailInputData.signature,
-        body_hash_index: zkEmailInputData.body_hash_index,
+        //body_hash_index: zkEmailInputData.body_hash_index,
         dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
         bodyTrimmed: emailBodyTrimmed
       });
