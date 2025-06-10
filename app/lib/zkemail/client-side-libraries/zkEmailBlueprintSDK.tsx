@@ -10,6 +10,7 @@ import zkeSDK, {
     extractEMLDetails,
     generateDfa,
     ParsedEmail,
+    BlueprintProps
 } from "@zk-email/sdk";  /// @dev - Import the zkEmail Blueprint SDK
 
 import { generateZkEmailInputsFromEmlFile } from "../../../utils";
