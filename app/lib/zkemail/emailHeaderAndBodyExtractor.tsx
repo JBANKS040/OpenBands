@@ -1,8 +1,3 @@
-type InputGenerationArgs = {
-  // add expected properties here
-};
-
-
 /**
  * @dev - This function is used to extract the email header and body from the raw email text.
  * @param rawEmail - The raw email text.
@@ -10,7 +5,7 @@ type InputGenerationArgs = {
 export async function extractEmailHeaderAndBody(
     rawEmail: string,
     //rawEmail: Buffer | string,
-    params: InputGenerationArgs = {}
+    //params: InputGenerationArgs = {}
 ): Promise<{ header: string; body: string }> {
     // const regexForHeaderExtraction = /^Subject:\s*(.+)$/im;
     // const regexForBodyExtraction = /^Content-Type:\s*[text/plain]/im;
