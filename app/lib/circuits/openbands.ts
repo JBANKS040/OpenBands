@@ -44,11 +44,13 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     };
     /// @dev - Data type of zkEmail related input parameters
     header: {
-      storage: Uint8Array,
+      storage: Array,
+      //storage: Uint8Array,
       len: number
     };
     body: {
-      storage: Uint8Array,
+      storage: Array,
+      //storage: Uint8Array,
       len: number
     };
     pubkey: {
