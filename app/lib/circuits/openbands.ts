@@ -22,10 +22,10 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     ratings,
     /// @dev - zkEmail related input arguments
     header,
-    body,
+    //body,
     pubkey,
     signature,
-    body_hash_index,
+    //body_hash_index,
     dkim_header_sequence,
     bodyTrimmed
   }: {
