@@ -233,6 +233,7 @@ function getRegexAndExternalInputsAndParams() {
         // },
         {
           name: "senderDomain",
+          description: "Extracts the sender's domain",
           parts: [
             { regexDef: "(\r\n|^)from:[^\r\n]*@", isPublic: false },
             { isPublic: true, regexDef: "[A-Za-z0-9][A-Za-z0-9\\.-]+\\.[A-Za-z]{2,}" },
@@ -243,6 +244,7 @@ function getRegexAndExternalInputsAndParams() {
         },
         {
           name: "emailTimestamp",
+          description: "Extracts the DKIM timestamp", 
           parts: [
             { regexDef: "(\r\n|^)dkim-signature:", isPublic: false },
             { regexDef: "([a-z]+=[^;]+; )+t=", isPublic: false },
@@ -254,6 +256,7 @@ function getRegexAndExternalInputsAndParams() {
         },
         {
           name: "subject",
+          description: "Extracts the subject line",
           parts: [
             { regexDef: "(\r\n|^)subject:", isPublic: false },
             { isPublic: true, regexDef: "[^\r\n]+" },
