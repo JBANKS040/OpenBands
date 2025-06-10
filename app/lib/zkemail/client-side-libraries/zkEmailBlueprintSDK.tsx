@@ -255,9 +255,9 @@ function getRegexAndExternalInputsAndParams() {
         {
           name: "subject",
           parts: [
-            { regexDef: "(\r\n|^)subject:" },
+            { regexDef: "(\r\n|^)subject:", isPublic: false },
             { isPublic: true, regexDef: "[^\r\n]+" },
-            { regexDef: "\r\n" },
+            { regexDef: "\r\n", isPublic: false },
           ],
           location: "header",
           maxLength: 128,
