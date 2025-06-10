@@ -55,7 +55,7 @@ export async function generateProofFromEmlFile(
     console.log(`signature: ${signature}`);  // [Log]: b=...;
 
     // [TEST]: Generate the inputs for the ZK proof
-    const { zkEmailInputs } = await generateZkEmailInputsFromEmlFile(rawEmail);
+    const { inputs: zkEmailInputs } = await generateZkEmailInputsFromEmlFile(rawEmail);
     console.log(`zkEmailInputs: ${zkEmailInputs}`);
 
     // [TEST]: Test to retrieve a converted pubilcKey and signature in limbs type.
