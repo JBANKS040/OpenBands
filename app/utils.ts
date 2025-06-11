@@ -43,8 +43,8 @@ export async function generateZkEmailInputsFromEmlFile(
 
     // Partial body padded
     const partialBodyPadded = new Array(1280).fill(0);
-    for (let i = 0; i < zkEmailInputs.body.len(); i++) {
-      partialBodyPadded[i] = zkEmailInputs.body[i];
+    for (let i = 0; i < zkEmailInputs.body!.len(); i++) {
+      partialBodyPadded[i] = zkEmailInputs.body![i];
     }
 
     const headerPadded = new Array(1408).fill(0);
