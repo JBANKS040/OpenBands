@@ -290,7 +290,8 @@ export default function Home() {
           salary: item.salary,
           jwtPubKey: JSON.parse(item.jwt_pub_key),
           timestamp: new Date(item.created_at).getTime(),
-          ratings: item.ratings ? JSON.parse(item.ratings) : undefined
+          ratings: item.ratings ? JSON.parse(item.ratings) : undefined,
+          rsa_signature_length: item.rsa_signature_length // 9 or 18
         }));
         setRecentSubmissions(submissions);
       }
