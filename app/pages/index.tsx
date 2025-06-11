@@ -49,22 +49,22 @@ interface ZkEmailInputHeader {
 
 interface ZkEmailInputData {
   header: {
-    storage: Uint8Array | null,
-    len: number | null
+    storage: Uint8Array,
+    len: number
   };
   body: {
-    storage: Uint8Array | null,
-    len: number | null
+    storage: Uint8Array,
+    len: number
   };
   pubkey: {
-    modulus: any | null,
-    redc: any | null
+    modulus: any,
+    redc: any
   };
-  signature: any | null;
-  body_hash_index :number | null;
+  signature: any;
+  body_hash_index :number;
   dkim_header_sequence: {
-    index: number | null,
-    length: number | null
+    index: number,
+    length: number
   };
 }
 
@@ -99,25 +99,27 @@ async function getGooglePublicKey(kid: string): Promise<JsonWebKey> {
 }
 
 export default function Home() {
+  const emptyUint8Array = new Uint8Array(0);
+
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: null, idToken: null });
   const [zkEmailInputData, setZkEmailInputData] = useState<ZkEmailInputData>({
     header: {
-      storage: null,
-      len: null
+      storage: emptyUint8Array,
+      len: 0
     },
     body: {
-      storage: null,
-      len: null
+      storage: emptyUint8Array,
+      len: 0
     },
     pubkey: {
       modulus: null,
       redc: null
     },
     signature: null,
-    body_hash_index: null,
+    body_hash_index: 0,
     dkim_header_sequence: {
-      index: null,
-      length: null,
+      index: 0,
+      length: 0,
     }
   });
   const [emailBodyTrimmed, setEmailBodyTrimmed] = useState("");
