@@ -16,7 +16,8 @@ interface Submission {
   isVerifying?: boolean;
   verificationResult?: boolean | null;
   ratings?: CompanyRatingsType;
-  rsa_signature_length?: number; // 9 or 18
+  rsa_signature_length: number;    // 9 or 18
+  //rsa_signature_length?: number; // 9 or 18
 }
 
 interface CompanyData {
@@ -180,7 +181,8 @@ export default function Submissions() {
             leadership_quality: 3,
             operational_efficiency: 3
           }
-        }
+        },
+        submission.rsa_signature_length
       );
 
       updateSubmissionState(false, result, submission);

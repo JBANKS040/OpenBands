@@ -5,7 +5,7 @@
 export async function extractEmailHeaderAndBody(
     rawEmail: string,
     //rawEmail: Buffer | string,
-    params: InputGenerationArgs = {}
+    //params: InputGenerationArgs = {}
 ): Promise<{ header: string; body: string }> {
     // const regexForHeaderExtraction = /^Subject:\s*(.+)$/im;
     // const regexForBodyExtraction = /^Content-Type:\s*[text/plain]/im;

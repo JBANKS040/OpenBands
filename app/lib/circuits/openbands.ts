@@ -22,10 +22,10 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     ratings,
     /// @dev - zkEmail related input arguments
     header,
-    body,
+    //body,
     pubkey,
     signature,
-    body_hash_index,
+    //body_hash_index,
     dkim_header_sequence,
     bodyTrimmed
   }: {
@@ -42,6 +42,26 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       leadership_quality: number;
       operational_efficiency: number;
     };
+    /// @dev - Data type of zkEmail related input parameters
+    header: {
+      storage: Uint8Array,
+      len: number
+    };
+    // body: {
+    //   storage: Uint8Array,
+    //   len: number
+    // };
+    pubkey: {
+      modulus: any,
+      redc: any
+    };
+    signature: any;
+    //body_hash_index :number;
+    dkim_header_sequence: {
+      index: number,
+      length: number
+    };
+    bodyTrimmed: string;
   }) => {
     if (!idToken || !jwtPubkey) {
       throw new Error(
@@ -100,7 +120,7 @@ export const OPENBANDS_CIRCUIT_HELPER = {
       // @dev - Input data for an Email verification /w ZKEmail.nr
       // @dev - The "body" property is commented out - because it is too big size (~30000) to generate a proof in ZK circuit.
       header: {
-        storage: header.storage,
+        storage: Array.from(header.storage),
         len: header.len,
       },
       // body: {
@@ -112,7 +132,7 @@ export const OPENBANDS_CIRCUIT_HELPER = {
         redc: pubkey.redc,
       },
       signature: signature,
-      body_hash_index,
+      //body_hash_index,
       dkim_header_sequence: {
         index: dkim_header_sequence.index,
         length: dkim_header_sequence.length,
@@ -127,7 +147,7 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
     const { Noir, UltraHonkBackend } = await initProver();
 
-    let circuitArtifact;
+    let circuitArtifact: any;
     if (signature.length == 9) {          // 1024-bit RSA key
       circuitArtifact = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.0.1/openbands.json`);
     } else if (signature.length == 18) {  // 2048-bit RSA key
@@ -151,14 +171,13 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
   verifyProof: async (
     proof: Uint8Array,
-    { domain,
+    { 
+      domain,
       position,
       salary,
       jwtPubKey,
       ratings,
-    },
-    rsa_signature_length // 9 or 18
-    : {
+    }: {
       domain: string;
       position: string;
       salary: string;
@@ -171,7 +190,8 @@ export const OPENBANDS_CIRCUIT_HELPER = {
         leadership_quality: number;
         operational_efficiency: number;
       };
-    }
+    },
+    rsa_signature_length: number // 9 or 18
   ) => {
     try {
       if (!domain || !position || !salary || !jwtPubKey || !ratings) {

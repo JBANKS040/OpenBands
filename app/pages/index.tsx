@@ -35,6 +35,7 @@ interface ProofDetails extends Omit<Submission, 'proof' | 'jwt_pub_key'> {
   timestamp?: number;
   verificationResult?: boolean | null;
   isVerifying?: boolean;
+  rsa_signature_length: number; // 9 or 18
 }
 
 interface UserInfo {
@@ -49,22 +50,22 @@ interface ZkEmailInputHeader {
 
 interface ZkEmailInputData {
   header: {
-    storage: Uint8Array | null,
-    len: number | null
+    storage: Uint8Array,
+    len: number
   };
   body: {
-    storage: Uint8Array | null,
-    len: number | null
+    storage: Uint8Array,
+    len: number
   };
   pubkey: {
-    modulus: any | null,
-    redc: any | null
+    modulus: any,
+    redc: any
   };
-  signature: any | null;
-  body_hash_index :number | null;
+  signature: any;
+  body_hash_index :number;
   dkim_header_sequence: {
-    index: number | null,
-    length: number | null
+    index: number,
+    length: number
   };
 }
 
@@ -99,25 +100,27 @@ async function getGooglePublicKey(kid: string): Promise<JsonWebKey> {
 }
 
 export default function Home() {
+  const emptyUint8Array = new Uint8Array(0);
+
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: null, idToken: null });
   const [zkEmailInputData, setZkEmailInputData] = useState<ZkEmailInputData>({
     header: {
-      storage: null,
-      len: null
+      storage: emptyUint8Array,
+      len: 0
     },
     body: {
-      storage: null,
-      len: null
+      storage: emptyUint8Array,
+      len: 0
     },
     pubkey: {
       modulus: null,
       redc: null
     },
     signature: null,
-    body_hash_index: null,
+    body_hash_index: 0,
     dkim_header_sequence: {
-      index: null,
-      length: null,
+      index: 0,
+      length: 0,
     }
   });
   const [emailBodyTrimmed, setEmailBodyTrimmed] = useState("");
@@ -288,7 +291,8 @@ export default function Home() {
           salary: item.salary,
           jwtPubKey: JSON.parse(item.jwt_pub_key),
           timestamp: new Date(item.created_at).getTime(),
-          ratings: item.ratings ? JSON.parse(item.ratings) : undefined
+          ratings: item.ratings ? JSON.parse(item.ratings) : undefined,
+          rsa_signature_length: item.rsa_signature_length // 9 or 18
         }));
         setRecentSubmissions(submissions);
       }
@@ -348,10 +352,10 @@ export default function Home() {
         ratings,
         // @dev - Input parameters for email verification /w ZKEmail.nr
         header: zkEmailInputData.header,
-        body: zkEmailInputData.body,
+        //body: zkEmailInputData.body,
         pubkey: zkEmailInputData.pubkey,
         signature: zkEmailInputData.signature,
-        body_hash_index: zkEmailInputData.body_hash_index,
+        //body_hash_index: zkEmailInputData.body_hash_index,
         dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
         bodyTrimmed: emailBodyTrimmed
       });

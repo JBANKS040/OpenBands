@@ -42,27 +42,29 @@ export async function generateZkEmailInputsFromEmlFile(
     );
 
     // Partial body padded
+    const bodyArray = Array.from(zkEmailInputs.body as any);
     const partialBodyPadded = new Array(1280).fill(0);
-    for (let i = 0; i < zkEmailInputs.body!.length; i++) {
-      partialBodyPadded[i] = zkEmailInputs.body![i];
+    for (let i = 0; i < bodyArray.length; i++) {
+      partialBodyPadded[i] = bodyArray[i];
     }
 
+    const headerArray = Array.from(zkEmailInputs.header as any);
     const headerPadded = new Array(1408).fill(0);
-    for (let i = 0; i < zkEmailInputs.header.length; i++) {
-      headerPadded[i] = zkEmailInputs.header[i];
+    for (let i = 0; i < headerArray.length; i++) {
+      headerPadded[i] = headerArray[i];
     }
 
     const inputs = {
       ...zkEmailInputs,
       header: headerPadded,
-      header_length: zkEmailInputs.header_length,
+      header_length: headerArray.length,  // @dev - headerArray = Array.from(zkEmailInputs.header as any)
       partial_body: Array.from(partialBodyPadded).map((s) => s.toString()),
-      partial_body_length: zkEmailInputs.partial_body_length,
-      full_body_length: zkEmailInputs.body_length,
+      partial_body_length: partialBodyPadded.length,
+      full_body_length: bodyArray.length, // @dev - bodyArray = Array.from(zkEmailInputs.body as any)
       partial_body_hash: zkEmailInputs.partial_body_hash,
       body_hash_index: zkEmailInputs.body_hash_index,
       pubkey: zkEmailInputs.pubkey,
-      pubkey_redc: zkEmailInputs.pubkey_redc,
+      pubkey_redc: zkEmailInputs.pubkey.redc,
       signature: zkEmailInputs.signature,
       repo_name: Array.from(repoNamePadded).map((s) => s.toString()),
       repo_name_length: emailDetails.repoName.length,

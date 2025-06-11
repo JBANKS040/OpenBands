@@ -11,5 +11,5 @@ export async function convertUint8ArrayToString(valueInUint8Array: Uint8Array): 
     const valueInString = decoder.decode(_valueInUint8Array);
     //console.log(`\nValue in String:\n${ JSON.stringify(valueInString, null, 2) }`);
 
-    return { valueInString }; // Return the resolved value
+    return valueInString; // Return the resolved value
 }

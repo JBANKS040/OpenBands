@@ -10,6 +10,7 @@ import zkeSDK, {
     extractEMLDetails,
     generateDfa,
     ParsedEmail,
+    BlueprintProps
 } from "@zk-email/sdk";  /// @dev - Import the zkEmail Blueprint SDK
 
 import { generateZkEmailInputsFromEmlFile } from "../../../utils";
@@ -55,7 +56,7 @@ export async function generateProofFromEmlFile(
     console.log(`signature: ${signature}`);  // [Log]: b=...;
 
     // [TEST]: Generate the inputs for the ZK proof
-    const { zkEmailInputs } = await generateZkEmailInputsFromEmlFile(rawEmail);
+    const { inputs: zkEmailInputs } = await generateZkEmailInputsFromEmlFile(rawEmail);
     console.log(`zkEmailInputs: ${zkEmailInputs}`);
 
     // [TEST]: Test to retrieve a converted pubilcKey and signature in limbs type.
@@ -122,9 +123,9 @@ function getBlueprintProps(
         {
             name: "subject",
             parts: [
-            { regexDef: "(\r\n|^)subject:" },
-            { isPublic: true, regexDef: "[^\r\n]+" },
-            { regexDef: "\r\n" },
+                { regexDef: "(\r\n|^)subject:", isPublic: false },
+                { isPublic: true, regexDef: "[^\r\n]+" },
+                { regexDef: "\r\n", isPublic: false },
             ],
             location: "header",
             maxLength: 128,
@@ -212,7 +213,7 @@ export async function generateProofInputsFromEmlFile(
 /**
  * @notice - Get the regex, external inputs, params for the input generation using zkEmail SDK.
  */
-function getRegexAndExternalInputsAndParams() {
+function getRegexAndExternalInputsAndParams(): {decomposedRegex: any, externalInputs: any, params: any} {
     const decomposedRegex = [
         // @dev - The following regex for the "emailRecipient" is commentted out. Because some of the eml files does not contain a "To:" field/item.   
         //
@@ -232,31 +233,34 @@ function getRegexAndExternalInputsAndParams() {
         // },
         {
           name: "senderDomain",
+          description: "Extracts the sender's domain",
           parts: [
-            { regexDef: "(\r\n|^)from:[^\r\n]*@" },
+            { regexDef: "(\r\n|^)from:[^\r\n]*@", isPublic: false },
             { isPublic: true, regexDef: "[A-Za-z0-9][A-Za-z0-9\\.-]+\\.[A-Za-z]{2,}" },
-            { regexDef: "[>\r\n]" },
+            { regexDef: "[>\r\n]", isPublic: false },
           ],
           location: "header",
           maxLength: 64,
         },
         {
           name: "emailTimestamp",
+          description: "Extracts the DKIM timestamp", 
           parts: [
-            { regexDef: "(\r\n|^)dkim-signature:" },
-            { regexDef: "([a-z]+=[^;]+; )+t=" },
+            { regexDef: "(\r\n|^)dkim-signature:", isPublic: false },
+            { regexDef: "([a-z]+=[^;]+; )+t=", isPublic: false },
             { isPublic: true, regexDef: "[0-9]+" },
-            { regexDef: ";" },
+            { regexDef: ";", isPublic: false },
           ],
           location: "header",
           maxLength: 64,
         },
         {
           name: "subject",
+          description: "Extracts the subject line",
           parts: [
-            { regexDef: "(\r\n|^)subject:" },
+            { regexDef: "(\r\n|^)subject:", isPublic: false },
             { isPublic: true, regexDef: "[^\r\n]+" },
-            { regexDef: "\r\n" },
+            { regexDef: "\r\n", isPublic: false },
           ],
           location: "header",
           maxLength: 128,
@@ -291,7 +295,7 @@ function getRegexAndExternalInputsAndParams() {
  */
 export async function parseEmailFromEmlFile(
     rawEmail: string
-): Promise<{ parsedEmail: ParsedEmail, emailHeader: string, emailBody: string, dkimHeader: string, publicKey: string, signature: string }> {
+): Promise<{ parsedEmail: ParsedEmail, emailHeader: string, emailBody: string, dkimHeader: string, publicKey: any, signature: any }> {
     const ignoreBodyHashCheck = true;
     //const ignoreBodyHashCheck = false;
 
