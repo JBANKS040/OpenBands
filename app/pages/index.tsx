@@ -35,6 +35,7 @@ interface ProofDetails extends Omit<Submission, 'proof' | 'jwt_pub_key'> {
   timestamp?: number;
   verificationResult?: boolean | null;
   isVerifying?: boolean;
+  rsa_signature_length: number; // 9 or 18
 }
 
 interface UserInfo {
@@ -423,7 +424,7 @@ export default function Home() {
             operational_efficiency: 3
           }
         },
-        //proofToVerify.rsa_signature_length, // 9 or 18
+        proofToVerify.rsa_signature_length, // 9 or 18
       );
 
       setRecentSubmissions(prevSubmissions => {
