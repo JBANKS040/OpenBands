@@ -179,7 +179,8 @@ export default function Submissions() {
             leadership_quality: 3,
             operational_efficiency: 3
           }
-        }
+        },
+        submission.rsa_signature_length
       );
 
       updateSubmissionState(false, result, submission);
