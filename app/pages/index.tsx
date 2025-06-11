@@ -210,11 +210,11 @@ export default function Home() {
       // Set the zkEmailInputData
       setZkEmailInputData({
         header: {
-          storage: zkEmailInputs.header.storage,
+          storage: Uint8Array.from(zkEmailInputs.header.storage),
           len: zkEmailInputs.header.len
         },
         body: {
-          storage: zkEmailInputs.body.storage,
+          storage: Uint8Array.from(zkEmailInputs.body.storage),
           len: zkEmailInputs.body.len
         },
         pubkey: {
@@ -346,12 +346,12 @@ export default function Home() {
         salary,
         ratings,
         // @dev - Input parameters for email verification /w ZKEmail.nr
-        header: Uint8Array.from(zkEmailInputData.header),
+        header: zkEmailInputData.header,
         //body: zkEmailInputData.body,
         pubkey: zkEmailInputData.pubkey,
         signature: zkEmailInputData.signature,
         //body_hash_index: zkEmailInputData.body_hash_index,
-        dkim_header_sequence: Uint8Array.from(zkEmailInputData.dkim_header_sequence),
+        dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
         bodyTrimmed: emailBodyTrimmed
       });
 
