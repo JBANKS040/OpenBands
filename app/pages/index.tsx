@@ -346,12 +346,12 @@ export default function Home() {
         salary,
         ratings,
         // @dev - Input parameters for email verification /w ZKEmail.nr
-        header: zkEmailInputData.header,
+        header: Uint8Array.from(zkEmailInputData.header),
         //body: zkEmailInputData.body,
         pubkey: zkEmailInputData.pubkey,
         signature: zkEmailInputData.signature,
         //body_hash_index: zkEmailInputData.body_hash_index,
-        dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
+        dkim_header_sequence: Uint8Array.from(zkEmailInputData.dkim_header_sequence),
         bodyTrimmed: emailBodyTrimmed
       });
 
