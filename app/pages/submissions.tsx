@@ -16,7 +16,8 @@ interface Submission {
   isVerifying?: boolean;
   verificationResult?: boolean | null;
   ratings?: CompanyRatingsType;
-  rsa_signature_length?: number; // 9 or 18
+  rsa_signature_length: number;    // 9 or 18
+  //rsa_signature_length?: number; // 9 or 18
 }
 
 interface CompanyData {
