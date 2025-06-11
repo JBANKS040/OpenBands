@@ -57,14 +57,14 @@ export async function generateZkEmailInputsFromEmlFile(
     const inputs = {
       ...zkEmailInputs,
       header: headerPadded,
-      header_length: zkEmailInputs.header_length,
+      header_length: headerArray.length,  // @dev - headerArray = Array.from(zkEmailInputs.header as any)
       partial_body: Array.from(partialBodyPadded).map((s) => s.toString()),
-      partial_body_length: zkEmailInputs.partial_body_length,
-      full_body_length: zkEmailInputs.body_length,
+      partial_body_length: partialBodyPadded.length,
+      full_body_length: bodyArray.length, // @dev - bodyArray = Array.from(zkEmailInputs.body as any)
       partial_body_hash: zkEmailInputs.partial_body_hash,
       body_hash_index: zkEmailInputs.body_hash_index,
       pubkey: zkEmailInputs.pubkey,
-      pubkey_redc: zkEmailInputs.pubkey_redc,
+      pubkey_redc: zkEmailInputs.pubkey.redc,
       signature: zkEmailInputs.signature,
       repo_name: Array.from(repoNamePadded).map((s) => s.toString()),
       repo_name_length: emailDetails.repoName.length,
