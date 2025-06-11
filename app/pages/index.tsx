@@ -49,22 +49,22 @@ interface ZkEmailInputHeader {
 
 interface ZkEmailInputData {
   header: {
-    storage: Uint8Array | null,
-    len: number | null
+    storage: Uint8Array,
+    len: number
   };
   body: {
-    storage: Uint8Array | null,
-    len: number | null
+    storage: Uint8Array,
+    len: number
   };
   pubkey: {
-    modulus: any | null,
-    redc: any | null
+    modulus: any,
+    redc: any
   };
-  signature: any | null;
-  body_hash_index :number | null;
+  signature: any;
+  body_hash_index :number;
   dkim_header_sequence: {
-    index: number | null,
-    length: number | null
+    index: number,
+    length: number
   };
 }
 
@@ -210,11 +210,11 @@ export default function Home() {
       // Set the zkEmailInputData
       setZkEmailInputData({
         header: {
-          storage: Uint8Array.from(zkEmailInputs.header.storage),
+          storage: zkEmailInputs.header.storage,
           len: zkEmailInputs.header.len
         },
         body: {
-          storage: Uint8Array.from(zkEmailInputs.body.storage),
+          storage: zkEmailInputs.body.storage,
           len: zkEmailInputs.body.len
         },
         pubkey: {
