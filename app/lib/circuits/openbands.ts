@@ -44,24 +44,24 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     };
     /// @dev - Data type of zkEmail related input parameters
     header: {
-      storage: Uint8Array,
-      len: number
+      storage: Uint8Array | null,
+      len: number | null
     };
     // body: {
     //   storage: Uint8Array,
     //   len: number
     // };
     pubkey: {
-      modulus: any,
-      redc: any
+      modulus: any | null,
+      redc: any | null
     };
-    signature: any;
+    signature: any | null;
     //body_hash_index :number;
     dkim_header_sequence: {
-      index: number,
-      length: number
+      index: number | null,
+      length: number | null
     };
-    bodyTrimmed: string;
+    bodyTrimmed: string | null;
   }) => {
     if (!idToken || !jwtPubkey) {
       throw new Error(

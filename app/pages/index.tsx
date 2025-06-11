@@ -49,22 +49,22 @@ interface ZkEmailInputHeader {
 
 interface ZkEmailInputData {
   header: {
-    storage: Uint8Array,
-    len: number
+    storage: Uint8Array | null,
+    len: number | null
   };
   body: {
-    storage: Uint8Array,
-    len: number
+    storage: Uint8Array | null,
+    len: number | null
   };
   pubkey: {
-    modulus: any,
-    redc: any
+    modulus: any | null,
+    redc: any | null
   };
-  signature: any;
-  body_hash_index :number;
+  signature: any | null;
+  body_hash_index :number | null;
   dkim_header_sequence: {
-    index: number,
-    length: number
+    index: number | null,
+    length: number | null
   };
 }
 
