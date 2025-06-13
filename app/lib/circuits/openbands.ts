@@ -218,7 +218,9 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
       let vkey;
       try {
-        if (rsa_signature_length == 9) {
+        if (rsa_signature_length == 0 || !rsa_signature_length) { // @dev - For verifying the proofs, which was generated with the old version of the circuit (v0.0.1)
+          vkey = await import(`../../assets/openbands-0.0.1/vk.json`);
+        } else if (rsa_signature_length == 9) {
           vkey = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.0.1/vk.json`);
         } else if (rsa_signature_length == 18) {
           vkey = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.0.1/vk.json`);
@@ -295,7 +297,9 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
       let circuitArtifact;
       try {
-        if (rsa_signature_length == 9) {
+        if (rsa_signature_length == 0 || !rsa_signature_length) { // @dev - For verifying the proofs, which was generated with the old version of the circuit (v0.0.1)
+          circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
+        } else if (rsa_signature_length == 9) {
           circuitArtifact = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.0.1/openbands.json`);
         } else if (rsa_signature_length == 18) {
           circuitArtifact = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.0.1/openbands.json`);
