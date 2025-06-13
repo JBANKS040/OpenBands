@@ -4,7 +4,11 @@ import { jwtDecode } from "jwt-decode";
 import { OPENBANDS_CIRCUIT_HELPER } from "../lib/circuits/openbands";
 import { pubkeyModulusFromJWK } from "../lib/utils";
 import { supabase, Submission, CompanyRatings as CompanyRatingsType } from "../lib/supabase";
-import { getZkEmailTestValues, ZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
+import { getZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
+//import { getZkEmailTestValues, ZkEmailTestValues } from '../lib/zkemail/zkEmailTestValueGenerator';
+import { extractRawEmailWithoutHtmlPart, extractBodyWithoutHeader } from '../lib/zkemail/emailHeaderAndBodyExtractor';
+import { generateProofFromEmlFile } from '../lib/zkemail/client-side-libraries/zkEmailBlueprintSDK';
+import { generateZkEmailVerifierInputs } from '../lib/zkemail/server-side-libraries/zkEmailVerifierInputsGenerator';
 
 import CompanyRatings from '../components/CompanyRatings';
 import InteractiveStarRating from '../components/InteractiveStarRating';
@@ -31,11 +35,38 @@ interface ProofDetails extends Omit<Submission, 'proof' | 'jwt_pub_key'> {
   timestamp?: number;
   verificationResult?: boolean | null;
   isVerifying?: boolean;
+  rsa_signature_length: number; // 9 or 18
 }
 
 interface UserInfo {
   email: string | null;
   idToken: string | null;
+}
+
+interface ZkEmailInputHeader {
+  storage: any | null;
+  len: string | null;
+}
+
+interface ZkEmailInputData {
+  header: {
+    storage: Uint8Array,
+    len: number
+  };
+  body: {
+    storage: Uint8Array,
+    len: number
+  };
+  pubkey: {
+    modulus: any,
+    redc: any
+  };
+  signature: any;
+  body_hash_index :number;
+  dkim_header_sequence: {
+    index: number,
+    length: number
+  };
 }
 
 const ratingLabels = {
@@ -69,7 +100,31 @@ async function getGooglePublicKey(kid: string): Promise<JsonWebKey> {
 }
 
 export default function Home() {
+  const emptyUint8Array = new Uint8Array(0);
+
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: null, idToken: null });
+  const [zkEmailInputData, setZkEmailInputData] = useState<ZkEmailInputData>({
+    header: {
+      storage: emptyUint8Array,
+      len: 0
+    },
+    body: {
+      storage: emptyUint8Array,
+      len: 0
+    },
+    pubkey: {
+      modulus: null,
+      redc: null
+    },
+    signature: null,
+    body_hash_index: 0,
+    dkim_header_sequence: {
+      index: 0,
+      length: 0,
+    }
+  });
+  const [emailBodyTrimmed, setEmailBodyTrimmed] = useState("");
+
   const [emlFile, setEmlFile] = useState("");
   const [emlFileName, setEmlFileName] = useState<string | null>(null);
   const [position, setPosition] = useState("");
@@ -119,13 +174,65 @@ export default function Home() {
     }
     setLoading(true);
     try {
+      // Read an EML file as text
       const eml = await file.text();
+      console.log(`eml: ${eml}`);
       setEmlFile(eml);
       setEmlFileName(file.name);
       setError(null);
       console.log('eml content:', eml.slice(0, 100));
+
+      // @dev - Generate a proof from the raw email, which is extracted from an given eml file, by using the zkEmail Blueprint SDK.
+      //const blueprintSlug = "Bisht13/SuccinctZKResidencyInvite@v3"; // [TODO]: Change to the appropreate blueprint slug later.
+      //const { proof } = await generateProofFromEmlFile(eml, blueprintSlug);
+      //console.log(`proof: ${proof}`);
+
+      // @dev - Extract the email header and body, which the HTML part is cut off, from a given eml (rawEmail) text.
+      const rawEmailWithoutHtmlPart = await extractRawEmailWithoutHtmlPart(eml);
+      console.log(`rawEmailWithoutHtmlPart: ${ rawEmailWithoutHtmlPart }`);
+
+      // @dev - Extract the email body, which the email header is cut off, from a given "rawEmailWithoutHtmlPart" text.
+      const bodyWithoutHeader = await extractBodyWithoutHeader(rawEmailWithoutHtmlPart);
+      setEmailBodyTrimmed(bodyWithoutHeader);
+      console.log(`bodyWithoutHeader: ${ bodyWithoutHeader }`);
+
+      // @dev - Generate the inputs for the zkEmail based verifier circuit.
+      const { zkEmailInputs } = await generateZkEmailVerifierInputs(eml);
+      console.log(`zkEmailInputs: ${ JSON.stringify(zkEmailInputs, null, 2) }`);
+      //console.log(`zkEmailInputs.header.storage: ${ zkEmailInputs.header.storage }`);
+
+      // @dev - Default header/ body lengths to use for input generation.
+      // const inputParams = {
+      //   maxHeadersLength: 512,
+      //   maxBodyLength: 1024,
+      // };
+
+      // @dev - Extract a position and body from the .eml file
+      // const { header, body } = await extractEmailHeaderAndBody(eml, inputParams);
+
+      // Set the zkEmailInputData
+      setZkEmailInputData({
+        header: {
+          storage: zkEmailInputs.header.storage,
+          len: zkEmailInputs.header.len
+        },
+        body: {
+          storage: zkEmailInputs.body.storage,
+          len: zkEmailInputs.body.len
+        },
+        pubkey: {
+          modulus: zkEmailInputs.pubkey.modulus,
+          redc: zkEmailInputs.pubkey.redc
+        },
+        signature: zkEmailInputs.signature,
+        body_hash_index: zkEmailInputs.body_hash_index,
+        dkim_header_sequence: {
+          index: zkEmailInputs.dkim_header_sequence.index,
+          length: zkEmailInputs.dkim_header_sequence.length
+        }
+      });
     } catch (err) {
-      setError(`Failed to read file: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      setError(`Failed to read EML file: ${err instanceof Error ? err.message : 'Unknown error'}`);
       setEmlFile('');
       setEmlFileName(null);
       console.error('Failed to read file:', err);
@@ -167,7 +274,8 @@ export default function Home() {
   const fetchSubmissions = async () => {
     try {
       const { data, error } = await supabase
-        .from('submissions')
+        .from('submissions')            // @dev - The "production" environment should use 'submissions' table.
+        //.from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -183,7 +291,8 @@ export default function Home() {
           salary: item.salary,
           jwtPubKey: JSON.parse(item.jwt_pub_key),
           timestamp: new Date(item.created_at).getTime(),
-          ratings: item.ratings ? JSON.parse(item.ratings) : undefined
+          ratings: item.ratings ? JSON.parse(item.ratings) : undefined,
+          rsa_signature_length: item.rsa_signature_length // 9 or 18
         }));
         setRecentSubmissions(submissions);
       }
@@ -195,13 +304,16 @@ export default function Home() {
   const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // Only allow numbers
-    if (value === '' || /^\d+$/.test(value)) {
-      setSalary(value);
-    }
+    // if (value === '' || /^\d+$/.test(value)) {
+    //   setSalary(value);
+    // }
+
+    // Allow strings to recognize some special characters (i.e. comma, dollar sign, etc.)
+    setSalary(value);
   };
 
   const generateProof = async () => {
-    if (!userInfo.idToken || !position || !salary) return;
+    if (!userInfo.idToken || !zkEmailInputData || !emailBodyTrimmed || !emlFile || !position || !salary) return;
 
     setLoading(true);
     setError(null);
@@ -217,17 +329,21 @@ export default function Home() {
       const jwtPubkey = await getGooglePublicKey(kid);
 
       /// @dev - Get ZKEmail test values
-      const zkEmailTestValues: ZkEmailTestValues = await getZkEmailTestValues();
-      const { header: _header, body: _body, pubkey: _pubkey, signature: _signature, body_hash_index: _body_hash_index, dkim_header_sequence: _dkim_header_sequence } = zkEmailTestValues;
-      console.log(`header: ${_header}`);
-      console.log(`body: ${_body}`);
-      console.log(`pubkey: ${_pubkey}`);
-      console.log(`signature: ${_signature}`);
-      console.log(`body_hash_index: ${_body_hash_index}`);
-      console.log(`dkim_header_sequence: ${_dkim_header_sequence}`);
+      //const zkEmailTestValues: ZkEmailTestValues = await getZkEmailTestValues();
+
+      /// @dev - Log of the zkEmailInputData
+      console.log(`zkEmailInputData: ${ JSON.stringify(zkEmailInputData, null, 2) }`);
+      console.log(`header: ${ JSON.stringify(zkEmailInputData.header, null, 2) }`);
+      console.log(`body: ${ JSON.stringify(zkEmailInputData.body, null, 2) }`);
+      console.log(`pubkey: ${ JSON.stringify(zkEmailInputData.pubkey , null, 2)}`);
+      console.log(`signature: ${ zkEmailInputData.signature }`);
+      console.log(`body_hash_index: ${ zkEmailInputData.body_hash_index }`);
+      console.log(`dkim_header_sequence: ${ JSON.stringify(zkEmailInputData.dkim_header_sequence, null, 2) }`);
+
+      console.log(`emailBodyTrimmed: ${ emailBodyTrimmed }`);
 
       // First generate the proof
-      const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({
+      const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({  /// @dev - [TODO]: Add the zkEmail related input parameters to the generateProof() of the original file.
         idToken: userInfo.idToken,
         jwtPubkey,
         domain,
@@ -235,18 +351,20 @@ export default function Home() {
         salary,
         ratings,
         // @dev - Input parameters for email verification /w ZKEmail.nr
-        header: zkEmailTestValues.header,
-        body: zkEmailTestValues.body,
-        pubkey: zkEmailTestValues.pubkey,
-        signature: zkEmailTestValues.signature,
-        body_hash_index: zkEmailTestValues.body_hash_index,
-        dkim_header_sequence: zkEmailTestValues.dkim_header_sequence
+        header: zkEmailInputData.header,
+        //body: zkEmailInputData.body,
+        pubkey: zkEmailInputData.pubkey,
+        signature: zkEmailInputData.signature,
+        //body_hash_index: zkEmailInputData.body_hash_index,
+        dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
+        bodyTrimmed: emailBodyTrimmed
       });
 
       // Then try to store it (this might fail due to schema issues)
       try {
         await supabase
-          .from('submissions')
+          .from('submissions')            // @dev - The "production" environment should use 'submissions' table.
+          //.from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
           .insert([{
             domain,
             position,
@@ -254,6 +372,7 @@ export default function Home() {
             proof: Array.from(generatedProof.proof).join(','),
             jwt_pub_key: JSON.stringify(jwtPubkey),
             ratings: JSON.stringify(ratings),
+            rsa_signature_length: zkEmailInputData.signature.length, // 9 or 18
             created_at: new Date().toISOString()
           }]);
         
@@ -307,7 +426,8 @@ export default function Home() {
             leadership_quality: 3,
             operational_efficiency: 3
           }
-        }
+        },
+        proofToVerify.rsa_signature_length, // 9 or 18
       );
 
       setRecentSubmissions(prevSubmissions => {
@@ -584,4 +704,4 @@ export default function Home() {
       </div>
     </Layout>
   );
-} 
+}

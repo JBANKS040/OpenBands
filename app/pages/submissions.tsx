@@ -16,6 +16,8 @@ interface Submission {
   isVerifying?: boolean;
   verificationResult?: boolean | null;
   ratings?: CompanyRatingsType;
+  rsa_signature_length: number;    // 9 or 18
+  //rsa_signature_length?: number; // 9 or 18
 }
 
 interface CompanyData {
@@ -62,6 +64,7 @@ const calculateAverageRatings = (submissions: Submission[]): CompanyRatingsType 
 };
 
 export default function Submissions() {
+  const [loading, setLoading] = useState(false);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [submissionsByCompany, setSubmissionsByCompany] = useState<CompanyData[]>([]);
   const [viewMode, setViewMode] = useState<'all' | 'byCompany'>('all');
@@ -73,7 +76,8 @@ export default function Submissions() {
   const fetchSubmissions = async () => {
     try {
       const { data, error } = await supabase
-        .from('submissions')
+        .from('submissions')            // @dev - The "production" environment should use 'submissions' table.
+        //.from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -177,7 +181,8 @@ export default function Submissions() {
             leadership_quality: 3,
             operational_efficiency: 3
           }
-        }
+        },
+        submission.rsa_signature_length
       );
 
       updateSubmissionState(false, result, submission);
@@ -204,8 +209,8 @@ export default function Submissions() {
       className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow"
     >
       <div className="flex justify-between items-start">
+      <div className="text-lg font-medium text-gray-900">Someone from {submission.domain}</div>
         <div>
-          <div className="text-lg font-medium text-gray-900">Someone from {submission.domain}</div>
           <div className="mt-2 text-sm text-gray-600">
             <span className="font-medium">Position: </span>
             {submission.position}
