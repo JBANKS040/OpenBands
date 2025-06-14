@@ -32,13 +32,12 @@ export async function generateZkEmailVerifierInputs(
 /**
  * @description Generate a dkimResult from raw email content, which is extracted from a EML file (.eml file)
  * @param rawEmail Full email content as a buffer or string
- * @param params Arguments to control the input generation
  * @returns a dkimResult
  */
 export async function getDKIMResult(
     rawEmail: string,
     //rawEmail: Buffer | string,
-    params: InputGenerationArgs = {}
+    //params: InputGenerationArgs = {}
 ) {
   const dkimResult = await verifyDKIMSignature(rawEmail, undefined, undefined, true);
   console.log("DKIM Result:", dkimResult);
