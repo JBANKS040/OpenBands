@@ -1,5 +1,7 @@
+# @notice - This script file must be run from the root directory of the project, where is the location of .env file.
 echo "Load the environment variables from the .env file..."
-. ./.env
+source .env
+#. ./.env
 
 echo "Deploying the HonkVerifier and PositionAndSalaryProof1024Verifier contract on Base Sepolia Testnet..."
 forge script script/base-testnet/deployment/DeploymentForHonkVerifier1024.s.sol \
