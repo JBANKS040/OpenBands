@@ -4,7 +4,7 @@ source .env
 #. ./.env
 
 echo "Deploying the HonkVerifier and PositionAndSalaryProof1024Verifier contract on Base Sepolia Testnet..."
-forge script script/base-testnet/deployment/DeploymentForHonkVerifier1024.s.sol \
+forge script contracts/scripts/base-testnet/deployment/DeploymentForHonkVerifier1024.s.sol \
     --broadcast \
     --rpc-url ${BASE_TESTNET_RPC} \
     --chain-id ${BASE_TESTNET_CHAIN_ID} \
@@ -13,7 +13,7 @@ forge script script/base-testnet/deployment/DeploymentForHonkVerifier1024.s.sol 
     ./contracts/src/circuits/circuit-for-zkemail-1024-bit-dkim/PositionAndSalaryProof1024Verifier.sol:PositionAndSalaryProof1024Verifier --skip-simulation --legacy
 
 echo "Deploying the HonkVerifier and PositionAndSalaryProof2048Verifier contract on Base Sepolia Testnet..."
-forge script script/base-testnet/deployment/DeploymentForHonkVerifier2048.s.sol \
+forge script contracts/scripts/base-testnet/deployment/DeploymentForHonkVerifier2048.s.sol \
     --broadcast \
     --rpc-url ${BASE_TESTNET_RPC} \
     --chain-id ${BASE_TESTNET_CHAIN_ID} \
@@ -22,7 +22,7 @@ forge script script/base-testnet/deployment/DeploymentForHonkVerifier2048.s.sol 
     ./contracts/src/circuits/circuit-for-zkemail-2048-bit-dkim/PositionAndSalaryProof2048Verifier.sol:PositionAndSalaryProof2048Verifier --skip-simulation --legacy
 
 echo "Deploying the PositionAndSalaryProofManager contract on Base Sepolia Testnet..."
-forge script script/base-testnet/deployment/DeploymentAllContracts.s.sol \
+forge script contracts/scripts/base-testnet/deployment/DeploymentAllContracts.s.sol \
     --broadcast \
     --rpc-url ${BASE_TESTNET_RPC} \
     --chain-id ${BASE_TESTNET_CHAIN_ID} \
@@ -37,7 +37,7 @@ forge script script/base-testnet/deployment/DeploymentAllContracts.s.sol \
 ################################################################################################################
 
 # echo "Verify the deployed-HonkVerifier and PositionAndSalaryProof1024Verifier contract on Base Sepolia Testnet Explorer..."
-# forge script/base-testnet/deployment/DeploymentForHonkVerifier1024.s.sol \
+# forge script contracts/scripts/base-testnet/deployment/DeploymentForHonkVerifier1024.s.sol \
 #     --rpc-url ${BASE_TESTNET_RPC} \
 #     --chain-id ${BASE_TESTNET_CHAIN_ID} \
 #     --private-key ${BASE_TESTNET_PRIVATE_KEY} \
@@ -48,7 +48,7 @@ forge script script/base-testnet/deployment/DeploymentAllContracts.s.sol \
 #     --etherscan-api-key ${BASESCAN_API_KEY} \
 
 # echo "Verify the deployed-HonkVerifier and PositionAndSalaryProof2048Verifier contract on Base Sepolia Testnet Explorer..."
-# forge script script/base-testnet/deployment/DeploymentForHonkVerifier2048.s.sol \
+# forge script contracts/scripts/base-testnet/deployment/DeploymentForHonkVerifier2048.s.sol \
 #     --rpc-url ${BASE_TESTNET_RPC} \
 #     --chain-id ${BASE_TESTNET_CHAIN_ID} \
 #     --private-key ${BASE_TESTNET_PRIVATE_KEY} \
@@ -59,7 +59,7 @@ forge script script/base-testnet/deployment/DeploymentAllContracts.s.sol \
 #     --etherscan-api-key ${BASESCAN_API_KEY} \
 
 # echo "Verify the deployed-PositionAndSalaryProofManager contract on Base Sepolia Testnet Explorer..."
-# forge script script/base-testnet/deployment/DeploymentAllContracts.s.sol \
+# forge script contracts/scripts/base-testnet/deployment/DeploymentAllContracts.s.sol \
 #     --rpc-url ${BASE_TESTNET_RPC} \
 #     --chain-id ${BASE_TESTNET_CHAIN_ID} \
 #     --private-key ${BASE_TESTNET_PRIVATE_KEY} \
