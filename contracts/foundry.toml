@@ -12,8 +12,8 @@ optimizer_runs = 200
 
 [profile.remappings]
 # ds-test = "lib/forge-std/lib/ds-test/src/"
-forge-std = "lib/foundry-noir-helper/lib/forge-std/src/"
-# foundry-noir-helper = "lib/foundry-noir-helper/src/"
+#forge-std = "lib/foundry-noir-helper/lib/forge-std/src/"
+#foundry-noir-helper = "lib/foundry-noir-helper/src/"
 
 [rpc_endpoints]
 #sepolia = "${SEPOLIA_RPC}"
