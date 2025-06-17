@@ -4,7 +4,7 @@ source .env
 #. ./.env
 
 echo "Deploying the HonkVerifier and PositionAndSalaryProof2048Verifier contract on Base Sepolia Testnet..."
-forge script contracts/scripts/base-testnet/deployment/DeploymentForHonkVerifier2048.s.sol \
+forge script scripts/base-testnet/deployment/DeploymentForHonkVerifier2048.s.sol \
     --broadcast \
     --rpc-url ${BASE_TESTNET_RPC} \
     --chain-id ${BASE_TESTNET_CHAIN_ID} \

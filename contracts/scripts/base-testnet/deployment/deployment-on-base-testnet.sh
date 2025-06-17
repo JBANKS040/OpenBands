@@ -22,7 +22,7 @@ source .env
 #     ./contracts/src/circuits/circuit-for-zkemail-2048-bit-dkim/PositionAndSalaryProof2048Verifier.sol:PositionAndSalaryProof2048Verifier --skip-simulation --legacy
 
 echo "Deploying the PositionAndSalaryProofManager contract on Base Sepolia Testnet..."
-forge script contracts/scripts/base-testnet/deployment/DeploymentAllContracts.s.sol \
+forge script scripts/base-testnet/deployment/DeploymentAllContracts.s.sol \
     --broadcast \
     --rpc-url ${BASE_TESTNET_RPC} \
     --chain-id ${BASE_TESTNET_CHAIN_ID} \
