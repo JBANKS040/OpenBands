@@ -30,9 +30,9 @@ contract DeploymentAllContracts is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         //vm.startBroadcast();
-        address POSITION_AND_SALARY_PROOF_1024_VERIFIER = vm.envAddress("POSITION_AND_SALARY_PROOF_1024_VERIFIER"); 
-        address POSITION_AND_SALARY_PROOF_2048_VERIFIER = vm.envAddress("POSITION_AND_SALARY_PROOF_2048_VERIFIER");
-        positionAndSalaryProofManager = new PositionAndSalaryProofManager(POSITION_AND_SALARY_PROOF_1024_VERIFIER, POSITION_AND_SALARY_PROOF_2048_VERIFIER);
+        address POSITION_AND_SALARY_PROOF_1024_VERIFIER = vm.envAddress("POSITION_AND_SALARY_PROOF_1024_VERIFIER_ON_BASE_TESTNET"); 
+        address POSITION_AND_SALARY_PROOF_2048_VERIFIER = vm.envAddress("POSITION_AND_SALARY_PROOF_2048_VERIFIER_ON_BASE_TESTNET");
+        positionAndSalaryProofManager = new PositionAndSalaryProofManager(PositionAndSalaryProof1024Verifier(POSITION_AND_SALARY_PROOF_1024_VERIFIER), PositionAndSalaryProof2048Verifier(POSITION_AND_SALARY_PROOF_2048_VERIFIER));
 
         vm.stopBroadcast();
 
