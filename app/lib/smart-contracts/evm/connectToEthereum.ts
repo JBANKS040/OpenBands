@@ -24,7 +24,7 @@ export async function connectToEthereum(): Promise<{ provider: any, signer: any 
   let signer: any = null;
   let provider: any = null;
 
-  let window: Window = { ethereum: null };
+  let window: Window = { ethereum: undefined };
 
   if (window.ethereum == null) {
     // If MetaMask is not installed, we use the default provider, which is backed by a variety of third-party services (such as INFURA). 
