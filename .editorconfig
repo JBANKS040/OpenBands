@@ -1,3 +1,11 @@
+[*.nr]
+indent_style = space
+indent_size = 4
+
+[*.sol]
+indent_style = space
+indent_size = 4
+
 [*.ts]
 indent_style = space
 indent_size = 2
@@ -6,9 +14,13 @@ indent_size = 2
 indent_style = space
 indent_size = 2
 
-[*.sol]
+[*js]
 indent_style = space
-indent_size = 4
+indent_size = 2
+
+[*jsx]
+indent_style = space
+indent_size = 2
 
 # # EditorConfig is awesome: https://editorconfig.org
 
