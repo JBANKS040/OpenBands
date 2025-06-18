@@ -7,8 +7,22 @@ import { BrowserProvider, parseUnits } from "ethers";
 // Import from a specific export
 import { HDNodeWallet } from "ethers/wallet";
 
+// @dev - The global declaration for the EthereumProvider interface.
+declare global {
+    interface EthereumProvider {
+        request: (...args: any[]) => Promise<any>;
+        // add more methods as needed
+    }
+
+    interface Window {
+    ethereum?: EthereumProvider;
+  }
+}
+
+
 /**
  * @notice - Connect to Ethereum
+ * @dev - ref). https://docs.ethers.io/v6/getting-started/#getting-started-connecting
  */
 export async function connectToEthereum(): Promise<{ provider: any, signer: any }> {
     let signer: any = null;
