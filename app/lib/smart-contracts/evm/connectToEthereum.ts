@@ -2,25 +2,29 @@ import { ethers } from "ethers";
 import { BrowserProvider, parseUnits } from "ethers";
 import { HDNodeWallet } from "ethers/wallet";
 
-// @dev - The global declaration for the EthereumProvider interface.
-declare global {
-  interface EthereumProvider {
-    request: (...args: any[]) => Promise<any>;
-    // add more methods as needed
-  }
+import { EthereumProvider, Window } from "./dataTypes";
 
-  interface Window {
-    ethereum?: EthereumProvider;
-  }
-}
+// @dev - The global declaration for the EthereumProvider interface.
+// declare global {
+//   interface EthereumProvider {
+//     request: (...args: any[]) => Promise<any>;
+//     // add more methods as needed
+//   }
+
+//   interface Window {
+//     ethereum?: EthereumProvider;
+//   }
+// }
 
 /**
  * @notice - Connect to Ethereum
  * @dev - ref). https://docs.ethers.io/v6/getting-started/#getting-started-connecting
  */
-export async function connectToEthereum(): Promise<{ provider: any, signer: any }> {
+export async function connectToEthereum(provider: EthereumProvider): Promise<{ provider: any, signer: any }> {
   let signer: any = null;
-  let provider: any = null;
+  //let provider: any = null;
+
+  let window: Window = { ethereum: provider || null };
 
   if (window.ethereum == null) {
     // If MetaMask is not installed, we use the default provider, which is backed by a variety of third-party services (such as INFURA). 
