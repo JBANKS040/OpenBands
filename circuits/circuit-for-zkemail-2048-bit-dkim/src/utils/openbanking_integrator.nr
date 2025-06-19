@@ -1,4 +1,6 @@
-// // @dev - ref: openbanking.nr-circuit/src/main.nr
+// @dev - ref: openbanking.nr-circuit/src/main.nr
+use openbanking_verifier::{io::OpenbankingVerifierReturn, verify::verify_openbanking_payment};
+
 // use dep::openbanking_verifier::{
 //     constants::{MAX_AMOUNT_VALUE_LENGTH, MAX_PAYLOAD_LENGTH,},
 //     verify::verify_openbanking_payment,
