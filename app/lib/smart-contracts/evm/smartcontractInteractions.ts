@@ -10,7 +10,7 @@ import { EthereumProvider, Window } from "./dataTypes";
  * @notice - State-changing Methods
  * @dev - ref). https://docs.ethers.org/v6/getting-started/#starting-contracts
  */
-export async function callStateChangeFunction(abi: Array, params: Array, signer: any ): Promise<{ txReceipt: any }> {
+export async function callStateChangeFunction(abi: Array, params: Array, signer: any): Promise<{ txReceipt: any }> {
   // abi = [
   //   "function transfer(address to, uint amount)"
   // ]
