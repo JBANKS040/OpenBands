@@ -2,6 +2,8 @@ import { ethers } from "ethers";
 import { BrowserProvider, parseUnits } from "ethers";
 import { HDNodeWallet } from "ethers/wallet";
 
+import { EthereumProvider, Window } from "./dataTypes";
+
 /** 
  * @dev - [TODO]: Define the functions by using the following ethers.js methods:
  * @dev - ref: https://docs.ethers.org/v6/getting-started/#starting-blockchain

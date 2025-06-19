@@ -2,34 +2,45 @@ import { ethers } from "ethers";
 import { BrowserProvider, parseUnits } from "ethers";
 import { HDNodeWallet } from "ethers/wallet";
 
-/** 
- * @dev - [TODO]: Define the functions by using the following ethers.js methods:
- * @dev - ref: https://docs.ethers.org/v6/getting-started/#starting-contracts
+import { EthereumProvider, Window } from "./dataTypes";
+
+
+
+/**
+ * @notice - State-changing Methods
+ * @dev - ref). https://docs.ethers.org/v6/getting-started/#starting-contracts
  */
+export async function callStateChangeFunction(abi: Array, params: Array, signer: any ): Promise<{ txReceipt: any }> {
+  // abi = [
+  //   "function transfer(address to, uint amount)"
+  // ]
 
+  // @dev - Store the parameters into variables
+  const _contractAddress = params[0];
+  const _to = params[1];
+  const _amount = params[2];
 
-// @dev - State-changing Methods
-// 
-// abi = [
-//   "function transfer(address to, uint amount)"
-// ]
+  // Connected to a Signer; can make state changing transactions,
+  // which will cost the account ether
+  const contract = new Contract(_contractAddress, abi, signer);
+  //const contract = new Contract("dai.tokens.ethers.eth", abi, signer);
 
-// // Connected to a Signer; can make state changing transactions,
-// // which will cost the account ether
-// contract = new Contract("dai.tokens.ethers.eth", abi, signer)
+  // Send 1 DAI
+  const amount = parseUnits(_amount, 18);
+  //const amount = parseUnits("1.0", 18);
 
-// // Send 1 DAI
-// amount = parseUnits("1.0", 18);
+  // Send the transaction
+  const tx = await contract.transfer(_to, amount);
+  //const tx = await contract.transfer("ethers.eth", amount);
 
-// // Send the transaction
-// tx = await contract.transfer("ethers.eth", amount)
+  // Currently the transaction has been sent to the mempool,
+  // but has not yet been included. So, we...
 
-// // Currently the transaction has been sent to the mempool,
-// // but has not yet been included. So, we...
+  // ...wait for the transaction to be included.
+  const txReceipt = await tx.wait();
 
-// // ...wait for the transaction to be included.
-// await tx.wait()
-
+  return { txReceipt };
+}
 
 
 
