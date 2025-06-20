@@ -9,8 +9,8 @@ import { EthereumProvider, Window } from "../dataTypes";
  * @notice - PositionAndSalaryProofManager# recordPublicInputsOfPositionAndSalaryProof()
  */
 export async function recordPublicInputsOfPositionAndSalaryProof(
-  abi: Array, 
-  params: Array, 
+  abi: Array<any>, 
+  params: Array<any>, 
   signer: any
 ): Promise<{ txReceipt: any }> {
   // abi = [
