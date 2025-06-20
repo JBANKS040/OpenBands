@@ -15,6 +15,7 @@ import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
 
 // @dev - Blockchain related imports
+import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
 import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
 import { recordPublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
 
@@ -149,6 +150,7 @@ export default function Home() {
   const [dragOver, setDragOver] = useState(false);
 
   useEffect(() => {
+    connectToEvmWallet(); // @dev - Connect to EVM wallet (i.e. MetaMask) on page load
     fetchSubmissions();
   }, []);
 

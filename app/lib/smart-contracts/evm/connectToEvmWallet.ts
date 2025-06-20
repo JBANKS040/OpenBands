@@ -20,7 +20,7 @@ import { EthereumProvider, Window } from "./dataTypes";
  * @notice - Connect to Ethereum
  * @dev - ref). https://docs.ethers.io/v6/getting-started/#getting-started-connecting
  */
-export async function connectToEthereum(): Promise<{ provider: any, signer: any }> {
+export async function connectToEvmWallet(): Promise<{ provider: any, signer: any }> {
   let signer: any = null;
   let provider: any = null;
 
