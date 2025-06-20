@@ -15,7 +15,7 @@ import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
 
 // @dev - Blockchain related imports
-import { artifactOfPositionAndSalaryProofManager } from '../lib/smart-contracts/evm/artifacts/PositionAndSalaryProofManager.json';
+import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
 import { recordPublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
 
 
