@@ -24,7 +24,7 @@ export async function connectToEvmWallet(): Promise<{ provider: any, signer: any
   let signer: any = null;
   let provider: any = null;
 
-  let window: Window = { ethereum: undefined };
+  //let window: Window = { ethereum: undefined };
 
   if (window.ethereum == null) {
     // If MetaMask is not installed, we use the default provider, which is backed by a variety of third-party services (such as INFURA). 
