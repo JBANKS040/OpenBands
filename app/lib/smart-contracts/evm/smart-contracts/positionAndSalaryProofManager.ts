@@ -2,7 +2,7 @@ import { ethers, Contract } from "ethers";
 import { BrowserProvider, parseUnits } from "ethers";
 import { HDNodeWallet } from "ethers/wallet";
 
-import { EthereumProvider, Window } from "../dataTypes";
+//import { EthereumProvider, Window } from "../dataTypes";
 
 
 /**
