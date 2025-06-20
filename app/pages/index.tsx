@@ -145,13 +145,21 @@ export default function Home() {
     leadership_quality: 3,
     operational_efficiency: 3
   });
+  const [provider, setProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
   useEffect(() => {
-    connectToEvmWallet(); // @dev - Connect to EVM wallet (i.e. MetaMask) on page load
-    fetchSubmissions();
+    // fetchSubmissions();
+    async function init() {
+      const { provider, signer } = await connectToEvmWallet(); // @dev - Connect to EVM wallet (i.e. MetaMask) on page load
+      setProvider(provider);
+      setSigner(signer);
+      fetchSubmissions();
+    }
+    init();
   }, []);
 
   const handleGoogleLogin = useCallback(async (credentialResponse: any) => {
@@ -376,7 +384,7 @@ export default function Home() {
         publicInputs, 
         zkEmailInputData.signature.length
       ];
-      let signer: any = null;
+      //let signer: any = null;
       const txReceipt = recordPublicInputsOfPositionAndSalaryProof(abi, params, signer);      
 
       // Then try to store it (this might fail due to schema issues)
