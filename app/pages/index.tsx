@@ -14,6 +14,9 @@ import CompanyRatings from '../components/CompanyRatings';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
 
+// @dev - Blockchain related imports
+import { recordPublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
+
 
 interface GoogleJwtPayload {
   email: string;
@@ -359,6 +362,12 @@ export default function Home() {
         dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
         bodyTrimmed: emailBodyTrimmed
       });
+
+      // @dev - Store the data into the blockchain (BASE)
+      let abi: Array<any> = [];
+      let params: Array<any> = [domain, position, salary, generatedProof.proof, ratings, zkEmailInputData.signature.length];
+      let signer: any = null;
+      const txReceipt = recordPublicInputsOfPositionAndSalaryProof(abi, params, signer);      
 
       // Then try to store it (this might fail due to schema issues)
       try {

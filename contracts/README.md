@@ -3,6 +3,18 @@
 ## Overview
 - IN PROGRESS
 
+
+<br>
+
+## Compile Smart Contracts
+
+- Compile the smart contracts:
+  - And then, the `artifacts` (icl. `ABIs`) would be copied and pasted into the `./app/lib/smart-contracts/evm/smart-contracts/artifacts` directory:
+```bash
+cd contracts
+sh compileContracts.sh
+```
+
 <br>
 
 ## Smart Contract Deployment
