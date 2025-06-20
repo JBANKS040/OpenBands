@@ -3,6 +3,6 @@ export interface EthereumProvider {
   // add more methods as needed
 }
 
-export interface Window {
-  ethereum?: EthereumProvider;
-}
+// export interface Window {
+//   ethereum?: EthereumProvider;
+// }

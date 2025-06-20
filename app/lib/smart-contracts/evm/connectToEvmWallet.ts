@@ -2,19 +2,20 @@ import { ethers } from "ethers";
 import { BrowserProvider, parseUnits } from "ethers";
 import { HDNodeWallet } from "ethers/wallet";
 
-import { EthereumProvider, Window } from "./dataTypes";
+import { EthereumProvider } from "./dataTypes";
+//import { EthereumProvider, Window } from "./dataTypes";
 
 // @dev - The global declaration for the EthereumProvider interface.
-// declare global {
-//   interface EthereumProvider {
-//     request: (...args: any[]) => Promise<any>;
-//     // add more methods as needed
-//   }
+declare global {
+  // interface EthereumProvider {
+  //   request: (...args: any[]) => Promise<any>;
+  //   // add more methods as needed
+  // }
 
-//   interface Window {
-//     ethereum?: EthereumProvider;
-//   }
-// }
+  interface Window {
+    ethereum?: EthereumProvider;
+  }
+}
 
 /**
  * @notice - Connect to Ethereum
