@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers, Contract } from "ethers";
 import { BrowserProvider, parseUnits } from "ethers";
 import { HDNodeWallet } from "ethers/wallet";
 
