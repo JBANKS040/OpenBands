@@ -15,6 +15,7 @@ import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
 
 // @dev - Blockchain related imports
+import { artifactOfPositionAndSalaryProofManager } from '../lib/smart-contracts/evm/artifacts/PositionAndSalaryProofManager.json';
 import { recordPublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
 
 
@@ -364,7 +365,7 @@ export default function Home() {
       });
 
       // @dev - Store the data into the blockchain (BASE)
-      let abi: Array<any> = [];
+      let abi: Array<any> = artifactOfPositionAndSalaryProofManager.abi;
       let params: Array<any> = [domain, position, salary, generatedProof.proof, ratings, zkEmailInputData.signature.length];
       let signer: any = null;
       const txReceipt = recordPublicInputsOfPositionAndSalaryProof(abi, params, signer);      
