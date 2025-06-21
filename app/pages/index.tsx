@@ -18,7 +18,7 @@ import Layout from '../components/layout';
 import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
 import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
 import { recordPublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
-import { encodeBase64 } from 'ethers';
+import { encodeBase64, toUtf8Bytes } from 'ethers';
 
 interface GoogleJwtPayload {
   email: string;
@@ -377,7 +377,9 @@ export default function Home() {
       // @dev - Store the data into the blockchain (BASE)
       let abi: Array<any> = artifactOfPositionAndSalaryProofManager.abi;
       let positionAndSalaryProofManagerContractAddress: string = process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_CONTRACT_ADDRESS || "";
-      let publicInputs: Array<any> = [encodeBase64(domain), position, salary, ratings];
+      console.log(`domain: ${domain}`);
+      console.log(`encodeBase64(toUtf8Bytes(domain)): ${encodeBase64(toUtf8Bytes(domain))}`);
+      let publicInputs: Array<any> = [encodeBase64(toUtf8Bytes(domain)), position, salary, ratings];
       let params: Array<any> = [
         positionAndSalaryProofManagerContractAddress, 
         generatedProof.proof, 
