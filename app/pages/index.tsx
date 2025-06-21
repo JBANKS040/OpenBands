@@ -379,7 +379,10 @@ export default function Home() {
       let positionAndSalaryProofManagerContractAddress: string = process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_CONTRACT_ADDRESS || "";
       console.log(`domain: ${domain}`);
       console.log(`encodeBase64(toUtf8Bytes(domain)): ${encodeBase64(toUtf8Bytes(domain))}`);
-      let publicInputs: Array<any> = [encodeBase64(toUtf8Bytes(domain)), position, salary, ratings];
+      let domainBase64 = encodeBase64(toUtf8Bytes(domain));
+      let domainBytes = Uint8Array.from(domainBase64);
+      let publicInputs: Array<any> = [domainBytes, position, salary, ratings];
+      //let publicInputs: Array<any> = [domain, position, salary, ratings];
       let params: Array<any> = [
         positionAndSalaryProofManagerContractAddress, 
         generatedProof.proof, 
