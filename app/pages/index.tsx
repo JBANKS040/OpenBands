@@ -380,9 +380,18 @@ export default function Home() {
       console.log(`domain: ${domain}`);
       console.log(`encodeBase64(toUtf8Bytes(domain)): ${encodeBase64(toUtf8Bytes(domain))}`);
       let domainBase64 = encodeBase64(toUtf8Bytes(domain));
+      let positionBase64 = encodeBase64(toUtf8Bytes(position));
+      let salaryBase64 = encodeBase64(toUtf8Bytes(salary));
+      let ratingsBase64 = encodeBase64(toUtf8Bytes(JSON.stringify(ratings)));
       let domainBytes = Uint8Array.from(domainBase64);
-      let domainBytes32 = zeroPadBytes(domainBytes, 32); // @dev - Zero-pad to 32 bytes
-      let publicInputs: Array<any> = [domainBytes32, position, salary, ratings];
+      let positionBytes = Uint8Array.from(positionBase64);
+      let salaryBytes = Uint8Array.from(salaryBase64);
+      let ratingsBytes = Uint8Array.from(ratingsBase64);
+      let domainBytes32 = zeroPadBytes(domainBytes, 32);    // @dev - Zero-pad to 32 bytes
+      let positionByte32 = zeroPadBytes(positionBytes, 32); // @dev - Zero-pad to 32 bytes
+      let salaryBytes32 = zeroPadBytes(salaryBytes, 32);    // @dev - Zero-pad to 32 bytes
+      let ratingsBytes32 = zeroPadBytes(ratingsBytes, 32);  // @dev - Zero-pad to 32 bytes
+      let publicInputs: Array<any> = [domainBytes32, positionByte32, salaryBytes32, ratingsBytes32];
       //let publicInputs: Array<any> = [domain, position, salary, ratings];
       let params: Array<any> = [
         positionAndSalaryProofManagerContractAddress, 
