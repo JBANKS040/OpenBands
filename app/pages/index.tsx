@@ -376,7 +376,7 @@ export default function Home() {
 
       // @dev - Store the data into the blockchain (BASE)
       let abi: Array<any> = artifactOfPositionAndSalaryProofManager.abi;
-      let positionAndSalaryProofManagerContractAddress: string = process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_CONTRACT_ADDRESS;
+      let positionAndSalaryProofManagerContractAddress: string = process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_CONTRACT_ADDRESS || "";
       let publicInputs: Array<any> = [domain, position, salary, ratings];
       let params: Array<any> = [
         positionAndSalaryProofManagerContractAddress, 
