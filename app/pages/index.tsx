@@ -17,7 +17,7 @@ import Layout from '../components/layout';
 // @dev - Blockchain related imports
 import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
 import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
-import { recordPublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
+import { storePublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
 import { encodeBase64, toUtf8Bytes, zeroPadBytes } from 'ethers';
 
 interface GoogleJwtPayload {
@@ -379,62 +379,74 @@ export default function Home() {
       let positionAndSalaryProofManagerContractAddress: string = process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_CONTRACT_ADDRESS || "";
       console.log(`domain: ${domain}`);
       console.log(`ratings: ${JSON.stringify(ratings, null, 2)}`);
-      let domainBase64 = encodeBase64(toUtf8Bytes(domain));
-      let positionBase64 = encodeBase64(toUtf8Bytes(position));
-      let salaryBase64 = encodeBase64(toUtf8Bytes(salary));
-      //let ratingsBase64 = encodeBase64(toUtf8Bytes(JSON.stringify(ratings)));
-      let ratingsBase64 = {
-        work_life_balance: encodeBase64(toUtf8Bytes(ratings.work_life_balance)),  // @dev - [TODO]: Convert data type from "Number" to "String"
-        culture_values: encodeBase64(toUtf8Bytes(ratings.culture_values)),
-        career_growth: encodeBase64(toUtf8Bytes(ratings.career_growth)),
-        compensation_benefits: encodeBase64(toUtf8Bytes(ratings.compensation_benefits)),
-        leadership_quality: encodeBase64(toUtf8Bytes(ratings.leadership_quality)),
-        operational_efficiency: encodeBase64(toUtf8Bytes(ratings.operational_efficiency))
-      };
-      let domainBytes = Uint8Array.from(domainBase64);
-      let positionBytes = Uint8Array.from(positionBase64);
-      let salaryBytes = Uint8Array.from(salaryBase64);
-      //let ratingsBytes = Uint8Array.from(ratingsBase64);
-      let ratingsBytes = {
-        work_life_balance: Uint8Array.from(ratingsBase64.work_life_balance),
-        culture_values: Uint8Array.from(ratingsBase64.culture_values),
-        career_growth: Uint8Array.from(ratingsBase64.career_growth),
-        compensation_benefits: Uint8Array.from(ratingsBase64.compensation_benefits),
-        leadership_quality: Uint8Array.from(ratingsBase64.leadership_quality),
-        operational_efficiency: Uint8Array.from(ratingsBase64.operational_efficiency)
-      }
-      let domainBytes32 = zeroPadBytes(domainBytes, 32);      // @dev - Zero-pad to 32 bytes
-      let positionByte32 = zeroPadBytes(positionBytes, 32);   // @dev - Zero-pad to 32 bytes
-      let salaryBytes32 = zeroPadBytes(salaryBytes, 32);      // @dev - Zero-pad to 32 bytes
-      //let ratingsBytes32 = zeroPadBytes(ratingsBytes, 32);  // @dev - Zero-pad to 32 bytes
-      let ratingsBytes32 = {
-        work_life_balance: zeroPadBytes(ratingsBytes.work_life_balance, 32),          // @dev - Zero-pad to 32 bytes,
-        culture_values: zeroPadBytes(ratingsBytes.culture_values, 32),                // @dev - Zero-pad to 32 bytes,
-        career_growth: zeroPadBytes(ratingsBytes.career_growth, 32),                  // @dev - Zero-pad to 32 bytes,
-        compensation_benefits: zeroPadBytes(ratingsBytes.compensation_benefits, 32),  // @dev - Zero-pad to 32 bytes,
-        leadership_quality: zeroPadBytes(ratingsBytes.leadership_quality, 32),        // @dev - Zero-pad to 32 bytes,
-        operational_efficiency: zeroPadBytes(ratingsBytes.operational_efficiency, 32) // @dev - Zero-pad to 32 bytes,
-      };
-
-      // ratings: {
-      //   "work_life_balance": 3,
-      //   "culture_values": 3,
-      //   "career_growth": 3,
-      //   "compensation_benefits": 3,
-      //   "leadership_quality": 3,
-      //   "operational_efficiency": 3
+      // let domainBase64 = encodeBase64(toUtf8Bytes(domain));
+      // let positionBase64 = encodeBase64(toUtf8Bytes(position));
+      // let salaryBase64 = encodeBase64(toUtf8Bytes(salary));
+      // //let ratingsBase64 = encodeBase64(toUtf8Bytes(JSON.stringify(ratings)));
+      // let ratingsBase64 = {
+      //   work_life_balance: encodeBase64(toUtf8Bytes(ratings.work_life_balance)),  // @dev - [TODO]: Convert data type from "Number" to "String"
+      //   culture_values: encodeBase64(toUtf8Bytes(ratings.culture_values)),
+      //   career_growth: encodeBase64(toUtf8Bytes(ratings.career_growth)),
+      //   compensation_benefits: encodeBase64(toUtf8Bytes(ratings.compensation_benefits)),
+      //   leadership_quality: encodeBase64(toUtf8Bytes(ratings.leadership_quality)),
+      //   operational_efficiency: encodeBase64(toUtf8Bytes(ratings.operational_efficiency))
+      // };
+      // let domainBytes = Uint8Array.from(domainBase64);
+      // let positionBytes = Uint8Array.from(positionBase64);
+      // let salaryBytes = Uint8Array.from(salaryBase64);
+      // //let ratingsBytes = Uint8Array.from(ratingsBase64);
+      // let ratingsBytes = {
+      //   work_life_balance: Uint8Array.from(ratingsBase64.work_life_balance),
+      //   culture_values: Uint8Array.from(ratingsBase64.culture_values),
+      //   career_growth: Uint8Array.from(ratingsBase64.career_growth),
+      //   compensation_benefits: Uint8Array.from(ratingsBase64.compensation_benefits),
+      //   leadership_quality: Uint8Array.from(ratingsBase64.leadership_quality),
+      //   operational_efficiency: Uint8Array.from(ratingsBase64.operational_efficiency)
       // }
+      // let domainBytes32 = zeroPadBytes(domainBytes, 32);      // @dev - Zero-pad to 32 bytes
+      // let positionByte32 = zeroPadBytes(positionBytes, 32);   // @dev - Zero-pad to 32 bytes
+      // let salaryBytes32 = zeroPadBytes(salaryBytes, 32);      // @dev - Zero-pad to 32 bytes
+      // //let ratingsBytes32 = zeroPadBytes(ratingsBytes, 32);  // @dev - Zero-pad to 32 bytes
+      // let ratingsBytes32 = {
+      //   work_life_balance: zeroPadBytes(ratingsBytes.work_life_balance, 32),          // @dev - Zero-pad to 32 bytes,
+      //   culture_values: zeroPadBytes(ratingsBytes.culture_values, 32),                // @dev - Zero-pad to 32 bytes,
+      //   career_growth: zeroPadBytes(ratingsBytes.career_growth, 32),                  // @dev - Zero-pad to 32 bytes,
+      //   compensation_benefits: zeroPadBytes(ratingsBytes.compensation_benefits, 32),  // @dev - Zero-pad to 32 bytes,
+      //   leadership_quality: zeroPadBytes(ratingsBytes.leadership_quality, 32),        // @dev - Zero-pad to 32 bytes,
+      //   operational_efficiency: zeroPadBytes(ratingsBytes.operational_efficiency, 32) // @dev - Zero-pad to 32 bytes,
+      // };
 
-      let publicInputs: Array<any> = [domainBytes32, positionByte32, salaryBytes32, ratingsBytes32];
-      //let publicInputs: Array<any> = [domain, position, salary, ratings];
-      let params: Array<any> = [
-        positionAndSalaryProofManagerContractAddress, 
+      // // ratings: {
+      // //   "work_life_balance": 3,
+      // //   "culture_values": 3,
+      // //   "career_growth": 3,
+      // //   "compensation_benefits": 3,
+      // //   "leadership_quality": 3,
+      // //   "operational_efficiency": 3
+      // // }
+
+      // let publicInputs: Array<any> = [domainBytes32, positionByte32, salaryBytes32, ratingsBytes32];
+      // //let publicInputs: Array<any> = [domain, position, salary, ratings];
+      // let params: Array<any> = [
+      //   positionAndSalaryProofManagerContractAddress, 
+      //   generatedProof.proof, 
+      //   publicInputs, 
+      //   zkEmailInputData.signature.length
+      // ];
+      //
+      // let signer: any = null;
+      
+      const txReceipt = storePublicInputsOfPositionAndSalaryProof(
+        signer, 
+        abi, 
         generatedProof.proof, 
-        publicInputs, 
-        zkEmailInputData.signature.length
-      ];
-      //let signer: any = null;
-      const txReceipt = recordPublicInputsOfPositionAndSalaryProof(abi, params, signer);      
+        domain, 
+        position, 
+        salary, 
+        ratings,
+        zkEmailInputData.signature.length, // 9 or 18
+      ); // @dev - Record the public inputs of position and salary proof to the blockchain (BASE) using the "recordPublicInputsOfPositionAndSalaryProof" function.
+      //const txReceipt = recordPublicInputsOfPositionAndSalaryProof(abi, params, signer);    
 
       // Then try to store it (this might fail due to schema issues)
       try {
