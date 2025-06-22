@@ -5,7 +5,7 @@ import { HDNodeWallet } from "ethers/wallet";
 // @dev - Blockchain related imports
 //import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
 //import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
-import { recordPublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
+//import { recordPublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
 import { encodeBase64, toUtf8Bytes, zeroPadBytes } from 'ethers';
 //import { EthereumProvider, Window } from "../dataTypes";
 
@@ -34,12 +34,12 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   let salaryBase64 = encodeBase64(toUtf8Bytes(salary));
   //let ratingsBase64 = encodeBase64(toUtf8Bytes(JSON.stringify(ratings)));
   let ratingsBase64 = {
-    work_life_balance: encodeBase64(toUtf8Bytes(ratings.work_life_balance)),  // @dev - [TODO]: Convert data type from "Number" to "String"
-    culture_values: encodeBase64(toUtf8Bytes(ratings.culture_values)),
-    career_growth: encodeBase64(toUtf8Bytes(ratings.career_growth)),
-    compensation_benefits: encodeBase64(toUtf8Bytes(ratings.compensation_benefits)),
-    leadership_quality: encodeBase64(toUtf8Bytes(ratings.leadership_quality)),
-    operational_efficiency: encodeBase64(toUtf8Bytes(ratings.operational_efficiency))
+    work_life_balance: encodeBase64(toUtf8Bytes(String(ratings.work_life_balance))),  // @dev - [TODO]: Convert data type from "Number" to "String"
+    culture_values: encodeBase64(toUtf8Bytes(String(ratings.culture_values))),
+    career_growth: encodeBase64(toUtf8Bytes(String(ratings.career_growth))),
+    compensation_benefits: encodeBase64(toUtf8Bytes(String(ratings.compensation_benefits))),
+    leadership_quality: encodeBase64(toUtf8Bytes(String(ratings.leadership_quality))),
+    operational_efficiency: encodeBase64(toUtf8Bytes(String(ratings.operational_efficiency)))
   };
   let domainBytes = Uint8Array.from(domainBase64);
   let positionBytes = Uint8Array.from(positionBase64);
