@@ -439,6 +439,7 @@ export default function Home() {
       const txReceipt = storePublicInputsOfPositionAndSalaryProof(
         signer, 
         abi, 
+        positionAndSalaryProofManagerContractAddress,
         generatedProof.proof, 
         domain, 
         position, 

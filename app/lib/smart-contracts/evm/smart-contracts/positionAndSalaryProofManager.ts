@@ -17,7 +17,7 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   signer: any,
   abi: Array<any>, 
   positionAndSalaryProofManagerContractAddress: string,
-  proof: string,
+  proof: any,
   domain: string, 
   position: string, 
   salary: string, 
