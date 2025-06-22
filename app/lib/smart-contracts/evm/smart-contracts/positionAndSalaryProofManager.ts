@@ -18,10 +18,12 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   abi: Array<any>, 
   positionAndSalaryProofManagerContractAddress: string,
   proof: any,
+  jwtPubkeyModulusLimbs: Array<any>,
   domain: string, 
   position: string, 
   salary: string, 
   ratings: any,
+  nullifierHash: string,
   rsaSignatureLength: number,
   //params: Array<any>, 
 ): Promise<{ txReceipt: any }> {
@@ -75,7 +77,20 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   //   "operational_efficiency": 3
   // }
 
-  let publicInputs: Array<any> = [domainBytes32, positionByte32, salaryBytes32, ratingsBytes32];
+  let publicInputs: Array<any> = [
+    jwtPubkeyModulusLimbs,
+    domainBytes32, 
+    positionByte32, 
+    salaryBytes32, 
+    //ratingsBytes32
+    ratingsBytes32.work_life_balance,
+    ratingsBytes32.culture_values,
+    ratingsBytes32.career_growth,
+    ratingsBytes32.compensation_benefits,
+    ratingsBytes32.leadership_quality,
+    ratingsBytes32.operational_efficiency,
+    nullifierHash
+  ];
   //let publicInputs: Array<any> = [domain, position, salary, ratings];
   let params: Array<any> = [
     positionAndSalaryProofManagerContractAddress, 

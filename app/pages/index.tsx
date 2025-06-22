@@ -373,6 +373,7 @@ export default function Home() {
         dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
         bodyTrimmed: emailBodyTrimmed
       });
+      console.log(`generatedProof: ${ JSON.stringify(generatedProof, null, 2) }`);
 
       // @dev - Store the data into the blockchain (BASE)
       let abi: Array<any> = artifactOfPositionAndSalaryProofManager.abi;
@@ -441,10 +442,12 @@ export default function Home() {
         abi, 
         positionAndSalaryProofManagerContractAddress,
         generatedProof.proof, 
+        generatedProof.jwtPubkeyModulusLimbs,
         domain, 
         position, 
         salary, 
         ratings,
+        generatedProof.nullifierHash,
         zkEmailInputData.signature.length, // 9 or 18
       ); // @dev - Record the public inputs of position and salary proof to the blockchain (BASE) using the "recordPublicInputsOfPositionAndSalaryProof" function.
       //const txReceipt = recordPublicInputsOfPositionAndSalaryProof(abi, params, signer);    
