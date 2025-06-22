@@ -22,7 +22,7 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   position: string, 
   salary: string, 
   ratings: any,
-  rsa_signature_length: number,
+  rsaSignatureLength: number,
   //params: Array<any>, 
 ): Promise<{ txReceipt: any }> {
   // abi = [
@@ -81,7 +81,7 @@ export async function storePublicInputsOfPositionAndSalaryProof(
     positionAndSalaryProofManagerContractAddress, 
     proof, 
     publicInputs, 
-    rsa_signature_length
+    rsaSignatureLength
   ];
 
 
