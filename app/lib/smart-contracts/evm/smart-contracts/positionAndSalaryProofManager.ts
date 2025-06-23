@@ -6,7 +6,7 @@ import { HDNodeWallet } from "ethers/wallet";
 //import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
 //import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
 //import { recordPublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
-import { encodeBase64, toUtf8Bytes, zeroPadBytes } from 'ethers';
+import { encodeBase64, toUtf8Bytes, zeroPadBytes, parseEther } from 'ethers';
 //import { EthereumProvider, Window } from "../dataTypes";
 
 
@@ -25,7 +25,12 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
 
   // Send the transaction
-  const tx = await positionAndSalaryProofManager.recordPublicInputsOfPositionAndSalaryProof(proof, publicInputs, rsaSignatureLength);
+  const tx = await positionAndSalaryProofManager.recordPublicInputsOfPositionAndSalaryProof(
+    proof, 
+    publicInputs, 
+    rsaSignatureLength, 
+    { value: parseEther("0.01") }  // @dev - Send a TX with 0.01 ETH as a gas fee.
+  );
 
   // Wait for the transaction to be included.
   const txReceipt = await tx.wait();
