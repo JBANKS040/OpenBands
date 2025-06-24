@@ -1,1 +1,0 @@
-pub mod openbanking_verifier::src::lib;

@@ -15,6 +15,7 @@ zkemail = { tag = "v0.4.3", git = "https://github.com/zkemail/zkemail.nr", direc
 #zkemail = { git = "https://github.com/zkemail/zkemail.nr", tag = "feat/update-packages", directory = "lib"}
 
 # Openbanking.nr
+openbanking_verifier = { path = "../openbanking_verifier" }
 #openbanking_verifier = { tag = "main", git = "https://github.com/attested-frontiers/openbanking.nr-circuit", directory = "./lib" }
 #openbanking_verifier = { tag = "main", git = "https://github.com/Mach-34/openbanking-circuit/tree/feat/add-comments", directory = "./lib" }
 #nodash = { git = "https://github.com/olehmisar/nodash/", tag = "v0.40.2" }
