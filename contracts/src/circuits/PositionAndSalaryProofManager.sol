@@ -47,17 +47,18 @@ contract PositionAndSalaryProofManager {
 
         // Record a publicInput of a given PositionAndSalaryProof
         DataType.PublicInput memory publicInput;
-        publicInput.jwtPubkeyModulusLimbs = publicInputs[0];
-        publicInput.domain = publicInputs[1];
-        publicInput.position = publicInputs[2];
-        publicInput.salary = publicInputs[3];
-        publicInput.workLifeBalance = publicInputs[4];
-        publicInput.cultureValues = publicInputs[5];
-        publicInput.careerGrowth = publicInputs[6];
-        publicInput.compensationBenefits = publicInputs[7];
-        publicInput.leadershipQuality = publicInputs[8];
-        publicInput.operationalEfficiency = publicInputs[9];
-        publicInput.nullifierHash = publicInputs[10];
+        publicInput.publicInputs = publicInputs;
+        // publicInput.jwtPubkeyModulusLimbs = publicInputs[0];
+        // publicInput.domain = publicInputs[1];
+        // publicInput.position = publicInputs[2];
+        // publicInput.salary = publicInputs[3];
+        // publicInput.workLifeBalance = publicInputs[4];
+        // publicInput.cultureValues = publicInputs[5];
+        // publicInput.careerGrowth = publicInputs[6];
+        // publicInput.compensationBenefits = publicInputs[7];
+        // publicInput.leadershipQuality = publicInputs[8];
+        // publicInput.operationalEfficiency = publicInputs[9];
+        // publicInput.nullifierHash = publicInputs[10];
 
         // Store the publicInput of a given PositionAndSalaryProof
         publicInputsOfPositionAndSalaryProofs[publicInput.nullifierHash] = publicInput;

@@ -3,17 +3,18 @@ pragma solidity ^0.8.25;
 library DataType {
 
     struct PublicInput {
-        bytes32 jwtPubkeyModulusLimbs;
-        bytes32 domain;
-        bytes32 position;   // Position, which is part of Email Body-extracted from the Entire Email Body.
-        bytes32 salary;     // Salary, which is part of Email Body-extracted from the Entire Email Body.
-        bytes32 workLifeBalance;
-        bytes32 cultureValues;
-        bytes32 careerGrowth;
-        bytes32 compensationBenefits;
-        bytes32 leadershipQuality;
-        bytes32 operationalEfficiency;
-        bytes32 nullifierHash; // [TODO]: Email nullifierHash, which is used to prevent double submission of the same email.
+        bytes32[] publicInputs; // Array of public inputs, which are used to verify the PositionAndSalaryProof.
+        // bytes32 jwtPubkeyModulusLimbs;
+        // bytes32 domain;
+        // bytes32 position;   // Position, which is part of Email Body-extracted from the Entire Email Body.
+        // bytes32 salary;     // Salary, which is part of Email Body-extracted from the Entire Email Body.
+        // bytes32 workLifeBalance;
+        // bytes32 cultureValues;
+        // bytes32 careerGrowth;
+        // bytes32 compensationBenefits;
+        // bytes32 leadershipQuality;
+        // bytes32 operationalEfficiency;
+        // bytes32 nullifierHash; // [TODO]: Email nullifierHash, which is used to prevent double submission of the same email.
     }
 
 }
