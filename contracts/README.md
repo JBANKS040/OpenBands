@@ -6,6 +6,17 @@
 
 <br>
 
+<hr>
+
+## Installation
+
+- Install the `foundry-noir-helper` libary:
+```bash
+forge install 0xnonso/foundry-noir-helper --no-commit
+```
+
+<br>
+
 ## Compile Smart Contracts
 
 - Compile the smart contracts:
