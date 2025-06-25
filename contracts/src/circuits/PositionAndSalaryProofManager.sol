@@ -14,9 +14,9 @@ contract PositionAndSalaryProofManager {
     PositionAndSalaryProof2048Verifier public positionAndSalaryProof2048Verifier;
 
     // @dev - Storages
-    mapping(bytes32 nullifierHash => DataType.PublicInput) public publicInputsOfPositionAndSalaryProofs;  // nullifierHash -> PublicInput
+    //mapping(bytes32 nullifierHash => DataType.PublicInput) public publicInputsOfPositionAndSalaryProofs;  // nullifierHash -> PublicInput
     mapping(bytes32 nullifierHash => bool isNullified) public nullifiers;
-    DataType.PublicInput[] public publicInputsOfAllProofs;  // The publicInputs of all PositionAndSalaryProofs to show the list of all proofs related data on FE (front-end).
+    //DataType.PublicInput[] public publicInputsOfAllProofs;  // The publicInputs of all PositionAndSalaryProofs to show the list of all proofs related data on FE (front-end).
 
     constructor(
         PositionAndSalaryProof1024Verifier _positionAndSalaryProof1024Verifier, 
@@ -45,9 +45,8 @@ contract PositionAndSalaryProofManager {
             revert("Unsupported RSA signature length");
         }
 
-        // Record a publicInput of a given PositionAndSalaryProof
-        DataType.PublicInput memory publicInput;
-        publicInput.publicInputs = publicInputs;
+        // @dev - Record a publicInput of a given PositionAndSalaryProof
+        // DataType.PublicInput memory publicInput;
         // publicInput.jwtPubkeyModulusLimbs = publicInputs[0];
         // publicInput.domain = publicInputs[1];
         // publicInput.position = publicInputs[2];
