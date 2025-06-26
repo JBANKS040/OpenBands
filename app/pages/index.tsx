@@ -19,6 +19,7 @@ import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWalle
 import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
 import { storePublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
 import { encodeBase64, toUtf8Bytes, zeroPadBytes } from 'ethers';
+import { convertBytes32ToString } from '../lib/converters/bytes32ToStringConverter';
 
 interface GoogleJwtPayload {
   email: string;
@@ -375,6 +376,9 @@ export default function Home() {
       });
       console.log(`generatedProof: ${ JSON.stringify(generatedProof, null, 2) }`);
 
+      // @dev - [TODO]: Convert a given "generatedProof.publicInputs" to a string.
+      let publicInputsConverted: any = convertBytes32ToString(generatedProof.publicInputs);
+      
       // @dev - Store the data into the blockchain (BASE)
       let abi: Array<any> = artifactOfPositionAndSalaryProofManager.abi;
       let positionAndSalaryProofManagerContractAddress: string = process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_CONTRACT_ADDRESS || "";
