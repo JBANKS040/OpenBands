@@ -1,4 +1,9 @@
-import { ethers, solidityPacked, dataSlice } from 'ethers';
+import { 
+  ethers, 
+  solidityPacked, 
+  dataSlice, 
+  decodeBytes32String 
+} from 'ethers';
 
 
 /**
@@ -11,9 +16,10 @@ export async function convertBytes32ToString(valueInBytes32: Array<string>): Pro
   // ];
 
   const unpacked: bigint[] = [];
-  for (let i = 0; i < (valueInBytes32.length; i++) {
-    const slice = dataSlice(valueInBytes32[i], i * 32, (i + 1) * 32);
-    unpacked.push(BigInt(slice));
+  for (let i = 0; i < valueInBytes32.length; i++) {
+    //const slice = dataSlice(valueInBytes32[i], i * 32, (i + 1) * 32);
+    //unpacked.push(BigInt(slice));
+    unpacked.push(BigInt(decodeBytes32String(valueInBytes32[i])));
   }
 
   console.log(`unpacked: ${ unpacked }`);
