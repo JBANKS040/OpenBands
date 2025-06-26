@@ -396,6 +396,9 @@ export default function Home() {
       // @dev - [TODO]: Convert a given "generatedProof.publicInputs" to a string.
       //let publicInputsConverted: any = convertBytes32ToString(generatedProof.publicInputs);
       
+      // @dev - [TODO]: Store a nullifier, which is the last element of the "generatedProof.publicInputs" array
+      let nullifier = generatedProof.publicInputs[generatedProof.publicInputs.length - 1];
+
       // @dev - Store the data into the blockchain (BASE)
       let abi: Array<any> = artifactOfPositionAndSalaryProofManager.abi;
       let positionAndSalaryProofManagerContractAddress: string = process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_CONTRACT_ADDRESS || "";
@@ -407,6 +410,20 @@ export default function Home() {
         generatedProof.proof, 
         generatedProof.publicInputs,
         zkEmailInputData.signature.length, // 9 or 18
+
+        // @dev - [TODO]: Add the each values (elements) of a given "publicInputs" array argument to below:
+        //                 --> Store the arguments, which is specified in the "const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof()".
+        jwtPubkey,
+        domain,
+        position,
+        salary,
+        ratings.work_life_balance,
+        ratings.culture_values,
+        ratings.career_growth,
+        ratings.compensation_benefits,
+        ratings.leadership_quality,
+        ratings.operational_efficiency,
+        nullifier // email_nullifier
       );
 
       // Then try to store it (this might fail due to schema issues)
