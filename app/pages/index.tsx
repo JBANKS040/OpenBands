@@ -376,8 +376,25 @@ export default function Home() {
       });
       console.log(`generatedProof: ${ JSON.stringify(generatedProof, null, 2) }`);
 
+
+      // @dev - MEMO: "generatedProof.publicInputs"
+      // 
+      // jwt_pubkey_modulus_limbs: pub [u128; 18] -> 18 bytes
+      // ...
+      // domain: pub BoundedVec<u8, MAX_DOMAIN_LENGTH> -> 64 bytes
+      // position: pub BoundedVec<u8, MAX_POSITION_LENGTH> -> 128 bytes
+      // salary: pub BoundedVec<u8, MAX_SALARY_LENGTH> -> 32 bytes
+      // work_life_balance: pub u8 -> 1 bytes
+      // culture_values: pub u8 -> 1 bytes
+      // career_growth: pub u8 -> 1 bytes
+      // compensation_benefits: pub u8 -> 1 bytes
+      // leadership_quality: pub u8 -> 1 bytes
+      // operational_efficiency: pub u8 ->1 bytes
+      // email_nullifier: pub Field -> 1 bytes
+
+
       // @dev - [TODO]: Convert a given "generatedProof.publicInputs" to a string.
-      let publicInputsConverted: any = convertBytes32ToString(generatedProof.publicInputs);
+      //let publicInputsConverted: any = convertBytes32ToString(generatedProof.publicInputs);
       
       // @dev - Store the data into the blockchain (BASE)
       let abi: Array<any> = artifactOfPositionAndSalaryProofManager.abi;
