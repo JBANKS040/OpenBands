@@ -2,25 +2,25 @@ pragma solidity >=0.8.21;
 
 import { PositionAndSalaryProof1024Verifier } from "./circuit-for-zkemail-1024-bit-dkim/PositionAndSalaryProof1024Verifier.sol";
 import { PositionAndSalaryProof2048Verifier } from "./circuit-for-zkemail-2048-bit-dkim/PositionAndSalaryProof2048Verifier.sol";
-//import { DataType } from "../dataType/DataType.sol";
+import { DataType } from "../dataType/DataType.sol";
 
 /**
  * @notice - This contract is used to manage the position and salary proof (1024-bit DKIM signature) with its publicInputs.
  */
 contract PositionAndSalaryProofManager {
-    //using DataType for DataType.PublicInput;
+    using DataType for DataType.PublicInput;
 
     PositionAndSalaryProof1024Verifier public positionAndSalaryProof1024Verifier;
     PositionAndSalaryProof2048Verifier public positionAndSalaryProof2048Verifier;
 
     // @dev - Storages
-    mapping(bytes32 nullifierHash => bytes32[] publicInputs) public publicInputsOfPositionAndSalaryProofs;  // nullifierHash -> publicInputs[]
-    //mapping(bytes32 nullifierHash => DataType.PublicInput) public publicInputsOfPositionAndSalaryProofs;  // nullifierHash -> PublicInput
+    mapping(bytes32 nullifierHash => DataType.PublicInput) public publicInputsOfPositionAndSalaryProofs;  // nullifierHash -> PublicInput
+    //mapping(bytes32 nullifierHash => bytes32[] publicInputs) public publicInputsOfPositionAndSalaryProofs;  // nullifierHash -> publicInputs[]
     
     mapping(bytes32 nullifierHash => bool isNullified) public nullifiers;
-    
-    bytes32[][] public publicInputsOfAllProofs;  // The publicInputs of all PositionAndSalaryProofs to show the list of all proofs related data on FE (front-end).
-    //DataType.PublicInput[] public publicInputsOfAllProofs;  // The publicInputs of all PositionAndSalaryProofs to show the list of all proofs related data on FE (front-end).
+
+    DataType.PublicInput[] public publicInputsOfAllProofs;  // The publicInputs of all PositionAndSalaryProofs to show the list of all proofs related data on FE (front-end).
+    //bytes32[][] public publicInputsOfAllProofs;  // The publicInputs of all PositionAndSalaryProofs to show the list of all proofs related data on FE (front-end).
 
     constructor(
         PositionAndSalaryProof1024Verifier _positionAndSalaryProof1024Verifier, 
@@ -37,7 +37,21 @@ contract PositionAndSalaryProofManager {
         bytes calldata proof, 
         bytes32[] calldata publicInputs,
         bytes32 nullifierHash,
-        uint16 rsaSignatureLength // 9 or 18
+        uint16 rsaSignatureLength, // 9 or 18
+
+        // @dev - [TODO]: Add the each values (elements) of a given "publicInputs" array argument to below:
+        //                 --> Store the arguments, which is specified in the "const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof()".
+        string calldata jwtPubkeyModulusLimbs,
+        string calldata domain,
+        string calldata position,
+        string calldata salary,
+        uint8 workLifeBalance,
+        uint8 cultureValues, 
+        uint8 careerGrowth, 
+        uint8 compensationBenefits, 
+        uint8 leadershipQuality, 
+        uint8 operationalEfficiency,
+        string calldata nullifierHash // @dev - (Email) nullifierHash, which is used to prevent double submission of the same email.
     ) public returns (bool) {
         // Verify a PositionAndSalaryProof
         if (rsaSignatureLength == 9) {
@@ -65,16 +79,16 @@ contract PositionAndSalaryProofManager {
         // publicInput.nullifierHash = publicInputs[10];
 
         // @dev - Store the publicInput of a given PositionAndSalaryProof
-        publicInputsOfPositionAndSalaryProofs[nullifierHash] = publicInputs;
-        //publicInputsOfPositionAndSalaryProofs[publicInput.nullifierHash] = publicInput;
+        publicInputsOfPositionAndSalaryProofs[publicInput.nullifierHash] = publicInput; // @dev - The original
+        //publicInputsOfPositionAndSalaryProofs[nullifierHash] = publicInputs;
 
         // @dev - Store the nullifierHash to prevent double submission of the same email
-        nullifiers[nullifierHash] = true;
-        //nullifiers[publicInput.nullifierHash] = true;
+        nullifiers[publicInput.nullifierHash] = true; // @dev - The original
+        //nullifiers[nullifierHash] = true;
 
         // @dev - Store the publicInputs into the list of all proofs to be displayed on the UI (front-end).
-        publicInputsOfAllProofs.push(publicInputs);
-        //publicInputsOfAllProofs.push(publicInput);
+        publicInputsOfAllProofs.push(publicInput);  // @dev - The original
+        //publicInputsOfAllProofs.push(publicInputs);
     }
 
     /**
