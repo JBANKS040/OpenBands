@@ -1,0 +1,10 @@
+node_modules
+target
+dist
+.tsbuildinfo
+zk-email-verify
+!*/email-*.eml
+.DS_Store
+
+# Generated Prover.toml examples
+examples/*/Prover.toml

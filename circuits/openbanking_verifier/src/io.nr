@@ -2,7 +2,7 @@ use crate::constants::{
     CURRENCY_CODE_VALUE_LENGTH, MAX_AMOUNT_VALUE_LENGTH, MAX_PAYLOAD_LENGTH, PAYMENT_ID_LENGTH,
     SORT_CODE_VALUE_LENGTH,
 };
-use nodash::ArrayExtensions;
+use nodash::ArrayExtensions; // @dev - v0.40.2 -> error: No matching impl found for `[u8; N]: ArrayExtensions<Field, _>`
 use std::hash::poseidon2::Poseidon2;
 
 pub struct OpenbankingVerifierParams {

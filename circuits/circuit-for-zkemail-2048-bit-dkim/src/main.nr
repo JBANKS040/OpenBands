@@ -276,7 +276,7 @@ unconstrained fn is_salary_found_in_email_body(
                     }
                 }
             }
-         }
+        }
     }
 
     is_salary_found_in_email_body
