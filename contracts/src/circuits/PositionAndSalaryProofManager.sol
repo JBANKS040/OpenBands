@@ -41,16 +41,26 @@ contract PositionAndSalaryProofManager {
 
         // @dev - [TODO]: Add the each values (elements) of a given "publicInputs" array argument to below:
         //                 --> Store the arguments, which is specified in the "const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof()".
-        string calldata jwtPubkeyModulusLimbs,
-        string calldata domain,
-        string calldata position,
-        string calldata salary,
-        uint8 workLifeBalance,
-        uint8 cultureValues, 
-        uint8 careerGrowth, 
-        uint8 compensationBenefits, 
-        uint8 leadershipQuality, 
-        uint8 operationalEfficiency
+        bytes calldata jwtPubkeyModulusLimbs,
+        bytes calldata domain,
+        bytes calldata position,
+        bytes calldata salary,
+        bytes calldata workLifeBalance,
+        bytes calldata cultureValues, 
+        bytes calldata careerGrowth, 
+        bytes calldata compensationBenefits, 
+        bytes calldata leadershipQuality, 
+        bytes calldata operationalEfficiency
+        // string calldata jwtPubkeyModulusLimbs,
+        // string calldata domain,
+        // string calldata position,
+        // string calldata salary,
+        // uint8 workLifeBalance,
+        // uint8 cultureValues, 
+        // uint8 careerGrowth, 
+        // uint8 compensationBenefits, 
+        // uint8 leadershipQuality, 
+        // uint8 operationalEfficiency
     ) public returns (bool) {
         // Verify a PositionAndSalaryProof
         if (rsaSignatureLength == 9) {
@@ -63,18 +73,30 @@ contract PositionAndSalaryProofManager {
             revert("Unsupported RSA signature length");
         }
 
+        // @dev - Decode the given arguments of respective publicInputs
+        (string memory _jwtPubkeyModulusLimbs) = abi.decode(jwtPubkeyModulusLimbs, (string));
+        (string memory _domain) = abi.decode(domain, (string));
+        (string memory _position) = abi.decode(position, (string));
+        (string memory _salary) = abi.decode(salary, (string));
+        (uint8 _workLifeBalance) = abi.decode(workLifeBalance, (uint8));
+        (uint8 _cultureValues) = abi.decode(cultureValues, (uint8));
+        (uint8 _careerGrowth) = abi.decode(careerGrowth, (uint8));
+        (uint8 _compensationBenefits) = abi.decode(compensationBenefits, (uint8));
+        (uint8 _leadershipQuality) = abi.decode(leadershipQuality, (uint8));
+        (uint8 _operationalEfficiency) = abi.decode(operationalEfficiency, (uint8));
+
         // @dev - Record a publicInput of a given PositionAndSalaryProof
         DataType.PublicInput memory publicInput;
-        publicInput.jwtPubkeyModulusLimbs = jwtPubkeyModulusLimbs;
-        publicInput.domain = domain;
-        publicInput.position = position;
-        publicInput.salary = salary;
-        publicInput.workLifeBalance = workLifeBalance;
-        publicInput.cultureValues = cultureValues;
-        publicInput.careerGrowth = careerGrowth;
-        publicInput.compensationBenefits = compensationBenefits;
-        publicInput.leadershipQuality = leadershipQuality;
-        publicInput.operationalEfficiency = operationalEfficiency;
+        publicInput.jwtPubkeyModulusLimbs = _jwtPubkeyModulusLimbs;
+        publicInput.domain = _domain;
+        publicInput.position = _position;
+        publicInput.salary = _salary;
+        publicInput.workLifeBalance = _workLifeBalance;
+        publicInput.cultureValues = _cultureValues;
+        publicInput.careerGrowth = _careerGrowth;
+        publicInput.compensationBenefits = _compensationBenefits;
+        publicInput.leadershipQuality = _leadershipQuality;
+        publicInput.operationalEfficiency = _operationalEfficiency;
         publicInput.nullifierHash = nullifierHash;
         // DataType.PublicInput memory publicInput;
         // publicInput.jwtPubkeyModulusLimbs = publicInputs[0];
