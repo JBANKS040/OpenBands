@@ -50,8 +50,7 @@ contract PositionAndSalaryProofManager {
         uint8 careerGrowth, 
         uint8 compensationBenefits, 
         uint8 leadershipQuality, 
-        uint8 operationalEfficiency,
-        string calldata nullifierHash // @dev - (Email) nullifierHash, which is used to prevent double submission of the same email.
+        uint8 operationalEfficiency
     ) public returns (bool) {
         // Verify a PositionAndSalaryProof
         if (rsaSignatureLength == 9) {
@@ -65,6 +64,18 @@ contract PositionAndSalaryProofManager {
         }
 
         // @dev - Record a publicInput of a given PositionAndSalaryProof
+        DataType.PublicInput memory publicInput;
+        publicInput.jwtPubkeyModulusLimbs = jwtPubkeyModulusLimbs;
+        publicInput.domain = domain;
+        publicInput.position = position;
+        publicInput.salary = salary;
+        publicInput.workLifeBalance = workLifeBalance;
+        publicInput.cultureValues = cultureValues;
+        publicInput.careerGrowth = careerGrowth;
+        publicInput.compensationBenefits = compensationBenefits;
+        publicInput.leadershipQuality = leadershipQuality;
+        publicInput.operationalEfficiency = operationalEfficiency;
+        publicInput.nullifierHash = nullifierHash;
         // DataType.PublicInput memory publicInput;
         // publicInput.jwtPubkeyModulusLimbs = publicInputs[0];
         // publicInput.domain = publicInputs[1];
@@ -96,8 +107,8 @@ contract PositionAndSalaryProofManager {
      * @dev - When a proof is stored with publicInput into the this smart contract via the recordPositionAndSalaryProof(), the given proof is verfied by the validation. 
      *        Hence, the publicInput is guaranteed to be valid and a proof does not need to be specified in this function.
      */
-    function getPublicInputsOfPositionAndSalaryProof(bytes32 nullifierHash) public view returns (bytes32[] memory _publicInput) {
-    //function getPublicInputsOfPositionAndSalaryProof(bytes32 nullifierHash) public view returns (DataType.PublicInput memory _publicInput) {
+    //function getPublicInputsOfPositionAndSalaryProof(bytes32 nullifierHash) public view returns (bytes32[] memory _publicInput) {
+    function getPublicInputsOfPositionAndSalaryProof(bytes32 nullifierHash) public view returns (DataType.PublicInput memory _publicInput) {
         require(nullifiers[nullifierHash] == true, "A given nullifierHash is invalid"); // Double spending (of proof) prevention
         return publicInputsOfPositionAndSalaryProofs[nullifierHash];
     }
@@ -105,8 +116,8 @@ contract PositionAndSalaryProofManager {
     /**
      * @notice - Retrieve the publicInputs of all proofs from on-chain to be displayed on the UI (front-end).
      */
-    function getPublicInputsOfAllProofs() public view returns (bytes32[][] memory _publicInputsOfAllProofs) {
-    //function getPublicInputsOfAllProofs() public view returns (DataType.PublicInput[] memory) {
+    //function getPublicInputsOfAllProofs() public view returns (bytes32[] memory _publicInputsOfAllProofs) {
+    function getPublicInputsOfAllProofs() public view returns (DataType.PublicInput[] memory) {
         return publicInputsOfAllProofs;
     }
 }
