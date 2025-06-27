@@ -37,7 +37,8 @@ contract PositionAndSalaryProofManager {
         bytes calldata proof, 
         bytes32[] calldata publicInputs,
         bytes32 nullifierHash,
-        uint16 rsaSignatureLength, // 9 or 18
+        bytes calldata rsaSignatureLength, // 9 or 18
+        //uint16 rsaSignatureLength, // 9 or 18
 
         // @dev - [TODO]: Add the each values (elements) of a given "publicInputs" array argument to below:
         //                 --> Store the arguments, which is specified in the "const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof()".
@@ -62,18 +63,8 @@ contract PositionAndSalaryProofManager {
         // uint8 leadershipQuality, 
         // uint8 operationalEfficiency
     ) public returns (bool) {
-        // Verify a PositionAndSalaryProof
-        if (rsaSignatureLength == 9) {
-            bool result = positionAndSalaryProof1024Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
-            require(result, "A given position and salary proof (1024-bit RSA signature) is not valid");
-        } else if (rsaSignatureLength == 18) {
-            bool result = positionAndSalaryProof2048Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
-            require(result, "A given position and salary proof (2048-bit RSA signature) is not valid");
-        } else {
-            revert("Unsupported RSA signature length");
-        }
-
         // @dev - Decode the given arguments of respective publicInputs
+        (uint16 _rsaSignatureLength) = abi.decode(rsaSignatureLength, (uint16)); 
         (string memory _jwtPubkeyModulusLimbs) = abi.decode(jwtPubkeyModulusLimbs, (string));
         (string memory _domain) = abi.decode(domain, (string));
         (string memory _position) = abi.decode(position, (string));
@@ -84,6 +75,17 @@ contract PositionAndSalaryProofManager {
         (uint8 _compensationBenefits) = abi.decode(compensationBenefits, (uint8));
         (uint8 _leadershipQuality) = abi.decode(leadershipQuality, (uint8));
         (uint8 _operationalEfficiency) = abi.decode(operationalEfficiency, (uint8));
+
+        // @dev - Verify a PositionAndSalaryProof
+        if (_rsaSignatureLength == 9) {
+            bool result = positionAndSalaryProof1024Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
+            require(result, "A given position and salary proof (1024-bit RSA signature) is not valid");
+        } else if (_rsaSignatureLength == 18) {
+            bool result = positionAndSalaryProof2048Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
+            require(result, "A given position and salary proof (2048-bit RSA signature) is not valid");
+        } else {
+            revert("Unsupported RSA signature length");
+        }
 
         // @dev - Record a publicInput of a given PositionAndSalaryProof
         DataType.PublicInput memory publicInput;
