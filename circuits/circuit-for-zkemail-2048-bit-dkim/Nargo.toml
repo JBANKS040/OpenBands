@@ -11,12 +11,13 @@ version = "0.0.1"
 jwt = { tag = "v0.5.0", git = "https://github.com/zkemail/noir-jwt" }
 
 # zkEmail
-zkemail = { path = "../zkemail.nr/lib" }
+#zkemail = { path = "../zkemail.nr/lib" }
 #zkemail = { tag = "v0.4.3", git = "https://github.com/zkemail/zkemail.nr", directory = "lib" }
+zkemail = { tag = "v1.0.0-beta.5", git = "https://github.com/zkemail/zkemail.nr", directory = "lib" }
 #zkemail = { git = "https://github.com/zkemail/zkemail.nr", tag = "feat/update-packages", directory = "lib"}
 
 # Openbanking.nr
-openbanking_verifier = { path = "../openbanking_verifier" }
+#openbanking_verifier = { path = "../openbanking_verifier" }
 #openbanking_verifier = { tag = "main", git = "https://github.com/attested-frontiers/openbanking.nr-circuit", directory = "./lib" }
 #openbanking_verifier = { tag = "main", git = "https://github.com/Mach-34/openbanking-circuit/tree/feat/add-comments", directory = "./lib" }
 #nodash = { git = "https://github.com/olehmisar/nodash/", tag = "v0.40.2" }
