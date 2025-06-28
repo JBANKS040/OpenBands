@@ -48,7 +48,7 @@ contract PositionAndSalaryProofManager {
 
         // @dev - Record a publicInput of a given PositionAndSalaryProof
         DataType.PublicInput memory publicInput;
-        publicInput.jwtPubkeyModulusLimbs = separatedPublicInputs.jwtPubkeyModulusLimbs;
+        //publicInput.jwtPubkeyModulusLimbs = separatedPublicInputs.jwtPubkeyModulusLimbs;
         publicInput.domain = separatedPublicInputs.domain;
         publicInput.position = separatedPublicInputs.position;
         publicInput.salary = separatedPublicInputs.salary;
