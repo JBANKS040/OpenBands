@@ -36,22 +36,24 @@ contract PositionAndSalaryProofManager {
     function recordPublicInputsOfPositionAndSalaryProof(
         bytes calldata proof, 
         bytes32[] calldata publicInputs,
-        bytes32 nullifierHash,
-        bytes calldata rsaSignatureLength, // 9 or 18
-        //uint16 rsaSignatureLength, // 9 or 18
+        //bytes32 nullifierHash,
+        //bytes calldata rsaSignatureLength, // 9 or 18
+        uint16 rsaSignatureLength, // 9 or 18
 
         // @dev - [TODO]: Add the each values (elements) of a given "publicInputs" array argument to below:
         //                 --> Store the arguments, which is specified in the "const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof()".
-        bytes calldata jwtPubkeyModulusLimbs,
-        bytes calldata domain,
-        bytes calldata position,
-        bytes calldata salary,
-        bytes calldata workLifeBalance,
-        bytes calldata cultureValues, 
-        bytes calldata careerGrowth, 
-        bytes calldata compensationBenefits, 
-        bytes calldata leadershipQuality, 
-        bytes calldata operationalEfficiency
+        DataType.PublicInput memory separatedPublicInputs
+        // bytes calldata jwtPubkeyModulusLimbs,
+        // bytes calldata domain,
+        // bytes calldata position,
+        // bytes calldata salary,
+        // bytes calldata workLifeBalance,
+        // bytes calldata cultureValues, 
+        // bytes calldata careerGrowth, 
+        // bytes calldata compensationBenefits, 
+        // bytes calldata leadershipQuality, 
+        // bytes calldata operationalEfficiency
+        
         // string calldata jwtPubkeyModulusLimbs,
         // string calldata domain,
         // string calldata position,
@@ -64,23 +66,35 @@ contract PositionAndSalaryProofManager {
         // uint8 operationalEfficiency
     ) public returns (bool) {
         // @dev - Decode the given arguments of respective publicInputs
-        (uint16 _rsaSignatureLength) = abi.decode(rsaSignatureLength, (uint16)); 
-        (string memory _jwtPubkeyModulusLimbs) = abi.decode(jwtPubkeyModulusLimbs, (string));
-        (string memory _domain) = abi.decode(domain, (string));
-        (string memory _position) = abi.decode(position, (string));
-        (string memory _salary) = abi.decode(salary, (string));
-        (uint8 _workLifeBalance) = abi.decode(workLifeBalance, (uint8));
-        (uint8 _cultureValues) = abi.decode(cultureValues, (uint8));
-        (uint8 _careerGrowth) = abi.decode(careerGrowth, (uint8));
-        (uint8 _compensationBenefits) = abi.decode(compensationBenefits, (uint8));
-        (uint8 _leadershipQuality) = abi.decode(leadershipQuality, (uint8));
-        (uint8 _operationalEfficiency) = abi.decode(operationalEfficiency, (uint8));
+        // (uint16 _rsaSignatureLength) = abi.decode(rsaSignatureLength, (uint16)); 
+        // (string memory _jwtPubkeyModulusLimbs) = abi.decode(separatedPublicInputs.jwtPubkeyModulusLimbs, (string));
+        // (string memory _domain) = abi.decode(separatedPublicInputs.domain, (string));
+        // (string memory _position) = abi.decode(separatedPublicInputs.position, (string));
+        // (string memory _salary) = abi.decode(separatedPublicInputs.salary, (string));
+        // (uint8 _workLifeBalance) = abi.decode(separatedPublicInputs.workLifeBalance, (uint8));
+        // (uint8 _cultureValues) = abi.decode(separatedPublicInputs.cultureValues, (uint8));
+        // (uint8 _careerGrowth) = abi.decode(separatedPublicInputs.careerGrowth, (uint8));
+        // (uint8 _compensationBenefits) = abi.decode(separatedPublicInputs.compensationBenefits, (uint8));
+        // (uint8 _leadershipQuality) = abi.decode(separatedPublicInputs.leadershipQuality, (uint8));
+        // (uint8 _operationalEfficiency) = abi.decode(separatedPublicInputs.operationalEfficiency, (uint8));
+        
+        // (uint16 _rsaSignatureLength) = abi.decode(rsaSignatureLength, (uint16)); 
+        // (string memory _jwtPubkeyModulusLimbs) = abi.decode(jwtPubkeyModulusLimbs, (string));
+        // (string memory _domain) = abi.decode(domain, (string));
+        // (string memory _position) = abi.decode(position, (string));
+        // (string memory _salary) = abi.decode(salary, (string));
+        // (uint8 _workLifeBalance) = abi.decode(workLifeBalance, (uint8));
+        // (uint8 _cultureValues) = abi.decode(cultureValues, (uint8));
+        // (uint8 _careerGrowth) = abi.decode(careerGrowth, (uint8));
+        // (uint8 _compensationBenefits) = abi.decode(compensationBenefits, (uint8));
+        // (uint8 _leadershipQuality) = abi.decode(leadershipQuality, (uint8));
+        // (uint8 _operationalEfficiency) = abi.decode(operationalEfficiency, (uint8));
 
         // @dev - Verify a PositionAndSalaryProof
-        if (_rsaSignatureLength == 9) {
+        if (rsaSignatureLength == 9) {
             bool result = positionAndSalaryProof1024Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
             require(result, "A given position and salary proof (1024-bit RSA signature) is not valid");
-        } else if (_rsaSignatureLength == 18) {
+        } else if (rsaSignatureLength == 18) {
             bool result = positionAndSalaryProof2048Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
             require(result, "A given position and salary proof (2048-bit RSA signature) is not valid");
         } else {
@@ -89,17 +103,30 @@ contract PositionAndSalaryProofManager {
 
         // @dev - Record a publicInput of a given PositionAndSalaryProof
         DataType.PublicInput memory publicInput;
-        publicInput.jwtPubkeyModulusLimbs = _jwtPubkeyModulusLimbs;
-        publicInput.domain = _domain;
-        publicInput.position = _position;
-        publicInput.salary = _salary;
-        publicInput.workLifeBalance = _workLifeBalance;
-        publicInput.cultureValues = _cultureValues;
-        publicInput.careerGrowth = _careerGrowth;
-        publicInput.compensationBenefits = _compensationBenefits;
-        publicInput.leadershipQuality = _leadershipQuality;
-        publicInput.operationalEfficiency = _operationalEfficiency;
-        publicInput.nullifierHash = nullifierHash;
+        publicInput.jwtPubkeyModulusLimbs = separatedPublicInputs.jwtPubkeyModulusLimbs;
+        publicInput.domain = separatedPublicInputs.domain;
+        publicInput.position = separatedPublicInputs.position;
+        publicInput.salary = separatedPublicInputs.salary;
+        publicInput.workLifeBalance = separatedPublicInputs.workLifeBalance;
+        publicInput.cultureValues = separatedPublicInputs.cultureValues;
+        publicInput.careerGrowth = separatedPublicInputs.careerGrowth;
+        publicInput.compensationBenefits = separatedPublicInputs.compensationBenefits;
+        publicInput.leadershipQuality = separatedPublicInputs.leadershipQuality;
+        publicInput.operationalEfficiency = separatedPublicInputs.operationalEfficiency;
+        publicInput.nullifierHash = separatedPublicInputs.nullifierHash;
+
+        // publicInput.jwtPubkeyModulusLimbs = _jwtPubkeyModulusLimbs;
+        // publicInput.domain = _domain;
+        // publicInput.position = _position;
+        // publicInput.salary = _salary;
+        // publicInput.workLifeBalance = _workLifeBalance;
+        // publicInput.cultureValues = _cultureValues;
+        // publicInput.careerGrowth = _careerGrowth;
+        // publicInput.compensationBenefits = _compensationBenefits;
+        // publicInput.leadershipQuality = _leadershipQuality;
+        // publicInput.operationalEfficiency = _operationalEfficiency;
+        // publicInput.nullifierHash = nullifierHash;
+
         // DataType.PublicInput memory publicInput;
         // publicInput.jwtPubkeyModulusLimbs = publicInputs[0];
         // publicInput.domain = publicInputs[1];
