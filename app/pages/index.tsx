@@ -393,8 +393,20 @@ export default function Home() {
       // email_nullifier: pub Field -> 1 bytes
 
 
-      // @dev - [TODO]: Convert a given "generatedProof.publicInputs" to a string.
-      //let publicInputsConverted: any = convertBytes32ToString(generatedProof.publicInputs);
+      // @dev - Store the public inputs
+      let separatedPublicInputs: any = {
+        //jwtPubkeyModulusLimbs: jwtPubkey,
+        domain: domain,
+        position: position,
+        salary: salary,
+        workLifeBalance: work_life_balance,
+        cultureValues: culture_values,
+        careerGrowth: career_growth,
+        compensationBenefits: compensation_benefits,
+        leadershipQuality: leadership_quality,
+        operationalEfficiency: operational_efficiency,
+        nullifierHash: nullifier
+      };
       
       // @dev - [TODO]: Store a nullifier, which is the last element of the "generatedProof.publicInputs" array
       let nullifier = generatedProof.publicInputs[generatedProof.publicInputs.length - 1];
@@ -410,20 +422,18 @@ export default function Home() {
         generatedProof.proof, 
         generatedProof.publicInputs,
         zkEmailInputData.signature.length, // 9 or 18
-
-        // @dev - [TODO]: Add the each values (elements) of a given "publicInputs" array argument to below:
-        //                 --> Store the arguments, which is specified in the "const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof()".
-        jwtPubkey,
-        domain,
-        position,
-        salary,
-        ratings.work_life_balance,
-        ratings.culture_values,
-        ratings.career_growth,
-        ratings.compensation_benefits,
-        ratings.leadership_quality,
-        ratings.operational_efficiency,
-        nullifier // email_nullifier
+        separatedPublicInputs
+        // jwtPubkey,
+        // domain,
+        // position,
+        // salary,
+        // ratings.work_life_balance,
+        // ratings.culture_values,
+        // ratings.career_growth,
+        // ratings.compensation_benefits,
+        // ratings.leadership_quality,
+        // ratings.operational_efficiency,
+        // nullifier // email_nullifier
       );
 
       // Then try to store it (this might fail due to schema issues)
