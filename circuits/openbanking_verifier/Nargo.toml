@@ -13,7 +13,3 @@ zkemail = { git = "https://github.com/zkemail/zkemail.nr", tag = "feat/update-pa
 # zkJWT -> nargo test --show-output -> "nodash" error.
 #jwt = { tag = "v0.5.0", git = "https://github.com/saleel/noir-jwt" }  
 #jwt = { tag = "v0.4.4", git = "https://github.com/saleel/noir-jwt" }  
-
-# zkEmail
-#zkemail = { tag = "v0.4.3", git = "https://github.com/zkemail/zkemail.nr", directory = "lib" }
-zkemail = { tag = "v1.0.0-beta.5", git = "https://github.com/zkemail/zkemail.nr", directory = "lib" }
