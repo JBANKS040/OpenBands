@@ -14,13 +14,9 @@ contract PositionAndSalaryProofManager {
     PositionAndSalaryProof2048Verifier public positionAndSalaryProof2048Verifier;
 
     // @dev - Storages
-    mapping(bytes32 nullifierHash => DataType.PublicInput) public publicInputsOfPositionAndSalaryProofs;  // nullifierHash -> PublicInput
-    //mapping(bytes32 nullifierHash => bytes32[] publicInputs) public publicInputsOfPositionAndSalaryProofs;  // nullifierHash -> publicInputs[]
-    
+    mapping(bytes32 nullifierHash => DataType.PublicInput) public publicInputsOfPositionAndSalaryProofs;  // nullifierHash -> PublicInput    
     mapping(bytes32 nullifierHash => bool isNullified) public nullifiers;
-
     DataType.PublicInput[] public publicInputsOfAllProofs;  // The publicInputs of all PositionAndSalaryProofs to show the list of all proofs related data on FE (front-end).
-    //bytes32[][] public publicInputsOfAllProofs;  // The publicInputs of all PositionAndSalaryProofs to show the list of all proofs related data on FE (front-end).
 
     constructor(
         PositionAndSalaryProof1024Verifier _positionAndSalaryProof1024Verifier, 
@@ -36,60 +32,9 @@ contract PositionAndSalaryProofManager {
     function recordPublicInputsOfPositionAndSalaryProof(
         bytes calldata proof, 
         bytes32[] calldata publicInputs,
-        //bytes32 nullifierHash,
-        //bytes calldata rsaSignatureLength, // 9 or 18
         uint16 rsaSignatureLength, // 9 or 18
-
-        // @dev - [TODO]: Add the each values (elements) of a given "publicInputs" array argument to below:
-        //                 --> Store the arguments, which is specified in the "const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof()".
-        DataType.PublicInput memory separatedPublicInputs
-        // bytes calldata jwtPubkeyModulusLimbs,
-        // bytes calldata domain,
-        // bytes calldata position,
-        // bytes calldata salary,
-        // bytes calldata workLifeBalance,
-        // bytes calldata cultureValues, 
-        // bytes calldata careerGrowth, 
-        // bytes calldata compensationBenefits, 
-        // bytes calldata leadershipQuality, 
-        // bytes calldata operationalEfficiency
-        
-        // string calldata jwtPubkeyModulusLimbs,
-        // string calldata domain,
-        // string calldata position,
-        // string calldata salary,
-        // uint8 workLifeBalance,
-        // uint8 cultureValues, 
-        // uint8 careerGrowth, 
-        // uint8 compensationBenefits, 
-        // uint8 leadershipQuality, 
-        // uint8 operationalEfficiency
+        DataType.PublicInput memory separatedPublicInputs // @dev - To avoid the "Stack too deep" error, a given publicInputs would be stored in the form of the struct data (= DataType.PublicInput)
     ) public returns (bool) {
-        // @dev - Decode the given arguments of respective publicInputs
-        // (uint16 _rsaSignatureLength) = abi.decode(rsaSignatureLength, (uint16)); 
-        // (string memory _jwtPubkeyModulusLimbs) = abi.decode(separatedPublicInputs.jwtPubkeyModulusLimbs, (string));
-        // (string memory _domain) = abi.decode(separatedPublicInputs.domain, (string));
-        // (string memory _position) = abi.decode(separatedPublicInputs.position, (string));
-        // (string memory _salary) = abi.decode(separatedPublicInputs.salary, (string));
-        // (uint8 _workLifeBalance) = abi.decode(separatedPublicInputs.workLifeBalance, (uint8));
-        // (uint8 _cultureValues) = abi.decode(separatedPublicInputs.cultureValues, (uint8));
-        // (uint8 _careerGrowth) = abi.decode(separatedPublicInputs.careerGrowth, (uint8));
-        // (uint8 _compensationBenefits) = abi.decode(separatedPublicInputs.compensationBenefits, (uint8));
-        // (uint8 _leadershipQuality) = abi.decode(separatedPublicInputs.leadershipQuality, (uint8));
-        // (uint8 _operationalEfficiency) = abi.decode(separatedPublicInputs.operationalEfficiency, (uint8));
-        
-        // (uint16 _rsaSignatureLength) = abi.decode(rsaSignatureLength, (uint16)); 
-        // (string memory _jwtPubkeyModulusLimbs) = abi.decode(jwtPubkeyModulusLimbs, (string));
-        // (string memory _domain) = abi.decode(domain, (string));
-        // (string memory _position) = abi.decode(position, (string));
-        // (string memory _salary) = abi.decode(salary, (string));
-        // (uint8 _workLifeBalance) = abi.decode(workLifeBalance, (uint8));
-        // (uint8 _cultureValues) = abi.decode(cultureValues, (uint8));
-        // (uint8 _careerGrowth) = abi.decode(careerGrowth, (uint8));
-        // (uint8 _compensationBenefits) = abi.decode(compensationBenefits, (uint8));
-        // (uint8 _leadershipQuality) = abi.decode(leadershipQuality, (uint8));
-        // (uint8 _operationalEfficiency) = abi.decode(operationalEfficiency, (uint8));
-
         // @dev - Verify a PositionAndSalaryProof
         if (rsaSignatureLength == 9) {
             bool result = positionAndSalaryProof1024Verifier.verifyPositionAndSalaryProof(proof, publicInputs);
@@ -115,42 +60,14 @@ contract PositionAndSalaryProofManager {
         publicInput.operationalEfficiency = separatedPublicInputs.operationalEfficiency;
         publicInput.nullifierHash = separatedPublicInputs.nullifierHash;
 
-        // publicInput.jwtPubkeyModulusLimbs = _jwtPubkeyModulusLimbs;
-        // publicInput.domain = _domain;
-        // publicInput.position = _position;
-        // publicInput.salary = _salary;
-        // publicInput.workLifeBalance = _workLifeBalance;
-        // publicInput.cultureValues = _cultureValues;
-        // publicInput.careerGrowth = _careerGrowth;
-        // publicInput.compensationBenefits = _compensationBenefits;
-        // publicInput.leadershipQuality = _leadershipQuality;
-        // publicInput.operationalEfficiency = _operationalEfficiency;
-        // publicInput.nullifierHash = nullifierHash;
-
-        // DataType.PublicInput memory publicInput;
-        // publicInput.jwtPubkeyModulusLimbs = publicInputs[0];
-        // publicInput.domain = publicInputs[1];
-        // publicInput.position = publicInputs[2];
-        // publicInput.salary = publicInputs[3];
-        // publicInput.workLifeBalance = publicInputs[4];
-        // publicInput.cultureValues = publicInputs[5];
-        // publicInput.careerGrowth = publicInputs[6];
-        // publicInput.compensationBenefits = publicInputs[7];
-        // publicInput.leadershipQuality = publicInputs[8];
-        // publicInput.operationalEfficiency = publicInputs[9];
-        // publicInput.nullifierHash = publicInputs[10];
-
         // @dev - Store the publicInput of a given PositionAndSalaryProof
-        publicInputsOfPositionAndSalaryProofs[publicInput.nullifierHash] = publicInput; // @dev - The original
-        //publicInputsOfPositionAndSalaryProofs[nullifierHash] = publicInputs;
+        publicInputsOfPositionAndSalaryProofs[publicInput.nullifierHash] = publicInput;
 
         // @dev - Store the nullifierHash to prevent double submission of the same email
-        nullifiers[publicInput.nullifierHash] = true; // @dev - The original
-        //nullifiers[nullifierHash] = true;
+        nullifiers[publicInput.nullifierHash] = true;
 
         // @dev - Store the publicInputs into the list of all proofs to be displayed on the UI (front-end).
-        publicInputsOfAllProofs.push(publicInput);  // @dev - The original
-        //publicInputsOfAllProofs.push(publicInputs);
+        publicInputsOfAllProofs.push(publicInput);
     }
 
     /**
