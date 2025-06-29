@@ -73,18 +73,18 @@ fn main(
     partial_hash: [u32; 8],
     full_data_length: u32,
     base64_decode_offset: u32,
-    jwt_pubkey_modulus_limbs: pub [u128; 18],
+    jwt_pubkey_modulus_limbs: [u128; 18],
     jwt_pubkey_redc_params_limbs: [u128; 18],
     jwt_signature_limbs: [u128; 18],
-    domain: pub BoundedVec<u8, MAX_DOMAIN_LENGTH>,
-    position: pub BoundedVec<u8, MAX_POSITION_LENGTH>,   // Position, which is part of Email Body-extracted from the Entire Email Body.
-    salary: pub BoundedVec<u8, MAX_SALARY_LENGTH>,       // Salary, which is part of Email Body-extracted from the Entire Email Body.
-    work_life_balance: pub u8,
-    culture_values: pub u8,
-    career_growth: pub u8,
-    compensation_benefits: pub u8,
-    leadership_quality: pub u8,
-    operational_efficiency: pub u8,
+    domain: BoundedVec<u8, MAX_DOMAIN_LENGTH>,
+    position: BoundedVec<u8, MAX_POSITION_LENGTH>,   // Position, which is part of Email Body-extracted from the Entire Email Body.
+    salary: BoundedVec<u8, MAX_SALARY_LENGTH>,       // Salary, which is part of Email Body-extracted from the Entire Email Body.
+    work_life_balance: u8,
+    culture_values: u8,
+    career_growth: u8,
+    compensation_benefits: u8,
+    leadership_quality: u8,
+    operational_efficiency: u8,
     // @dev - The following input parameters would be for email verification /w ZKEmail.nr
     header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,  // Entire Email Header
     //body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,    // Entire Email Body
