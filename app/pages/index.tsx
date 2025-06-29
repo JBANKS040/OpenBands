@@ -381,19 +381,32 @@ export default function Home() {
       console.log(`nullifier: ${ nullifier }`);
 
       // @dev - Store the public inputs
-      let separatedPublicInputs: any = {
-        //jwtPubkeyModulusLimbs: jwtPubkey,
-        domain: domain,
-        position: position,
-        salary: salary,
-        workLifeBalance: ratings.work_life_balance,
-        cultureValues: ratings.culture_values,
-        careerGrowth: ratings.career_growth,
-        compensationBenefits: ratings.compensation_benefits,
-        leadershipQuality: ratings.leadership_quality,
-        operationalEfficiency: ratings.operational_efficiency,
-        nullifierHash: nullifier
-      };
+      let separatedPublicInputs: Array<any> = [
+        jwtPubkey,
+        domain,
+        position,
+        salary,
+        ratings.work_life_balance,
+        ratings.culture_values,
+        ratings.career_growth,
+        ratings.compensation_benefits,
+        ratings.leadership_quality,
+        ratings.operational_efficiency,
+        nullifier
+      ];
+      // let separatedPublicInputs = {
+      //   //jwtPubkeyModulusLimbs: jwtPubkey,
+      //   domain: domain,
+      //   position: position,
+      //   salary: salary,
+      //   workLifeBalance: ratings.work_life_balance,
+      //   cultureValues: ratings.culture_values,
+      //   careerGrowth: ratings.career_growth,
+      //   compensationBenefits: ratings.compensation_benefits,
+      //   leadershipQuality: ratings.leadership_quality,
+      //   operationalEfficiency: ratings.operational_efficiency,
+      //   nullifierHash: nullifier
+      // };
 
       // @dev - Store the data into the blockchain (BASE)
       let abi: Array<any> = artifactOfPositionAndSalaryProofManager.abi;
