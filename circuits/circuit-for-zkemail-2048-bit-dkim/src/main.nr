@@ -73,18 +73,18 @@ fn main(
     partial_hash: [u32; 8],
     full_data_length: u32,
     base64_decode_offset: u32,
-    jwt_pubkey_modulus_limbs: pub [u128; 18],
+    jwt_pubkey_modulus_limbs: [u128; 18],
     jwt_pubkey_redc_params_limbs: [u128; 18],
     jwt_signature_limbs: [u128; 18],
-    domain: pub BoundedVec<u8, MAX_DOMAIN_LENGTH>,
-    position: pub BoundedVec<u8, MAX_POSITION_LENGTH>,   // Position, which is part of Email Body-extracted from the Entire Email Body.
-    salary: pub BoundedVec<u8, MAX_SALARY_LENGTH>,       // Salary, which is part of Email Body-extracted from the Entire Email Body.
-    work_life_balance: pub u8,
-    culture_values: pub u8,
-    career_growth: pub u8,
-    compensation_benefits: pub u8,
-    leadership_quality: pub u8,
-    operational_efficiency: pub u8,
+    domain: BoundedVec<u8, MAX_DOMAIN_LENGTH>,
+    position: BoundedVec<u8, MAX_POSITION_LENGTH>,   // Position, which is part of Email Body-extracted from the Entire Email Body.
+    salary: BoundedVec<u8, MAX_SALARY_LENGTH>,       // Salary, which is part of Email Body-extracted from the Entire Email Body.
+    work_life_balance: u8,
+    culture_values: u8,
+    career_growth: u8,
+    compensation_benefits: u8,
+    leadership_quality: u8,
+    operational_efficiency: u8,
     // @dev - The following input parameters would be for email verification /w ZKEmail.nr
     header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,  // Entire Email Header
     //body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,    // Entire Email Body
@@ -93,7 +93,7 @@ fn main(
     //body_hash_index: u32,
     dkim_header_sequence: Sequence,
     body_trimmed: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH>, // Trimmed Email Body, which the Header and HTML parts are cut off.
-) {
+) -> pub Field {
     // Init JWT struct and verify signature
     let jwt = JWT::init_with_partial_hash(
         partial_data,
@@ -149,6 +149,8 @@ fn main(
         signature,
         dkim_header_sequence
     );
+    let pubkey_hash: Field = return_value[0];
+    let email_nullifier: Field = return_value[1];
 
     // @dev - [Log]:
     println(f"body_trimmed: {body_trimmed}\n");
@@ -164,6 +166,9 @@ fn main(
     /// @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
     let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(salary, body_trimmed) };
     assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
+
+    // @dev - Return value
+    email_nullifier
 }
 
 

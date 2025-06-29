@@ -23,12 +23,13 @@ mod test_zkemail_integration_success {
 
     use zkemail::{
         headers::{body_hash::get_body_hash, email_address::get_email_address},
-        MAX_EMAIL_ADDRESS_LENGTH, partial_hash::partial_sha256_var_end,
+        MAX_EMAIL_ADDRESS_LENGTH, 
+        partial_hash::partial_sha256_var_end,
         dkim::RSAPubkey, Sequence,
         KEY_LIMBS_2048
     };
 
-    use std::hash::sha256_var;
+    //use std::hash::sha256_var;
 
     #[test]
     fn test_verify_position_and_salary_and_verify_email_2048_bit_dkim() {
@@ -103,11 +104,13 @@ mod test_zkemail_modules_success {
 
     use zkemail::{
         headers::{body_hash::get_body_hash, email_address::get_email_address},
-        MAX_EMAIL_ADDRESS_LENGTH, partial_hash::partial_sha256_var_end,
+        MAX_EMAIL_ADDRESS_LENGTH, 
+        partial_hash::partial_sha256_var_end,
         dkim::RSAPubkey, KEY_LIMBS_2048, Sequence
     };
 
-    use std::hash::sha256_var;
+    use dep::sha256;
+    //use std::hash::sha256_var;
 
     #[test]
     fn test_dkim_signature() {
@@ -124,7 +127,9 @@ mod test_zkemail_modules_success {
         );
         // compute the body hash
         let computed_body_hash: [u8; 32] =
-            sha256_var(EmailLarge::BODY.storage(), EmailLarge::BODY.len() as u64);
+            sha256::sha256_var(EmailLarge::BODY.storage(), EmailLarge::BODY.len() as u64);
+            //sha256_var(EmailLarge::BODY.storage(), EmailLarge::BODY.len() as u64);
+
         // compare the body hashes
         assert(
             signed_body_hash == computed_body_hash,

@@ -41,14 +41,14 @@ pub(crate) mod EmploymentOfferEmailLarge {
      * @notice - Example of a 1024-bit RSA's header/public key/signature, which is extracted from a example email's eml file.
      * @dev - [TODO]: Store example values into the following 1024-bit RSA's header/public key/signature variables.
      */
-    pub(crate) global HEADER_1024_BIT: BoundedVec<u8, EMAIL_LARGE_MAX_HEADER_LENGTH> = BoundedVec::from([]);
+    // pub(crate) global HEADER_1024_BIT: BoundedVec<u8, EMAIL_LARGE_MAX_HEADER_LENGTH> = BoundedVec::from([]);
 
-    pub(crate) global PUBKEY_1024_BIT: RSAPubkey<KEY_LIMBS_1024> = RSAPubkey::new(
-        [],
-        [],
-    );
+    // pub(crate) global PUBKEY_1024_BIT: RSAPubkey<KEY_LIMBS_1024> = RSAPubkey::new(
+    //     [],
+    //     [],
+    // );
 
-    pub(crate) global SIGNATURE_1024_BIT: [Field; KEY_LIMBS_1024] = [];
+    // pub(crate) global SIGNATURE_1024_BIT: [Field; KEY_LIMBS_1024] = [];
 }
 
 

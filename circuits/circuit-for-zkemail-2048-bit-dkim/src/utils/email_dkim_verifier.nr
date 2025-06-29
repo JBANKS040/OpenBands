@@ -1,4 +1,6 @@
-use std::{collections::bounded_vec::BoundedVec, hash::{pedersen_hash, sha256_var}};
+use std::{collections::bounded_vec::BoundedVec, hash::{pedersen_hash}};
+//use std::{collections::bounded_vec::BoundedVec, hash::{pedersen_hash, sha256_var}};
+
 use zkemail::{
     dkim::RSAPubkey, 
     headers::body_hash::get_body_hash, 
@@ -31,7 +33,8 @@ fn verify_email_2048_bit_dkim_without_body_hash_check(
     pubkey: RSAPubkey<KEY_LIMBS_2048>,
     signature: [Field; KEY_LIMBS_2048],
     dkim_header_sequence: Sequence,
-) -> pub [Field; 2] {
+) -> [Field; 2] {        // @dev - Since Noir (Nargo) version v1.0.0, the `pub` keyword can not be used for the return value of the internal function.   
+//) -> pub [Field; 2] {
     // check the body and header lengths are within bounds
     assert(header.len() <= MAX_EMAIL_HEADER_LENGTH);
 

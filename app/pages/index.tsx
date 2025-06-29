@@ -14,6 +14,12 @@ import CompanyRatings from '../components/CompanyRatings';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
 
+// @dev - Blockchain related imports
+import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
+import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
+import { storePublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
+import { encodeBase64, toUtf8Bytes, zeroPadBytes } from 'ethers';
+import { convertBytes32ToString } from '../lib/converters/bytes32ToStringConverter';
 
 interface GoogleJwtPayload {
   email: string;
@@ -140,12 +146,21 @@ export default function Home() {
     leadership_quality: 3,
     operational_efficiency: 3
   });
+  const [provider, setProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
   useEffect(() => {
-    fetchSubmissions();
+    // fetchSubmissions();
+    async function init() {
+      const { provider, signer } = await connectToEvmWallet(); // @dev - Connect to EVM wallet (i.e. MetaMask) on page load
+      setProvider(provider);
+      setSigner(signer);
+      fetchSubmissions();
+    }
+    init();
   }, []);
 
   const handleGoogleLogin = useCallback(async (credentialResponse: any) => {
@@ -359,6 +374,51 @@ export default function Home() {
         dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
         bodyTrimmed: emailBodyTrimmed
       });
+      console.log(`generatedProof: ${ JSON.stringify(generatedProof, null, 2) }`);
+
+      // @dev - Store a nullifier, which is the index number [0] of the "generatedProof.publicInputs" array
+      let nullifier = generatedProof.publicInputs[0];
+      console.log(`nullifier: ${ nullifier }`);
+
+      // @dev - Store the public inputs
+      let separatedPublicInputs = {
+        //jwtPubkeyModulusLimbs: jwtPubkey,
+        domain: domain,
+        position: position,
+        salary: salary,
+        workLifeBalance: ratings.work_life_balance,
+        cultureValues: ratings.culture_values,
+        careerGrowth: ratings.career_growth,
+        compensationBenefits: ratings.compensation_benefits,
+        leadershipQuality: ratings.leadership_quality,
+        operationalEfficiency: ratings.operational_efficiency,
+        nullifierHash: nullifier
+      };
+
+      // @dev - Store the data into the blockchain (BASE)
+      let abi: Array<any> = artifactOfPositionAndSalaryProofManager.abi;
+      let positionAndSalaryProofManagerContractAddress: string = process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_CONTRACT_ADDRESS || "";
+
+      const txReceipt = storePublicInputsOfPositionAndSalaryProof( // @dev - Record the public inputs of position and salary proof to the blockchain (BASE) using the "recordPublicInputsOfPositionAndSalaryProof" function.
+        signer, 
+        abi, 
+        positionAndSalaryProofManagerContractAddress,
+        generatedProof.proof, 
+        generatedProof.publicInputs,
+        separatedPublicInputs,
+        zkEmailInputData.signature.length // 9 or 18
+        // jwtPubkey,
+        // domain,
+        // position,
+        // salary,
+        // ratings.work_life_balance,
+        // ratings.culture_values,
+        // ratings.career_growth,
+        // ratings.compensation_benefits,
+        // ratings.leadership_quality,
+        // ratings.operational_efficiency,
+        // nullifier // email_nullifier
+      );
 
       // Then try to store it (this might fail due to schema issues)
       try {
