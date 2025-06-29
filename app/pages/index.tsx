@@ -399,12 +399,12 @@ export default function Home() {
         domain: domain,
         position: position,
         salary: salary,
-        workLifeBalance: work_life_balance,
-        cultureValues: culture_values,
-        careerGrowth: career_growth,
-        compensationBenefits: compensation_benefits,
-        leadershipQuality: leadership_quality,
-        operationalEfficiency: operational_efficiency,
+        workLifeBalance: ratings.work_life_balance,
+        cultureValues: ratings.culture_values,
+        careerGrowth: ratings.career_growth,
+        compensationBenefits: ratings.compensation_benefits,
+        leadershipQuality: ratings.leadership_quality,
+        operationalEfficiency: ratings.operational_efficiency,
         nullifierHash: nullifier
       };
       
