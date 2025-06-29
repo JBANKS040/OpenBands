@@ -32,8 +32,8 @@ contract PositionAndSalaryProofManager {
     function recordPublicInputsOfPositionAndSalaryProof(
         bytes calldata proof, 
         bytes32[] calldata publicInputs,
-        DataType.PublicInput memory separatedPublicInputs // @dev - To avoid the "Stack too deep" error, a given publicInputs would be stored in the form of the struct data (= DataType.PublicInput)
-        uint16 rsaSignatureLength, // 9 or 18
+        DataType.PublicInput memory separatedPublicInputs, // @dev - To avoid the "Stack too deep" error, a given publicInputs would be stored in the form of the struct data (= DataType.PublicInput)
+        uint8 rsaSignatureLength // 9 or 18
     ) public returns (bool) {
         // @dev - Verify a PositionAndSalaryProof
         if (rsaSignatureLength == 9) {
