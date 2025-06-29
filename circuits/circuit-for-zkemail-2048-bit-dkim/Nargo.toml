@@ -3,7 +3,7 @@ name = "openbands"
 type = "bin"
 authors = ["Stratos", "masaun"]
 compiler_version = ">=1.0.0"
-version = "0.0.1"
+version = "0.1.0"
 
 [dependencies]
 jwt = { tag = "v0.4.4", git = "https://github.com/saleel/noir-jwt" }
