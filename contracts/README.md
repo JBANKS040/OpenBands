@@ -10,6 +10,20 @@
 
 ## Installation
 
+- Run the `forge-install.sh`:
+```bash
+cd contracts
+sh forge-install.sh
+```
+
+Or,
+
+- If there is modules under the `./contracts/lib/` directory, they should be removed in advance:
+```bash
+cd contracts
+rm -rf lib/* 
+```
+
 - Install the `foundry-noir-helper` libary:
 ```bash
 forge install 0xnonso/foundry-noir-helper --no-commit
