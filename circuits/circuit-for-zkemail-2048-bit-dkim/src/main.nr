@@ -1,5 +1,6 @@
 mod tests;
 mod utils;
+mod libs;   // @dev - icl. openbanking_verifier
 
 use jwt::JWT;
 
@@ -10,14 +11,24 @@ use zkemail::{
     KEY_LIMBS_2048
 };
 
-use utils::position_and_salary_extractor::{
-    extract_position_from_email_body, // @dev - extract_position_from_email_body() function
-    extract_salary_from_email_body    // @dev - extract_salary_from_body() function
-}; 
-use utils::email_dkim_verifier::{
-    MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, MAX_BODY_TRIMMED_LENGTH,
-    //verify_email_2048_bit_dkim,                         // @dev - verify_email_2048_bit_dkim() function
-    verify_email_2048_bit_dkim_without_body_hash_check    // @dev - verify_email_2048_bit_dkim_without_body_hash_check() function
+use utils::{
+    position_and_salary_extractor::{
+        extract_position_from_email_body, // @dev - extract_position_from_email_body() function
+        extract_salary_from_email_body    // @dev - extract_salary_from_body() function
+    },
+    email_dkim_verifier::{
+        MAX_EMAIL_HEADER_LENGTH, MAX_EMAIL_BODY_LENGTH, MAX_BODY_TRIMMED_LENGTH,
+        //verify_email_2048_bit_dkim,                         // @dev - verify_email_2048_bit_dkim() function
+        verify_email_2048_bit_dkim_without_body_hash_check    // @dev - verify_email_2048_bit_dkim_without_body_hash_check() function
+    },
+};
+
+use libs::{
+    openbanking_integrator::{
+        verify_openbanking_payment_proof, // @dev - openbanking_verifier::verify_openbanking_payment()
+        OpenbankingVerifierParams, OpenbankingVerifierReturn,
+        MAX_AMOUNT_VALUE_LENGTH, MAX_PAYLOAD_LENGTH
+    },
 };
 
 // @dev - [NOTE]: The following imported-variables are temporary variables. They are stored into the "test_header" and "test_body" for passing the verify_email_2048_bit_dkim() function. Thus, this should be removed once appropreate implementation will be done in the future.
@@ -85,6 +96,7 @@ fn main(
     compensation_benefits: pub u8,
     leadership_quality: pub u8,
     operational_efficiency: pub u8,
+
     // @dev - The following input parameters would be for email verification /w ZKEmail.nr
     header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,  // Entire Email Header
     //body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,    // Entire Email Body
@@ -93,6 +105,9 @@ fn main(
     //body_hash_index: u32,
     dkim_header_sequence: Sequence,
     body_trimmed: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH>, // Trimmed Email Body, which the Header and HTML parts are cut off.
+
+    // @dev - The following input parameters would be for the openbanking_verifier
+    openbanking_params: OpenbankingVerifierParams          // openbanking_verifier::OpenbankingVerifierParams
 ) {
     // Init JWT struct and verify signature
     let jwt = JWT::init_with_partial_hash(
@@ -164,6 +179,9 @@ fn main(
     /// @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
     let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(salary, body_trimmed) };
     assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
+
+    // @dev - Openbanking Verifier
+    let openbanking_return: OpenbankingVerifierReturn = verify_openbanking_payment_proof(openbanking_params);
 }
 
 
@@ -269,7 +287,7 @@ unconstrained fn is_salary_found_in_email_body(
                     }
                 }
             }
-         }
+        }
     }
 
     is_salary_found_in_email_body

@@ -1,4 +1,5 @@
 pub(crate) mod test_inputs;
+pub(crate) mod test_inputs_openbanking;
 
 
 /**
@@ -18,17 +19,37 @@ mod test_zkemail_integration_success {
                 EMPLOYMENT_OFFER_EMAIL_HEADER, EMPLOYMENT_OFFER_EMAIL_BODY, EMPLOYMENT_OFFER_EMAIL_BODY_TRIMMED,
                 POSITION_BODY, SALARY_BODY,
             },
+        },
+        tests::test_inputs_openbanking::{
+            RevolutPaymentPayload::{
+                MODULUS_LIMBS, REDC_LIMBS, SIGNATURE_LIMBS, 
+                PARTIAL_HASH_START, 
+                HEADER_DELIMITER_INDEX, 
+                PAYLOAD,
+                //payload_length
+            }
+        },
+        libs::{
+            openbanking_integrator::{
+                //verify_openbanking_payment_proof, // @dev - openbanking_verifier::verify_openbanking_payment()
+            },
         }
     };
 
     use zkemail::{
         headers::{body_hash::get_body_hash, email_address::get_email_address},
-        MAX_EMAIL_ADDRESS_LENGTH, partial_hash::partial_sha256_var_end,
+        MAX_EMAIL_ADDRESS_LENGTH, 
+        partial_hash::partial_sha256_var_end,
         dkim::RSAPubkey, Sequence,
         KEY_LIMBS_2048
     };
 
-    use std::hash::sha256_var;
+    use openbanking_verifier::{
+        io::{OpenbankingVerifierParams, OpenbankingVerifierReturn}, 
+        constants::{MAX_AMOUNT_VALUE_LENGTH, MAX_PAYLOAD_LENGTH}
+    };
+
+    //use std::hash::sha256_var;
 
     #[test]
     fn test_verify_position_and_salary_and_verify_email_2048_bit_dkim() {
@@ -60,6 +81,27 @@ mod test_zkemail_integration_success {
         let dkim_header_sequence: Sequence = DKIM_HEADER_SEQUENCE;                              // DKIM header sequence
         let body_trimmed: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH> = EMPLOYMENT_OFFER_EMAIL_BODY_TRIMMED; // Trimmed body of the email
 
+        // @dev - Input parameters for the openbanking_verifier
+        let openbanking_params: OpenbankingVerifierParams = OpenbankingVerifierParams {
+            signature_limbs: SIGNATURE_LIMBS,
+            modulus_limbs: MODULUS_LIMBS,
+            redc_limbs: REDC_LIMBS,
+            partial_hash_start: PARTIAL_HASH_START,
+            header_delimiter_index: HEADER_DELIMITER_INDEX,
+            payload: PAYLOAD
+        };
+
+        // pub struct OpenbankingVerifierParams {
+        //     signature_limbs: [u128; 18],
+        //     modulus_limbs: [u128; 18],
+        //     redc_limbs: [u128; 18],
+        //     partial_hash_start: [u32; 8],
+        //     header_delimiter_index: u32,
+        //     payload: BoundedVec<u8, MAX_PAYLOAD_LENGTH>,
+        // }
+
+
+
         // @dev - Run the main function (ZK circuit) with the input parameters above.
         main(
             partial_data,
@@ -78,6 +120,7 @@ mod test_zkemail_integration_success {
             compensation_benefits,
             leadership_quality,
             operational_efficiency,
+            
             // @dev - The following input parameters would be for email verification /w ZKEmail.nr
             header,
             //body,
@@ -85,7 +128,10 @@ mod test_zkemail_integration_success {
             signature,
             //body_hash_index,
             dkim_header_sequence,
-            body_trimmed
+            body_trimmed,
+
+            // @dev - The following input parameters would be for the openbanking_verifier
+            openbanking_params
         );
     }
 }
@@ -103,11 +149,13 @@ mod test_zkemail_modules_success {
 
     use zkemail::{
         headers::{body_hash::get_body_hash, email_address::get_email_address},
-        MAX_EMAIL_ADDRESS_LENGTH, partial_hash::partial_sha256_var_end,
+        MAX_EMAIL_ADDRESS_LENGTH, 
+        partial_hash::partial_sha256_var_end,
         dkim::RSAPubkey, KEY_LIMBS_2048, Sequence
     };
 
-    use std::hash::sha256_var;
+    use dep::sha256;
+    //use std::hash::sha256_var;
 
     #[test]
     fn test_dkim_signature() {
@@ -124,7 +172,9 @@ mod test_zkemail_modules_success {
         );
         // compute the body hash
         let computed_body_hash: [u8; 32] =
-            sha256_var(EmailLarge::BODY.storage(), EmailLarge::BODY.len() as u64);
+            sha256::sha256_var(EmailLarge::BODY.storage(), EmailLarge::BODY.len() as u64);
+            //sha256_var(EmailLarge::BODY.storage(), EmailLarge::BODY.len() as u64);
+
         // compare the body hashes
         assert(
             signed_body_hash == computed_body_hash,
