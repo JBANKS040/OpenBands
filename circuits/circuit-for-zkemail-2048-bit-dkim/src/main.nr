@@ -24,7 +24,11 @@ use utils::{
 };
 
 use libs::{
-    openbanking_integrator::verify_openbanking_payment_proof
+    openbanking_integrator::{
+        verify_openbanking_payment_proof,
+        OpenbankingVerifierParams, OpenbankingVerifierReturn,
+        MAX_AMOUNT_VALUE_LENGTH, MAX_PAYLOAD_LENGTH
+    },
 };
 
 
