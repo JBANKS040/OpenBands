@@ -25,14 +25,19 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   // Connected to a Signer; can make state changing transactions, which will cost the account ether
   const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
 
-  // Send the transaction
-  const tx = await positionAndSalaryProofManager.recordPublicInputsOfPositionAndSalaryProof(
-    proof, 
-    publicInputs, 
-    separatedPublicInputs,
-    rsaSignatureLength 
-    //{ value: parseEther("0.01") }  // @dev - Send a TX with 0.01 ETH -> This is not a gas fee. Hence, this is commented out.
-  );
+  try {
+    // Send the transaction
+    const tx = await positionAndSalaryProofManager.recordPublicInputsOfPositionAndSalaryProof(
+      proof, 
+      publicInputs, 
+      separatedPublicInputs,
+      rsaSignatureLength
+      //{ value: parseEther("0.001") }  // @dev - Send a TX with 0.01 ETH -> This is not a gas fee. Hence, this is commented out.
+    );
+  } catch (err) {
+    console.error("Failed to send a transaction:", err);
+    throw new Error("Failed to send a transaction");
+  }
 
   // Wait for the transaction to be included.
   const txReceipt = await tx.wait();
