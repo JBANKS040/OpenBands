@@ -19,7 +19,8 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   positionAndSalaryProofManagerContractAddress: string,
   proof: any,
   publicInputs: Array<any>,
-  rsaSignatureLength: number,
+  separatedPublicInputs: any,
+  rsaSignatureLength: number
 ): Promise<{ txReceipt: any }> {
   // Connected to a Signer; can make state changing transactions, which will cost the account ether
   const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
