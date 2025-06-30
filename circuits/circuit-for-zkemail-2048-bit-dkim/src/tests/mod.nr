@@ -1,4 +1,5 @@
 pub(crate) mod test_inputs;
+pub(crate) mod test_inputs_openbanking;
 
 
 /**
@@ -18,6 +19,15 @@ mod test_zkemail_integration_success {
                 EMPLOYMENT_OFFER_EMAIL_HEADER, EMPLOYMENT_OFFER_EMAIL_BODY, EMPLOYMENT_OFFER_EMAIL_BODY_TRIMMED,
                 POSITION_BODY, SALARY_BODY,
             },
+        },
+        tests::test_inputs_openbanking::{
+            RevolutPaymentPayload::{
+                MODULUS_LIMBS, REDC_LIMBS, SIGNATURE_LIMBS, 
+                PARTIAL_HASH_START, 
+                HEADER_DELIMITER_INDEX, 
+                PAYLOAD,
+                //payload_length
+            }
         },
         libs::{
             openbanking_integrator::{
@@ -73,12 +83,12 @@ mod test_zkemail_integration_success {
 
         // @dev - Input parameters for the openbanking_verifier
         let openbanking_params: OpenbankingVerifierParams = OpenbankingVerifierParams {
-            signature_limbs: BoundedVec::from_array([49, 50, 51, 52, 53, 54, 55, 56, 57]),
-            modulus_limbs: BoundedVec::from_array([48, 49, 50, 51, 52, 53, 54, 55, 56, 57]),
-            redc_limbs: BoundedVec::from_array([48, 49, 50, 51, 52, 53, 54, 55, 56, 57]),
-            partial_hash_start: BoundedVec::from_array([0, 1, 2, 3, 4, 5, 6, 7]),
-            header_delimiter_index: 0,
-            payload: BoundedVec::from_array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]),
+            signature_limbs: SIGNATURE_LIMBS,
+            modulus_limbs: MODULUS_LIMBS,
+            redc_limbs: REDC_LIMBS,
+            partial_hash_start: PARTIAL_HASH_START,
+            header_delimiter_index: HEADER_DELIMITER_INDEX,
+            payload: PAYLOAD
         };
 
         // pub struct OpenbankingVerifierParams {
