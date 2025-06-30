@@ -1,8 +1,6 @@
 mod tests;
 mod utils;
-//mod libs;   // @dev - icl. openbanking_verifier
-
-//use openbanking_verifier; // @dev - ./circuits/openbanking_verifier/*
+mod libs;   // @dev - icl. openbanking_verifier
 
 use jwt::JWT;
 
