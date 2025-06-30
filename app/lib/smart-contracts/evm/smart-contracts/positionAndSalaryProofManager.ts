@@ -29,6 +29,7 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   const tx = await positionAndSalaryProofManager.recordPublicInputsOfPositionAndSalaryProof(
     proof, 
     publicInputs, 
+    separatedPublicInputs,
     rsaSignatureLength 
     //{ value: parseEther("0.01") }  // @dev - Send a TX with 0.01 ETH -> This is not a gas fee. Hence, this is commented out.
   );
