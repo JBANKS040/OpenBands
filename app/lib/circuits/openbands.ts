@@ -149,9 +149,9 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
     let circuitArtifact: any;
     if (signature.length == 9) {          // 1024-bit RSA key
-      circuitArtifact = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.1.0/openbands.json`);
+      circuitArtifact = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.1.1/openbands.json`);
     } else if (signature.length == 18) {  // 2048-bit RSA key
-      circuitArtifact = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.1.0/openbands.json`);
+      circuitArtifact = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.1.1/openbands.json`);
     }
     //const circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
     
@@ -221,9 +221,9 @@ export const OPENBANDS_CIRCUIT_HELPER = {
         if (rsa_signature_length == 0 || !rsa_signature_length) { // @dev - For verifying the proofs, which was generated with the old version of the circuit (v0.0.1)
           vkey = await import(`../../assets/openbands-0.0.1/vk.json`);
         } else if (rsa_signature_length == 9) {
-          vkey = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.1.0/vk.json`);
+          vkey = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.1.1/vk.json`);
         } else if (rsa_signature_length == 18) {
-          vkey = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.1.0/vk.json`);
+          vkey = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.1.1/vk.json`);
         } else {
           throw new Error("Invalid rsa_signature_length value. Must be 9 or 18.");
         }
@@ -300,9 +300,9 @@ export const OPENBANDS_CIRCUIT_HELPER = {
         if (rsa_signature_length == 0 || !rsa_signature_length) { // @dev - For verifying the proofs, which was generated with the old version of the circuit (v0.0.1)
           circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
         } else if (rsa_signature_length == 9) {
-          circuitArtifact = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.1.0/openbands.json`);
+          circuitArtifact = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.1.1/openbands.json`);
         } else if (rsa_signature_length == 18) {
-          circuitArtifact = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.1.0/openbands.json`);
+          circuitArtifact = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.1.1/openbands.json`);
         } else {
           throw new Error("Invalid rsa_signature_length value. Must be 9 or 18.");
         }
