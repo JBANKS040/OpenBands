@@ -21,6 +21,25 @@ Install [noirup](https://noir-lang.org/docs/getting_started/noir_installation) w
 
 <br>
 
+## Check Noir (Nargo) version
+
+- Since the [PR #18](https://github.com/JBANKS040/OpenBands/pull/18), the Noir (Nargo) version must be `1.0.0-beta.4`.
+```bash
+noirup --version 1.0.0-beta.4
+```
+
+- Check whether the Noir (Nargo) version is properly updated or not:
+```bash
+nargo -V
+.
+.
+.
+nargo version = 1.0.0-beta.4
+```
+(More detail is [here](https://noir-lang.org/docs/getting_started/noir_installation#fetching-binaries))
+
+<br>
+
 ## Set the environment file (`env`)
 
 - Create the `env` file:
