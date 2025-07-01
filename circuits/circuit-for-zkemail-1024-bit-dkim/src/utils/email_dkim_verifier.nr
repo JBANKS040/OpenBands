@@ -1,4 +1,6 @@
-use std::{collections::bounded_vec::BoundedVec, hash::{pedersen_hash, sha256_var}};
+use std::{collections::bounded_vec::BoundedVec, hash::{pedersen_hash}};
+//use std::{collections::bounded_vec::BoundedVec, hash::{pedersen_hash, sha256_var}};
+
 use zkemail::{
     dkim::RSAPubkey, 
     headers::body_hash::get_body_hash, 
@@ -37,7 +39,8 @@ fn verify_email_1024_bit_dkim(
     //signature: [Field; KEY_LIMBS_2048],
     body_hash_index: u32,
     dkim_header_sequence: Sequence,
-) -> pub [Field; 2] {
+) -> [Field; 2] {        // @dev - Since Noir (Nargo) version v1.0.0, the `pub` keyword can not be used for the return value of the internal function.   
+//) -> pub [Field; 2] {
     // check the body and header lengths are within bounds
     assert(header.len() <= MAX_EMAIL_HEADER_LENGTH);
     assert(body.len() <= MAX_EMAIL_BODY_LENGTH);
@@ -52,7 +55,8 @@ fn verify_email_1024_bit_dkim(
 
     // ~ 113,962 constraints
     // hash the asserted body
-    let computed_body_hash: [u8; 32] = sha256_var(body.storage, body.len() as u64);
+    let computed_body_hash: [u8; 32] = sha256::sha256_var(body.storage, body.len() as u64);
+    //let computed_body_hash: [u8; 32] = sha256_var(body.storage, body.len() as u64);
 
     // compare the body hashes
     assert(
