@@ -46,28 +46,28 @@ contract PositionAndSalaryProofManager {
             revert("Unsupported RSA signature length");
         }
 
-        // @dev - Record a publicInput of a given PositionAndSalaryProof
-        DataType.PublicInput memory publicInput;
-        //publicInput.jwtPubkeyModulusLimbs = separatedPublicInputs.jwtPubkeyModulusLimbs;
-        publicInput.domain = separatedPublicInputs.domain;
-        publicInput.position = separatedPublicInputs.position;
-        publicInput.salary = separatedPublicInputs.salary;
-        publicInput.workLifeBalance = separatedPublicInputs.workLifeBalance;
-        publicInput.cultureValues = separatedPublicInputs.cultureValues;
-        publicInput.careerGrowth = separatedPublicInputs.careerGrowth;
-        publicInput.compensationBenefits = separatedPublicInputs.compensationBenefits;
-        publicInput.leadershipQuality = separatedPublicInputs.leadershipQuality;
-        publicInput.operationalEfficiency = separatedPublicInputs.operationalEfficiency;
-        publicInput.nullifierHash = separatedPublicInputs.nullifierHash;
+        // // @dev - Record a publicInput of a given PositionAndSalaryProof
+        // DataType.PublicInput memory publicInput;
+        // //publicInput.jwtPubkeyModulusLimbs = separatedPublicInputs.jwtPubkeyModulusLimbs;
+        // publicInput.domain = separatedPublicInputs.domain;
+        // publicInput.position = separatedPublicInputs.position;
+        // publicInput.salary = separatedPublicInputs.salary;
+        // publicInput.workLifeBalance = separatedPublicInputs.workLifeBalance;
+        // publicInput.cultureValues = separatedPublicInputs.cultureValues;
+        // publicInput.careerGrowth = separatedPublicInputs.careerGrowth;
+        // publicInput.compensationBenefits = separatedPublicInputs.compensationBenefits;
+        // publicInput.leadershipQuality = separatedPublicInputs.leadershipQuality;
+        // publicInput.operationalEfficiency = separatedPublicInputs.operationalEfficiency;
+        // publicInput.nullifierHash = separatedPublicInputs.nullifierHash;
 
-        // @dev - Store the publicInput of a given PositionAndSalaryProof
-        publicInputsOfPositionAndSalaryProofs[publicInput.nullifierHash] = publicInput;
+        // // @dev - Store the publicInput of a given PositionAndSalaryProof
+        // publicInputsOfPositionAndSalaryProofs[publicInput.nullifierHash] = publicInput;
 
-        // @dev - Store the nullifierHash to prevent double submission of the same email
-        nullifiers[publicInput.nullifierHash] = true;
+        // // @dev - Store the nullifierHash to prevent double submission of the same email
+        // nullifiers[publicInput.nullifierHash] = true;
 
-        // @dev - Store the publicInputs into the list of all proofs to be displayed on the UI (front-end).
-        publicInputsOfAllProofs.push(publicInput);
+        // // @dev - Store the publicInputs into the list of all proofs to be displayed on the UI (front-end).
+        // publicInputsOfAllProofs.push(publicInput);
     }
 
     /**

@@ -394,11 +394,12 @@ export default function Home() {
         operationalEfficiency: ratings.operational_efficiency,
         nullifierHash: nullifier
       };
-      console.log(`separatedPublicInputs: ${ separatedPublicInputs }`);
+      console.log(`separatedPublicInputs: ${ JSON.stringify(separatedPublicInputs, null, 2) }`);
 
       // @dev - Store the data into the blockchain (BASE)
       let abi: Array<any> = artifactOfPositionAndSalaryProofManager.abi;
       let positionAndSalaryProofManagerContractAddress: string = process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "";
+      console.log(`positionAndSalaryProofManagerContractAddress: ${ positionAndSalaryProofManagerContractAddress }`);
 
       const txReceipt = storePublicInputsOfPositionAndSalaryProof( // @dev - Record the public inputs of position and salary proof to the blockchain (BASE) using the "recordPublicInputsOfPositionAndSalaryProof" function.
         signer, 

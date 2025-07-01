@@ -17,11 +17,11 @@ echo "Gate count:"
 bb gates -b target/openbands.json | jq '.functions[0].circuit_size'
 
 # Create version-specific directory
-mkdir -p "../../app/assets/openbands-$VERSION"
+mkdir -p "../../app/assets/openbands-zkemail-2048-bit-dkim-$VERSION"
 #mkdir -p "../app/assets/openbands-$VERSION"
 mkdir -p "target/vk"
 
-echo "Copying circuit.json to app/assets/openbands-$VERSION..."
+echo "Copying circuit.json to app/assets/openbands-zkemail-2048-bit-dkim-$VERSION..."
 cp target/openbands.json "../../app/assets/openbands-zkemail-2048-bit-dkim-$VERSION/openbands.json"
 #cp target/openbands.json "../app/assets/openbands-$VERSION/openbands.json"
 
