@@ -25,9 +25,10 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   // Connected to a Signer; can make state changing transactions, which will cost the account ether
   const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
 
+  let tx: any;
   try {
     // Send the transaction
-    const tx = await positionAndSalaryProofManager.recordPublicInputsOfPositionAndSalaryProof(
+    tx = await positionAndSalaryProofManager.recordPublicInputsOfPositionAndSalaryProof(
       proof, 
       publicInputs, 
       separatedPublicInputs,
