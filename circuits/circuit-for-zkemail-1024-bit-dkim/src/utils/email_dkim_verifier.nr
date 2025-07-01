@@ -87,7 +87,8 @@ fn verify_email_1024_bit_dkim_without_body_hash_check(
     pubkey: RSAPubkey<KEY_LIMBS_1024>,
     signature: [Field; KEY_LIMBS_1024],
     dkim_header_sequence: Sequence,
-) -> pub [Field; 2] {
+) -> [Field; 2] { // @dev - Since Noir (Nargo) version v1.0.0, the `pub` keyword can not be used for the return value of the internal function.
+//) -> pub [Field; 2] {
     // check the body and header lengths are within bounds
     assert(header.len() <= MAX_EMAIL_HEADER_LENGTH);
 
