@@ -84,7 +84,7 @@ pub(crate) mod RevolutPaymentPayload {
 
     pub(crate) global HEADER_DELIMITER_INDEX: u32 = 431;
 
-    pub(crate) global PAYLOAD: BoundedVec<u8, MAX_PAYLOAD_LENGTH> = [ // @dev - [TODO]: Length is "858" bytes, which should be increased by the maximum length of the payload (1024 bytes).
+    pub(crate) global PAYLOAD: BoundedVec<u8, MAX_PAYLOAD_LENGTH> = BoundedVec::from_array([
         98, 51, 66, 108, 98, 109, 74, 104, 98, 109, 116, 112, 98, 109, 99, 117, 98, 51, 74, 110, 76,
         110, 86, 114, 76, 50, 108, 104, 100, 67, 73, 54, 77, 84, 99, 122, 78, 84, 103, 121, 78, 84,
         69, 53, 79, 88, 48, 46, 123, 34, 68, 97, 116, 97, 34, 58, 123, 34, 68, 111, 109, 101, 115,
@@ -133,8 +133,8 @@ pub(crate) mod RevolutPaymentPayload {
         32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
         32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
         32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
-    ];
+        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32
+    ]);
 
     pub(crate) global PAYLOAD_LENGTH: u32 = 858;
 
