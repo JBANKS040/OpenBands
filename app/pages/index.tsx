@@ -374,7 +374,7 @@ export default function Home() {
         dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
         bodyTrimmed: emailBodyTrimmed
       });
-      //console.log(`generatedProof: ${ JSON.stringify(generatedProof, null, 2) }`);
+      console.log(`generatedProof: ${ JSON.stringify(generatedProof, null, 2) }`);
 
       // @dev - Store a nullifier, which is the index number [0] of the "generatedProof.publicInputs" array
       let nullifier = generatedProof.publicInputs[0];

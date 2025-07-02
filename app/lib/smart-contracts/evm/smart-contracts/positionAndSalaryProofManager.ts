@@ -26,6 +26,7 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
 
   let tx: any;
+  let txReceipt: any;
   try {
     // Send the transaction
     tx = await positionAndSalaryProofManager.recordPublicInputsOfPositionAndSalaryProof(
@@ -35,13 +36,13 @@ export async function storePublicInputsOfPositionAndSalaryProof(
       rsaSignatureLength
       //{ value: parseEther("0.001") }  // @dev - Send a TX with 0.01 ETH -> This is not a gas fee. Hence, this is commented out.
     );
+    
+    // Wait for the transaction to be included.
+    txReceipt = await tx.wait();
   } catch (err) {
-    console.error("Failed to send a transaction:", err);
-    throw new Error("Failed to send a transaction");
+    console.error(`Failed to send a transaction: ${err}`);
+    throw new Error(`Failed to send a transaction: ${err}`);
   }
-
-  // Wait for the transaction to be included.
-  const txReceipt = await tx.wait();
 
   return { txReceipt };
 }
