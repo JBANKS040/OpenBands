@@ -10,7 +10,7 @@ import { ProofConverter } from "../utils/converters/ProofConverter.sol";
 
 
 contract PositionAndSalaryProof2048VerifierScript is Script {
-    PositionAndSalaryProof2048Verifier public positionAndSalaryProof2048Verifier.s;
+    PositionAndSalaryProof2048Verifier public positionAndSalaryProof2048Verifier;
     UltraVerifier public verifier;
 
     // struct Poseidon2HashAndPublicInputs {

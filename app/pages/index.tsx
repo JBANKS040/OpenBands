@@ -380,11 +380,11 @@ export default function Home() {
       //        i.e). Remove the first 32 bytes of the proof, which is the "publicInputs" array.
       console.log(`generatedProof.proof: ${ JSON.stringify(generatedProof.proof, null, 2) }`);
       console.log(`generatedProof.proof.length: ${ generatedProof.proof.length }`);
-      //let proof = generatedProof.proof.slice(32); // @dev - Remove the first 32 bytes of the proof, which is the "publicInputs" array.
-      let proof: any = [];
-      for (let i = 32; i < generatedProof.proof.length; i++) {
-        proof.push(generatedProof.proof[i]);
-      }
+      let proof = generatedProof.proof.slice(32); // @dev - Remove the first 32 bytes of the proof, which is the "publicInputs" array.
+      // let proof: any = [];
+      // for (let i = 32; i < generatedProof.proof.length; i++) {
+      //   proof.push(generatedProof.proof[i]);
+      // }
       console.log(`proof.lengh: ${ proof.length }`);
 
 

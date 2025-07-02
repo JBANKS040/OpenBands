@@ -57,3 +57,13 @@ sh scripts/base-testnet/deployment/deployment-2048-on-base-testnet.sh
 cd contracts
 sh scripts/base-testnet/deployment/deployment-on-base-testnet.sh
 ```
+
+<br>
+
+## Scripts of Smart Contracts
+
+- Run the script of the Smart Contracts:
+```bash
+cd contracts
+sh scripts/local-network/runningScript_PositionAndSalaryProof2048Verifier.sh
+```
