@@ -29,6 +29,7 @@ contract PositionAndSalaryProof2048VerifierScript is Script {
         // bytes32 nullifierHash = poseidon2HashAndPublicInputs.nullifier;
         // console.logBytes32(nullifierHash);       // [Log]: 0x26df0d347e961cb94e1cc6d2ad8558696de8c1964b30e26f2ec8b926cbbbf862
 
+        // @dev - [TODO]: Read a proof file from a JSON file.
         bytes memory proof_w_inputs = vm.readFileBinary("./circuits/circuit-for-zkemail-2048-bit-dkim/target/openbands_proof.bin");
         bytes memory proofBytes = ProofConverter.sliceAfter96Bytes(proof_w_inputs);    /// @dev - In case of that there are 3 public inputs (bytes32 * 3 = 96 bytes), the proof file includes 96 bytes of the public inputs at the beginning. Hence it should be removed by using this function.
         //bytes memory proofBytes = ProofConverter.sliceAfter64Bytes(proof_w_inputs);  /// @dev - In case of that there are 2 public inputs (bytes32 * 2 = 64 bytes), the proof file includes 64 bytes of the public inputs at the beginning. Hence it should be removed by using this function.
