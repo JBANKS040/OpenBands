@@ -41,7 +41,7 @@ export async function storePublicInputsOfPositionAndSalaryProof(
     txReceipt = await tx.wait();
   } catch (err) {
     console.error(`Failed to send a transaction: ${err}`);
-    throw new Error(`Failed to send a transaction: ${err}`);
+    throw new Error(`Failed to send a transaction: ${err}`); // @dev - To display a full error message on UI
   }
 
   return { txReceipt };
