@@ -3,15 +3,15 @@ pragma solidity ^0.8.17;
 import { Script } from "forge-std/Script.sol";
 import "forge-std/console.sol";
 
-import { PositionAndSalaryProof2048Verifier } from "../../contracts/src/circuits/circuit-for-zkemail-2048-bit-dkim/PositionAndSalaryProof2048Verifier.sol";
-import { HonkVerifier } from "../../contracts/src/circuits/circuit-for-zkemail-2048-bit-dkim/honk-verifier/plonk_vk_for_2048-bit-dkim.sol";
+import { PositionAndSalaryProof2048Verifier } from "../../src/circuits/circuit-for-zkemail-2048-bit-dkim/PositionAndSalaryProof2048Verifier.sol";
+import { HonkVerifier } from "../../src/circuits/circuit-for-zkemail-2048-bit-dkim/honk-verifier/plonk_vk_for_2048-bit-dkim.sol";
 //import { UltraVerifier } from "../../circuits/target/contract.sol";
 import { ProofConverter } from "../utils/converters/ProofConverter.sol";
 
 
 contract PositionAndSalaryProof2048VerifierScript is Script {
     PositionAndSalaryProof2048Verifier public positionAndSalaryProof2048Verifier;
-    UltraVerifier public verifier;
+    HonkVerifier public verifier;
 
     // struct Poseidon2HashAndPublicInputs {
     //     string hash; // Poseidon Hash of "nullifier"
