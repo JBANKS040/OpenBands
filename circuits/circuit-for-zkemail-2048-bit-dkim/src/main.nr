@@ -1,5 +1,6 @@
 mod tests;
 mod utils;
+mod zktls;
 
 use jwt::JWT;
 
