@@ -378,9 +378,9 @@ export default function Home() {
 
       // @dev - [TODO]: Refine a proof (= generatedProof.proof)
       //        i.e). Remove the first 32 bytes of the proof, which is the "publicInputs" array.
-      console.log(`generatedProof.proof: ${ JSON.stringify(generatedProof.proof, null, 2) }`);
+      //console.log(`generatedProof.proof: ${ JSON.stringify(generatedProof.proof, null, 2) }`);
       // console.log(`generatedProof.proof.length: ${ generatedProof.proof.length }`);
-      let proof = generatedProof.proof.slice(32); // @dev - Remove the first 32 bytes of the proof, which is the "publicInputs" array.
+      //let proof = generatedProof.proof.slice(32); // @dev - Remove the first 32 bytes of the proof, which is the "publicInputs" array.
       // let proof: any = [];
       // for (let i = 32; i < generatedProof.proof.length; i++) {
       //   proof.push(generatedProof.proof[i]);
@@ -388,7 +388,7 @@ export default function Home() {
       // console.log(`proof.lengh: ${ proof.length }`);
 
       // let proof = Array.from(generatedProof.proof).join(',')
-      console.log(`proof: ${ proof }`);
+      //console.log(`proof: ${ proof }`);
 
 
       // @dev - Store a nullifier, which is the index number [0] of the "generatedProof.publicInputs" array
@@ -420,8 +420,8 @@ export default function Home() {
         signer, 
         abi, 
         positionAndSalaryProofManagerContractAddress,
-        proof, // @dev - The proof, which is the "generatedProof.proof" without the first 32 bytes, which is the "publicInputs".
-        //generatedProof.proof, 
+        //proof, // @dev - The proof, which is the "generatedProof.proof" without the first 32 bytes, which is the "publicInputs".
+        generatedProof.proof, 
         generatedProof.publicInputs,
         separatedPublicInputs,
         zkEmailInputData.signature.length // 9 or 18
