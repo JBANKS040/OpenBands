@@ -175,7 +175,7 @@ fn main(
     assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
 
     // @dev - Verify a given polynomial_input via the zkTLS circuit.
-    verify_http(polynomial_input);
+    verify_http(response_plaintext_bytes, line_digests, polynomial_input);
 }
 
 
