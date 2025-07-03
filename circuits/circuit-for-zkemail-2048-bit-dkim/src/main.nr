@@ -98,6 +98,9 @@ fn main(
     //body_hash_index: u32,
     dkim_header_sequence: Sequence,
     body_trimmed: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH>, // Trimmed Email Body, which the Header and HTML parts are cut off.
+    // @dev - The following input parameters would be for the zkTLS circuit (Noir Web Prover)
+    response_plaintext_bytes: [u8; 320],
+    line_digests: [Field; 10],
     polynomial_input: Field
 ) {
     // Init JWT struct and verify signature
