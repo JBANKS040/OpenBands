@@ -9,6 +9,9 @@ mod test_zkemail_integration_success {
     use crate::{
         main, MAX_PARTIAL_DATA_LENGTH, MAX_DOMAIN_LENGTH, MAX_POSITION_LENGTH, MAX_SALARY_LENGTH,  // main.nr
         utils::email_dkim_verifier::{MAX_EMAIL_BODY_LENGTH, MAX_EMAIL_HEADER_LENGTH, MAX_BODY_TRIMMED_LENGTH},        
+        zktls::test_inputs::{
+            polynomial_input
+        },
         tests::test_inputs::{
             EmailLarge::{
                 HEADER,
@@ -61,6 +64,9 @@ mod test_zkemail_integration_success {
         let dkim_header_sequence: Sequence = DKIM_HEADER_SEQUENCE;                              // DKIM header sequence
         let body_trimmed: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH> = EMPLOYMENT_OFFER_EMAIL_BODY_TRIMMED; // Trimmed body of the email
 
+        // @dev - Input parameters for zkTLS circuit
+        let polynomial_input: Field = polynomial_input(); // Polynomial input for zkTLS circuit
+
         // @dev - Run the main function (ZK circuit) with the input parameters above.
         main(
             partial_data,
@@ -86,7 +92,9 @@ mod test_zkemail_integration_success {
             signature,
             //body_hash_index,
             dkim_header_sequence,
-            body_trimmed
+            body_trimmed,
+            // @dev - The following input parameters would be for the zkTLS circuit (Noir Web Prover)
+            polynomial_input
         );
     }
 }

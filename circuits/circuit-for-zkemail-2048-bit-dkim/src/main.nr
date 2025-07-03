@@ -32,6 +32,10 @@ use tests::test_inputs::{
     },
 };
 
+use zktls::noir_web_prover_integrator::{
+    verify_http
+};
+
 global MAX_PARTIAL_DATA_LENGTH: u32 = 640; // signed data length after partial SHA
 global MAX_DOMAIN_LENGTH: u32 = 64;
 global MAX_EMAIL_LENGTH: u32 = 128;
@@ -94,6 +98,7 @@ fn main(
     //body_hash_index: u32,
     dkim_header_sequence: Sequence,
     body_trimmed: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH>, // Trimmed Email Body, which the Header and HTML parts are cut off.
+    polynomial_input: Field
 ) {
     // Init JWT struct and verify signature
     let jwt = JWT::init_with_partial_hash(
@@ -165,6 +170,9 @@ fn main(
     /// @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
     let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(salary, body_trimmed) };
     assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
+
+    // @dev - Verify a given polynomial_input via the zkTLS circuit.
+    verify_http(polynomial_input);
 }
 
 

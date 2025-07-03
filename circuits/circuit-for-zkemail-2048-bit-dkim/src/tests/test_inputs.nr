@@ -17,7 +17,6 @@ pub(crate) mod EmploymentOfferEmailLarge {
         // }
     };
 
-
     /**
      * @notice - Input data for testing to verify a position and salary
      */
