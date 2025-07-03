@@ -1,0 +1,8 @@
+/**
+ * @notice - To convert a Uint8Array proof to a hex string (proofHex) suitable for passing to a Solidity verifier, you can use the following function in TypeScript/JavaScript:
+ */
+function uint8ArrayToHex(proof: Uint8Array): string {
+  return '0x' + Array.from(proof)
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
