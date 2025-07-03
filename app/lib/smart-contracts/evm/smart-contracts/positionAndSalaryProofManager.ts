@@ -9,6 +9,8 @@ import { HDNodeWallet } from "ethers/wallet";
 import { encodeBase64, toUtf8Bytes, zeroPadBytes, parseEther } from 'ethers';
 //import { EthereumProvider, Window } from "../dataTypes";
 
+import { uint8ArrayToHex } from "../../../converters/uint8ArrayProofToHexStringProofConverter.ts";
+
 
 /**
  * @notice - PositionAndSalaryProofManager# recordPublicInputsOfPositionAndSalaryProof()
@@ -25,12 +27,17 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   // Connected to a Signer; can make state changing transactions, which will cost the account ether
   const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
 
+  // @dev - Convert Uint8Array proof to hex string proofHex
+  const proofHex = uint8ArrayToHex(proof);
+  console.log(`proofHex: ${proofHex}`);
+
   let tx: any;
   let txReceipt: any;
   try {
     // Send the transaction
     tx = await positionAndSalaryProofManager.recordPublicInputsOfPositionAndSalaryProof(
-      proof, 
+      proofHex,
+      //proof, 
       publicInputs, 
       separatedPublicInputs,
       rsaSignatureLength
