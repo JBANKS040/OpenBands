@@ -28,19 +28,22 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
 
   // @dev - Convert Uint8Array proof to hex string proofHex
-  const proofHex = uint8ArrayToHex(proof);
+  const proofHex = "0x" + Buffer.from(proof.proof).toString("hex");
+  //const proofHex = uint8ArrayToHex(proof);
   console.log(`proofHex: ${proofHex}`);
 
   // @dev - Cut off the first 32 bytes of the proof in hex. (NOTE: Each byte is 2 * hex characters)
-  const byteOffset = 32; // in bytes
-  const proofHexSliced = sliceHexStringProof(proofHex, byteOffset);
+  //const byteOffset = 32; // in bytes
+  //const proofHexSliced = sliceHexStringProof(proofHex, byteOffset);
   //const proofHexSliced = proofHex.slice(2 + byteOffset * 2); // Remove "0x" + 64 chars (32 bytes)
-  console.log(`proofHexSliced: ${proofHexSliced}`);
+  //console.log(`proofHexSliced: ${proofHexSliced}`);
 
   // @dev - TEST
   const isValidProof = await verifyProof(
     signer,
-    proofHexSliced,
+    //proof, 
+    proofHex,
+    //proofHexSliced,
     publicInputs
   );
   console.log(`isValidProof (TEST): ${isValidProof}`);
@@ -50,8 +53,8 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   let txReceipt: any;
   try {
     tx = await positionAndSalaryProofManager.recordPublicInputsOfPositionAndSalaryProof(
-      proofHexSliced,
-      //proofHex,
+      //proofHexSliced,
+      proofHex,
       //proof, 
       publicInputs, 
       separatedPublicInputs,
