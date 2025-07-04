@@ -24,14 +24,6 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   separatedPublicInputs: any,
   rsaSignatureLength: number
 ): Promise<{ txReceipt: any }> {
-  // @dev - TEST
-  // const isValidProof = await verifyProof(
-  //   signer,
-  //   uint8ArrayToHex(proof), // Convert Uint8Array proof to hex string proof
-  //   publicInputs
-  // );
-  // console.log(`isValidProof (TEST): ${isValidProof}`);
-
   // Connected to a Signer; can make state changing transactions, which will cost the account ether
   const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
 
@@ -45,10 +37,18 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   //const proofHexSliced = proofHex.slice(2 + byteOffset * 2); // Remove "0x" + 64 chars (32 bytes)
   console.log(`proofHexSliced: ${proofHexSliced}`);
 
+  // @dev - TEST
+  const isValidProof = await verifyProof(
+    signer,
+    proofHexSliced,
+    publicInputs
+  );
+  console.log(`isValidProof (TEST): ${isValidProof}`);
+
+  // @dev - Call the recordPublicInputsOfPositionAndSalaryProof() function in the PositionAndSalaryProofManager.sol
   let tx: any;
   let txReceipt: any;
   try {
-    // Send the transaction
     tx = await positionAndSalaryProofManager.recordPublicInputsOfPositionAndSalaryProof(
       proofHexSliced,
       //proofHex,
@@ -73,15 +73,15 @@ export async function storePublicInputsOfPositionAndSalaryProof(
 /**
  * @notice - HonkVerifier# verify()
  */
-export async function verifyProof(signer: any, proofHex: any, publicInputs: any): bool {
+export async function verifyProof(signer: any, proofHex: any, publicInputs: any): Promise<{ isValidProof: boolean }> {
   // 1. Setup provider and contract
   //const provider = new ethers.JsonRpcProvider("YOUR_RPC_URL");
-  const verifierAddress = "0x1c501E0e73157c39dfa5f5eCe0EC25C70b522bF9";
+  const honkVerifier2048Address: string = process.env.NEXT_PUBLIC_HONKVERIFIER_2048_ON_BASE_TESTNET || "";
   //const verifierAddress = "YOUR_VERIFIER_CONTRACT_ADDRESS";
-  const verifierAbi = [
+  const honkVerifier2048Abi = [
     "function verify(bytes calldata _proof, bytes32[] calldata _publicInputs) external view returns (bool)"
   ];
-  const verifier = new Contract(verifierAddress, verifierAbi, signer);
+  const verifier = new Contract(honkVerifier2048Address, honkVerifier2048Abi, signer);
   //const verifier = new ethers.Contract(verifierAddress, verifierAbi, provider);
 
   // 2. Prepare proof and public inputs
@@ -91,6 +91,8 @@ export async function verifyProof(signer: any, proofHex: any, publicInputs: any)
   //   // ...
   // ];
 
-  const isValid = await verifier.verify(proofHex, publicInputs);
-  console.log("Proof valid?", isValid);
+  const isValidProof = await verifier.verify(proofHex, publicInputs);
+  console.log("Proof valid?", isValidProof);
+
+  return { isValidProof };
 }
