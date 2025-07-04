@@ -9,7 +9,7 @@ import { HDNodeWallet } from "ethers/wallet";
 import { encodeBase64, toUtf8Bytes, zeroPadBytes, parseEther } from 'ethers';
 //import { EthereumProvider, Window } from "../dataTypes";
 
-import { uint8ArrayToHex } from "../../../converters/uint8ArrayProofToHexStringProofConverter";
+import { uint8ArrayToHex } from "./utils/uint8ArrayProofToHexStringProofConverter";
 import { sliceHexStringProof } from "./utils/sliceHexStringProof";
 
 /**
