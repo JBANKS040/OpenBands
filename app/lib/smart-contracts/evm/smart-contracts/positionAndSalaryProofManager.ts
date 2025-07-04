@@ -25,12 +25,12 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   rsaSignatureLength: number
 ): Promise<{ txReceipt: any }> {
   // @dev - TEST
-  const isValidProof = await verifyProof(
-    signer,
-    uint8ArrayToHex(proof), // Convert Uint8Array proof to hex string proof
-    publicInputs
-  );
-  console.log(`isValidProof (TEST): ${isValidProof}`);
+  // const isValidProof = await verifyProof(
+  //   signer,
+  //   uint8ArrayToHex(proof), // Convert Uint8Array proof to hex string proof
+  //   publicInputs
+  // );
+  // console.log(`isValidProof (TEST): ${isValidProof}`);
 
   // Connected to a Signer; can make state changing transactions, which will cost the account ether
   const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
@@ -39,8 +39,10 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   const proofHex = uint8ArrayToHex(proof);
   console.log(`proofHex: ${proofHex}`);
 
-  // @dev - Cut off the first 32 bytes of the proof in hex.
-  const proofHexSliced = proofHex.slice(32);
+  // @dev - Cut off the first 32 bytes of the proof in hex. (NOTE: Each byte is 2 * hex characters)
+  const byteOffset = 32; // in bytes
+  const proofHexSliced = sliceHexStringProof(proofHex, byteOffset);
+  //const proofHexSliced = proofHex.slice(2 + byteOffset * 2); // Remove "0x" + 64 chars (32 bytes)
   console.log(`proofHexSliced: ${proofHexSliced}`);
 
   let tx: any;
@@ -65,6 +67,18 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   }
 
   return { txReceipt };
+}
+
+
+/**
+ * @notice - Slice a hex string type of proof (NOTE: Each byte is 2 * hex characters)
+ * @param hex - a hex string type of proof
+ * @param byteOffset - i.e. "32" means "32 bytes to be cut off"
+ * @returns - a sliced hex string type of proof
+ */
+export function sliceHexStringProof(hex: string, byteOffset: number): string {
+  if (!hex.startsWith("0x")) throw new Error("Invalid hex string");
+  return "0x" + hex.slice(2 + byteOffset * 2);
 }
 
 
