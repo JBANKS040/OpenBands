@@ -10,7 +10,7 @@ import { encodeBase64, toUtf8Bytes, zeroPadBytes, parseEther } from 'ethers';
 //import { EthereumProvider, Window } from "../dataTypes";
 
 import { uint8ArrayToHex } from "../../../converters/uint8ArrayProofToHexStringProofConverter";
-
+import { sliceHexStringProof } from "./utils/sliceHexStringProof";
 
 /**
  * @notice - PositionAndSalaryProofManager# recordPublicInputsOfPositionAndSalaryProof()
@@ -71,18 +71,8 @@ export async function storePublicInputsOfPositionAndSalaryProof(
 
 
 /**
- * @notice - Slice a hex string type of proof (NOTE: Each byte is 2 * hex characters)
- * @param hex - a hex string type of proof
- * @param byteOffset - i.e. "32" means "32 bytes to be cut off"
- * @returns - a sliced hex string type of proof
+ * @notice - HonkVerifier# verify()
  */
-export function sliceHexStringProof(hex: string, byteOffset: number): string {
-  if (!hex.startsWith("0x")) throw new Error("Invalid hex string");
-  return "0x" + hex.slice(2 + byteOffset * 2);
-}
-
-
-
 export async function verifyProof(signer: any, proofHex: any, publicInputs: any): bool {
   // 1. Setup provider and contract
   //const provider = new ethers.JsonRpcProvider("YOUR_RPC_URL");
