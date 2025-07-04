@@ -39,12 +39,17 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   const proofHex = uint8ArrayToHex(proof);
   console.log(`proofHex: ${proofHex}`);
 
+  // @dev - Cut off the first 32 bytes of the proof in hex.
+  const proofHexSliced = proofHex.slice(32);
+  console.log(`proofHexSliced: ${proofHexSliced}`);
+
   let tx: any;
   let txReceipt: any;
   try {
     // Send the transaction
     tx = await positionAndSalaryProofManager.recordPublicInputsOfPositionAndSalaryProof(
-      proofHex,
+      proofHexSliced,
+      //proofHex,
       //proof, 
       publicInputs, 
       separatedPublicInputs,
