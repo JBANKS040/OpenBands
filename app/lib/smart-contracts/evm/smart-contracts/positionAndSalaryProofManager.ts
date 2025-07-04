@@ -41,10 +41,7 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   // @dev - TEST
   const isValidProof = await verifyProof(
     signer,
-    //proof, 
-    proofHex,
-    //proofHexSliced,
-    publicInputs
+    [proofHex, publicInputs]
   );
   console.log(`isValidProof (TEST): ${isValidProof}`);
 
@@ -53,10 +50,7 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   let txReceipt: any;
   try {
     tx = await positionAndSalaryProofManager.recordPublicInputsOfPositionAndSalaryProof(
-      //proofHexSliced,
-      proofHex,
-      //proof, 
-      publicInputs, 
+      [proofHex, publicInputs],
       separatedPublicInputs,
       rsaSignatureLength
       //{ value: parseEther("0.001") }  // @dev - Send a TX with 0.01 ETH -> This is not a gas fee. Hence, this is commented out.
