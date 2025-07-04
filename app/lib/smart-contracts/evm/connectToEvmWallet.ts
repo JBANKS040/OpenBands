@@ -24,6 +24,7 @@ declare global {
 export async function connectToEvmWallet(): Promise<{ provider: any, signer: any }> {
   let signer: any = null;
   let provider: any = null;
+  let network: any = null;
 
   //let window: Window = { ethereum: undefined };
 
@@ -37,6 +38,17 @@ export async function connectToEvmWallet(): Promise<{ provider: any, signer: any
     // Connect to the MetaMask EIP-1193 object. 
     // This is a standard protocol that allows Ethers access to make all read-only requests through MetaMask.
     provider = new ethers.BrowserProvider(window.ethereum)
+
+    // @dev - Check network info
+    network = await provider.getNetwork();
+    console.log(`network: ${ JSON.stringify(network, null, 2) }`);
+
+    // [Log]: Network info retrieved
+    // 
+    // network: {
+    //   "name": "base-sepolia",
+    //   "chainId": "84532"
+    // }
 
     // It also provides an opportunity to request access to write operations, which will be performed by the private key that MetaMask manages for the user.
     signer = await provider.getSigner();
