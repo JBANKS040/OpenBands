@@ -204,10 +204,6 @@ const Landing = () => {
                 a: "Openbands is a privacy-preserving company review platform that uses zero-knowledge proofs to verify employee submissions while maintaining complete anonymity."
               },
               {
-                q: "How does zero-knowledge proof work?",
-                a: "Zero-knowledge proofs allow you to prove you work at a company without revealing your identity. We verify your work email and extract salary data from emails without exposing the full content."
-              },
-              {
                 q: "Is my data really private?",
                 a: "Yes. We use cryptographic proofs that mathematically guarantee your privacy. Your identity cannot be traced back to your submissions, even by us."
               },
@@ -217,7 +213,7 @@ const Landing = () => {
               },
               {
                 q: "How do you verify salary information?",
-                a: "You upload files like emails, PDFs or bank statements containing salary information. Our zero-knowledge circuits extract the relevant data while keeping your personal and sensitive information private."
+                a: "You upload files like emails, PDFs or bank statements containing salary information. All processing happens locally in your browser—no sensitive data is ever sent to our servers. Your information stays private on your device. Our zero-knowledge circuits extract the relevant data while keeping your personal and sensitive information private."
               },
               {
                 q: "Can my employer identify my review?",
