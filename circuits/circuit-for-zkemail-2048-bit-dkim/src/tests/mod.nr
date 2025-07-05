@@ -109,7 +109,7 @@ mod test_all_integrations_success {
 /**
  * @notice - The default circuit test of the zkEmail.nr
  */
-mod test_zkemail_modules_success {
+mod test_zkemail_modules {
 
     use crate::{
         main,
