@@ -5,6 +5,7 @@ import { HDNodeWallet } from "ethers/wallet";
 // @dev - Blockchain related imports
 //import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
 //import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
+import artifactOfHonkVerifier2048 from './artifacts/plonk_vk_for_2048-bit-dkim.sol/HonkVerifier.json';
 //import { recordPublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
 import { encodeBase64, toUtf8Bytes, zeroPadBytes, parseEther } from 'ethers';
 //import { EthereumProvider, Window } from "../dataTypes";
@@ -79,9 +80,10 @@ export async function verifyProof(signer: any, proofHex: any, publicInputs: any)
   //const provider = new ethers.JsonRpcProvider("YOUR_RPC_URL");
   const honkVerifier2048Address: string = process.env.NEXT_PUBLIC_HONKVERIFIER_2048_ON_BASE_TESTNET || "";
   //const verifierAddress = "YOUR_VERIFIER_CONTRACT_ADDRESS";
-  const honkVerifier2048Abi = [
-    "function verify(bytes calldata _proof, bytes32[] calldata _publicInputs) external view returns (bool)"
-  ];
+  const honkVerifier2048Abi: Array<any> = artifactOfHonkVerifier2048.abi; 
+  // const honkVerifier2048Abi = [
+  //   "function verify(bytes calldata _proof, bytes32[] calldata _publicInputs) external view returns (bool)"
+  // ];
   const verifier = new Contract(honkVerifier2048Address, honkVerifier2048Abi, signer);
   //const verifier = new ethers.Contract(verifierAddress, verifierAbi, provider);
 
