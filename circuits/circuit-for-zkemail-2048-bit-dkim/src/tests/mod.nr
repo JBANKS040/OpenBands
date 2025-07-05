@@ -2,15 +2,17 @@ pub(crate) mod test_inputs;
 
 
 /**
- * @notice - The circuit test of zkEmail integration
+ * @notice - The test of the ZK circuit, which includes all integrations
  */
-mod test_zkemail_integration_success {
+mod test_all_integrations_success {
 
     use crate::{
         main, MAX_PARTIAL_DATA_LENGTH, MAX_DOMAIN_LENGTH, MAX_POSITION_LENGTH, MAX_SALARY_LENGTH,  // main.nr
         utils::email_dkim_verifier::{MAX_EMAIL_BODY_LENGTH, MAX_EMAIL_HEADER_LENGTH, MAX_BODY_TRIMMED_LENGTH},        
-        zktls::test_inputs::{
-            polynomial_input
+        zktls::{
+            test_inputs::{polynomial_input, polynomial_digest, NUM_HEADERS},
+            test_http_data, 
+            test_http_data_long_header,
         },
         tests::test_inputs::{
             EmailLarge::{
@@ -65,6 +67,8 @@ mod test_zkemail_integration_success {
         let body_trimmed: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH> = EMPLOYMENT_OFFER_EMAIL_BODY_TRIMMED; // Trimmed body of the email
 
         // @dev - Input parameters for zkTLS circuit
+        let response_plaintext_bytes: [u8; 320] = test_http_data::response();
+        let mut line_digests = [Field::default(); NUM_HEADERS];
         let polynomial_input: Field = polynomial_input(); // Polynomial input for zkTLS circuit
 
         // @dev - Run the main function (ZK circuit) with the input parameters above.
@@ -94,6 +98,8 @@ mod test_zkemail_integration_success {
             dkim_header_sequence,
             body_trimmed,
             // @dev - The following input parameters would be for the zkTLS circuit (Noir Web Prover)
+            response_plaintext_bytes,
+            line_digests,
             polynomial_input
         );
     }
