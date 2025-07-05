@@ -29,8 +29,8 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
 
   // @dev - Convert Uint8Array proof to hex string proofHex
-  const proofHex = "0x" + Buffer.from(proof.proof).toString("hex");
-  //const proofHex = uint8ArrayToHex(proof);
+  //const proofHex = "0x" + Buffer.from(proof.proof).toString("hex");
+  const proofHex = uint8ArrayToHex(proof);
   console.log(`proofHex: ${proofHex}`);
 
   // @dev - Cut off the first 32 bytes of the proof in hex. (NOTE: Each byte is 2 * hex characters)
