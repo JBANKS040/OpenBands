@@ -15,18 +15,16 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-white text-gray-900">
       {/* Navigation */}
-      <nav className="flex flex-col sm:flex-row justify-between items-center p-4 sm:p-6 max-w-6xl mx-auto gap-4 sm:gap-0">
+      <nav className="flex justify-between items-center p-4 sm:p-6 max-w-6xl mx-auto">
         <div className="flex items-center gap-3">
           <img src="/Openbands.png" alt="Openbands Logo" className="w-8 h-8" />
           <div className="text-xl font-bold">Openbands</div>
         </div>
-        <div className="flex gap-6">
-          <a href="https://x.com/OpenbandsXYZ" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">
-            <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-            </svg>
-          </a>
-        </div>
+        <a href="https://x.com/OpenbandsXYZ" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">
+          <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
       </nav>
 
       {/* Hero Section */}
@@ -259,10 +257,10 @@ const Landing = () => {
       <section id="waitlist" className="py-12 sm:py-20 px-4 sm:px-6">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
-            Don't miss out – early access with special perks.
+            Be the first to know.
           </h2>
           <p className="text-lg sm:text-xl text-gray-600 mb-8">
-            Sign up for our waitlist for exclusive rewards and early access to new features.
+            Sign up for our waitlist for early access.
           </p>
           <button
             onClick={() => setShowTally(true)}
