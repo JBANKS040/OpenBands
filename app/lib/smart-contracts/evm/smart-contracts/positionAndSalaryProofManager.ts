@@ -10,6 +10,7 @@ import artifactOfHonkVerifier2048 from './artifacts/plonk_vk_for_2048-bit-dkim.s
 import { encodeBase64, toUtf8Bytes, zeroPadBytes, parseEther } from 'ethers';
 //import { EthereumProvider, Window } from "../dataTypes";
 
+import { proofToUint8Array } from "./utils/proofToUint8ArrayConverter";
 import { uint8ArrayToHex } from "./utils/uint8ArrayProofToHexStringProofConverter";
 import { sliceHexStringProof } from "./utils/sliceHexStringProof";
 
@@ -28,9 +29,14 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   // Connected to a Signer; can make state changing transactions, which will cost the account ether
   const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
 
+  // @dev - Convert proof to Uint8Array
+  const proofUint8Array = proofToUint8Array(proof.proof);
+  console.log(`proofUint8Array: ${proofUint8Array}`);
+
   // @dev - Convert Uint8Array proof to hex string proofHex
+  const proofHex = "0x" + Buffer.from(proofUint8Array).toString("hex");
   //const proofHex = "0x" + Buffer.from(proof.proof).toString("hex");
-  const proofHex = uint8ArrayToHex(proof);
+  //const proofHex = uint8ArrayToHex(proof);
   console.log(`proofHex: ${proofHex}`);
 
   // @dev - Cut off the first 32 bytes of the proof in hex. (NOTE: Each byte is 2 * hex characters)
