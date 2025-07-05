@@ -374,7 +374,9 @@ export default function Home() {
         dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
         bodyTrimmed: emailBodyTrimmed
       });
-      console.log(`generatedProof: ${ JSON.stringify(generatedProof, null, 2) }`);
+      //console.log(`generatedProof: ${ JSON.stringify(generatedProof, null, 2) }`);
+      console.log(`generatedProof.proof: ${ JSON.stringify(generatedProof.proof, null, 2) }`);
+      console.log(`type of generatedProof.proof: ${ typeof generatedProof.proof }`);
 
       // @dev - [TODO]: Refine a proof (= generatedProof.proof)
       //        i.e). Remove the first 32 bytes of the proof, which is the "publicInputs" array.

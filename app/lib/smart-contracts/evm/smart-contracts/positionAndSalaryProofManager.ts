@@ -21,7 +21,7 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   signer: any,
   abi: Array<any>, 
   positionAndSalaryProofManagerContractAddress: string,
-  proof: any,
+  proof: Uint8Array<any>,
   publicInputs: Array<any>,
   separatedPublicInputs: any,
   rsaSignatureLength: number
@@ -29,13 +29,11 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   // Connected to a Signer; can make state changing transactions, which will cost the account ether
   const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
 
-  // @dev - Convert proof to Uint8Array
-  const proofUint8Array = proofToUint8Array(proof.proof);
-  console.log(`proofUint8Array: ${proofUint8Array}`);
+  // @dev - Logs of arguments
+  console.log(`proof: ${proof}`);
 
   // @dev - Convert Uint8Array proof to hex string proofHex
-  const proofHex = "0x" + Buffer.from(proofUint8Array).toString("hex");
-  //const proofHex = "0x" + Buffer.from(proof.proof).toString("hex");
+  const proofHex = "0x" + Buffer.from(proof).toString("hex");
   //const proofHex = uint8ArrayToHex(proof);
   console.log(`proofHex: ${proofHex}`);
 
