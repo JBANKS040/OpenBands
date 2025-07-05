@@ -213,7 +213,7 @@ const Landing = () => {
               },
               {
                 q: "How do you verify salary information?",
-                a: "You upload files like emails, PDFs or bank statements containing salary information. All processing happens locally in your browser—no sensitive data is ever sent to our servers. Your information stays private on your device. Our zero-knowledge circuits extract the relevant data while keeping your personal and sensitive information private."
+                a: "You upload files like emails, PDFs or bank statements containing salary information. All processing happens locally in your browser—no sensitive data is ever sent to any servers. Your information stays private on your device. Our zero-knowledge circuits extract the relevant data while keeping your personal and sensitive information private."
               },
               {
                 q: "Can my employer identify my review?",
@@ -237,7 +237,7 @@ const Landing = () => {
       <section className="py-12 sm:py-20 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
           <div className="mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 sm:mb-6 text-purple-800">🏆 1st Place Winner</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 sm:mb-6 text-purple-800">🏆 1st Place Winner 🏆</h2>
             <p className="text-lg sm:text-xl text-purple-700">
               Noirhack 2025
             </p>
