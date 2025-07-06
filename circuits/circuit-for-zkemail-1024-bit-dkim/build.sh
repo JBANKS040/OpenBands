@@ -26,7 +26,7 @@ cp target/openbands.json "../../app/assets/openbands-zkemail-1024-bit-dkim-$VERS
 #cp target/openbands.json "../app/assets/openbands-$VERSION/openbands.json"
 
 echo "Generating verification key..."
-bb write_vk -b ./target/openbands.json -o ./target/vk
+bb write_vk -b ./target/openbands.json -o ./target/vk --oracle_hash keccak
 
 echo "Generating vk.json to app/assets/openbands-$VERSION..."
 node -e "const fs = require('fs'); fs.writeFileSync('../../app/assets/openbands-zkemail-1024-bit-dkim-$VERSION/vk.json', JSON.stringify(Array.from(Uint8Array.from(fs.readFileSync('./target/vk/vk')))));"
