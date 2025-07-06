@@ -33,7 +33,7 @@ node -e "const fs = require('fs'); fs.writeFileSync('../../app/assets/openbands-
 #node -e "const fs = require('fs'); fs.writeFileSync('../app/assets/openbands-$VERSION/vk.json', JSON.stringify(Array.from(Uint8Array.from(fs.readFileSync('./target/vk/vk')))));"
 
 echo "Generate a Solidity Verifier contract from the vkey..."
-bb write_solidity_verifier -k ./target/vk -o ./target/Verifier.sol
+bb write_solidity_verifier -k ./target/vk/vk -o ./target/Verifier.sol
 
 echo "Copy a Solidity Verifier contract-generated (Verifier.sol) into the ./contracts/src/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier directory"
 cp ./target/Verifier.sol ../../contracts/src/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier
