@@ -5,7 +5,7 @@ import { HDNodeWallet } from "ethers/wallet";
 // @dev - Blockchain related imports
 //import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
 //import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
-import artifactOfHonkVerifier2048 from './artifacts/plonk_vk_for_2048-bit-dkim.sol/HonkVerifier.json';
+import artifactOfHonkVerifier2048 from './artifacts/honk_vk_for_2048-bit-dkim.sol/HonkVerifier.json';
 //import { recordPublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
 import { encodeBase64, toUtf8Bytes, zeroPadBytes, parseEther } from 'ethers';
 //import { EthereumProvider, Window } from "../dataTypes";

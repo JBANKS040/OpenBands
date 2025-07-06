@@ -3,7 +3,7 @@ pragma solidity >=0.8.21;
 import "forge-std/Script.sol";
 
 /// @dev - ZK circuit, which is generated in Noir.
-import { HonkVerifier } from "../../../src/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier/plonk_vk_for_1024-bit-dkim.sol";
+import { HonkVerifier } from "../../../src/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier/honk_vk_for_1024-bit-dkim.sol";
 import { PositionAndSalaryProof1024Verifier } from "../../../src/circuits/circuit-for-zkemail-1024-bit-dkim/PositionAndSalaryProof1024Verifier.sol";
 
 

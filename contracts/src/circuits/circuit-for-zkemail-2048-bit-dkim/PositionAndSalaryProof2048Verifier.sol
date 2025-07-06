@@ -1,6 +1,6 @@
 pragma solidity >=0.8.21;
 
-import { HonkVerifier } from "./honk-verifier/plonk_vk_for_2048-bit-dkim.sol";
+import { HonkVerifier } from "./honk-verifier/honk_vk_for_2048-bit-dkim.sol";
 
 /**
  * @notice - This contract is used to verify the position and salary proof for a 2048-bit DKIM signature.

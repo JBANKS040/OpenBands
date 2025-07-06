@@ -4,7 +4,7 @@ import { Script } from "forge-std/Script.sol";
 import "forge-std/console.sol";
 
 import { PositionAndSalaryProof2048Verifier } from "../../src/circuits/circuit-for-zkemail-2048-bit-dkim/PositionAndSalaryProof2048Verifier.sol";
-import { HonkVerifier } from "../../src/circuits/circuit-for-zkemail-2048-bit-dkim/honk-verifier/plonk_vk_for_2048-bit-dkim.sol";
+import { HonkVerifier } from "../../src/circuits/circuit-for-zkemail-2048-bit-dkim/honk-verifier/honk_vk_for_2048-bit-dkim.sol";
 //import { UltraVerifier } from "../../circuits/target/contract.sol";
 import { ProofConverter } from "../utils/converters/ProofConverter.sol";
 

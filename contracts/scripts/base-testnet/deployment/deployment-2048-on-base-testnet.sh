@@ -15,7 +15,7 @@ forge script scripts/base-testnet/deployment/DeploymentForHonkVerifier2048.s.sol
     --rpc-url ${BASE_TESTNET_RPC} \
     --chain-id ${BASE_TESTNET_CHAIN_ID} \
     --private-key ${BASE_TESTNET_PRIVATE_KEY} \
-    ./contracts/src/circuits/circuit-for-zkemail-2048-bit-dkim/honk-verifier/plonk_vk_for_2048-bit-dkim.sol:HonkVerifier \
+    ./contracts/src/circuits/circuit-for-zkemail-2048-bit-dkim/honk-verifier/honk_vk_for_2048-bit-dkim.sol:HonkVerifier \
     ./contracts/src/circuits/circuit-for-zkemail-2048-bit-dkim/PositionAndSalaryProof2048Verifier.sol:PositionAndSalaryProof2048Verifier --skip-simulation --legacy
 
 
