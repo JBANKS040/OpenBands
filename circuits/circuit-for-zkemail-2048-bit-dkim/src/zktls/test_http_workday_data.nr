@@ -3,22 +3,41 @@
  */
 
 // HTTP/1.1 200 OK
-// content-type: application/json; charset=utf-8
-// content-encoding: gzip
-// Transfer-Encoding: chunked
+// Content-Type: text/xml; charset=utf-8
+// Content-Length: 6574
+// Date: Sat, 06 Jul 2024 01:12:33 GMT
+// Server: Workday
 
 // {
-//    "data": {
-//        "items": [
-//            {
-//                "data": "Artist",
-//                "profile": {
-//                 "name": "Taylor Swift"
-//                }
-//            }
-//        ]
-//    }
+//   "workerId": "12345",
+//   "payPeriod": {
+//     "start": "2024-06-01",
+//     "end": "2024-06-15",
+//     "payDate": "2024-06-20"
+//   },
+//   "grossPay": 6250.00,
+//   "netPay": 5025.00,
+//   "currency": "USD",
+//   "earnings": [
+//     {
+//       "type": "Regular",
+//       "hours": 80,
+//       "rate": 78.125,
+//       "amount": 6250.00
+//     }
+//   ],
+//   "deductions": [
+//     {
+//       "type": "Federal Tax",
+//       "amount": 950.00
+//     },
+//     {
+//       "type": "Health Insurance",
+//       "amount": 275.00
+//     }
+//   ]
 // }
+
 pub fn response() -> [u8; 320] {
     [
         // @dev - [TODO]: Add bytes data of Workday HTTP response (of payroll) to here.
