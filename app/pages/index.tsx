@@ -358,7 +358,8 @@ export default function Home() {
       console.log(`emailBodyTrimmed: ${ emailBodyTrimmed }`);
 
       // First generate the proof
-      const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({  /// @dev - [TODO]: Add the zkEmail related input parameters to the generateProof() of the original file.
+      const { proof, publicInputs } = await OPENBANDS_CIRCUIT_HELPER.generateProof({
+      //const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({
         idToken: userInfo.idToken,
         jwtPubkey,
         domain,
@@ -375,8 +376,9 @@ export default function Home() {
         bodyTrimmed: emailBodyTrimmed
       });
       //console.log(`generatedProof: ${ JSON.stringify(generatedProof, null, 2) }`);
-      console.log(`generatedProof.proof: ${ JSON.stringify(generatedProof.proof, null, 2) }`);
-      console.log(`type of generatedProof.proof: ${ typeof generatedProof.proof }`);
+      console.log(`proof: ${ proof }`);
+      //console.log(`generatedProof.proof: ${ JSON.stringify(generatedProof.proof, null, 2) }`);
+      //console.log(`type of generatedProof.proof: ${ typeof generatedProof.proof }`);
 
       // @dev - [TODO]: Refine a proof (= generatedProof.proof)
       //        i.e). Remove the first 32 bytes of the proof, which is the "publicInputs" array.
@@ -384,7 +386,8 @@ export default function Home() {
       // console.log(`generatedProof.proof.length: ${ generatedProof.proof.length }`);
   
       // @dev - Store a nullifier, which is the index number [0] of the "generatedProof.publicInputs" array
-      let nullifier = generatedProof.publicInputs[0];
+      let nullifier = publicInputs[0];
+      //let nullifier = generatedProof.publicInputs[0];
       console.log(`nullifier: ${ nullifier }`);
 
       // @dev - Store the public inputs
@@ -412,9 +415,10 @@ export default function Home() {
         signer, 
         abi, 
         positionAndSalaryProofManagerContractAddress,
-        //proof, // @dev - The proof, which is the "generatedProof.proof" without the first 32 bytes, which is the "publicInputs".
-        generatedProof.proof, 
-        generatedProof.publicInputs,
+        proof,
+        //generatedProof.proof, 
+        publicInputs,
+        //generatedProof.publicInputs,
         separatedPublicInputs,
         zkEmailInputData.signature.length // 9 or 18
         // jwtPubkey,
@@ -432,19 +436,19 @@ export default function Home() {
 
       // Then try to store it (this might fail due to schema issues)
       try {
-        await supabase
-          //.from('submissions')        // @dev - The "production" environment should use 'submissions' table.
-          .from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
-          .insert([{
-            domain,
-            position,
-            salary,
-            proof: Array.from(generatedProof.proof).join(','),
-            jwt_pub_key: JSON.stringify(jwtPubkey),
-            ratings: JSON.stringify(ratings),
-            rsa_signature_length: zkEmailInputData.signature.length, // 9 or 18
-            created_at: new Date().toISOString()
-          }]);
+        // await supabase
+        //   //.from('submissions')        // @dev - The "production" environment should use 'submissions' table.
+        //   .from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
+        //   .insert([{
+        //     domain,
+        //     position,
+        //     salary,
+        //     proof: Array.from(generatedProof.proof).join(','),
+        //     jwt_pub_key: JSON.stringify(jwtPubkey),
+        //     ratings: JSON.stringify(ratings),
+        //     rsa_signature_length: zkEmailInputData.signature.length, // 9 or 18
+        //     created_at: new Date().toISOString()
+        //   }]);
         
         // Refresh submissions only if storage succeeded
         await fetchSubmissions();
