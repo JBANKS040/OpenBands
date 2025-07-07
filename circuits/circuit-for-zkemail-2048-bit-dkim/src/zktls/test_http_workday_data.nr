@@ -46,7 +46,7 @@ pub fn response() -> [u8; 320] {
 
 //   72, 84, 84, 80, 47, 49, 46, 49, 32, 50, 48, 48, 32, 79, 75,
 pub fn start_line() -> [Field; 15] {
-    //"HTTP/1.1 200 OK".as_bytes().map(|x| x as Field)
+    "HTTP/1.1 200 OK".as_bytes().map(|x| x as Field)
 }
 
 // [
@@ -55,7 +55,7 @@ pub fn start_line() -> [Field; 15] {
 //   104, 97, 114, 115, 101, 116, 61, 117, 116, 102, 45, 56,
 // ];
 pub fn header_0() -> [Field; 45] {
-    //"content-type: application/json; charset=utf-8".as_bytes().map(|x| x as Field)
+    "Content-Type: text/xml; charset=utf-8".as_bytes().map(|x| x as Field)
 }
 
 // [
@@ -63,25 +63,17 @@ pub fn header_0() -> [Field; 45] {
 //   58, 32, 103, 122, 105, 112,
 // ];
 pub fn header_1() -> [Field; 22] {
-    //"content-encoding: gzip".as_bytes().map(|x| x as Field)
+    "Content-Length: 6574".as_bytes().map(|x| x as Field)
 }
 
 pub fn header_2() -> [Field; 26] {
-    //"Transfer-Encoding: chunked".as_bytes().map(|x| x as Field)
+    "Date: Sat, 06 Jul 2024 01:12:33 GMT".as_bytes().map(|x| x as Field)
 }
 
-// {
-//   "data": {
-//       "items": [
-//           {
-//               "data": "Artist",
-//               "profile": {
-//                "name": "Taylor Swift"
-//               }
-//           }
-//       ]
-//   }
-// }
+pub fn header_3() -> [Field; 26] {
+    "Server: Workday".as_bytes().map(|x| x as Field)
+}
+
 pub fn body() -> [u8; 202] {
     [
         // @dev - [TODO]: Add bytes data of Workday HTTP response (of payroll) to here.
