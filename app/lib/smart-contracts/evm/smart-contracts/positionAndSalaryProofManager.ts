@@ -46,6 +46,7 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   // @dev - TEST
   const isValidProof = await verifyProof(
     signer,
+    //proof,
     proofHex, 
     publicInputs
     //[proofHex, publicInputs]
