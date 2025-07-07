@@ -161,17 +161,15 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     // Generate witness and prove
     const startTime = performance.now();
     const { witness } = await noir.execute(inputs as InputMap);
-    const { proof, publicInputs } = await backend.generateProof(witness, { keccak: true }); // @dev - This is used when storing the proof/publicInputs into the EVM Blockchain via the Solidity Smart Contract.
-    //const proof = await backend.generateProof(witness, { keccak: true }); // @dev - This is used when storing the proof/publicInputs into the EVM Blockchain via the Solidity Smart Contract.
-    //const proof = await backend.generateProof(witness);                   // @dev - This is used when storing the proof/publicInputs into the Web2 Database via Supabase.
+    const proof = await backend.generateProof(witness, { keccak: true }); // @dev - This is used when storing the proof/publicInputs into the EVM Blockchain via the Solidity Smart Contract.
+    //const proof = await backend.generateProof(witness);                 // @dev - This is used when storing the proof/publicInputs into the Web2 Database via Supabase.
     console.log(`proof (in openbands.ts): ${JSON.stringify(proof, null, 2)}`);
 
     const provingTime = performance.now() - startTime;
 
     console.log(`Proof generated in ${provingTime}ms`);
 
-    return { proof, publicInputs };
-    //return proof;
+    return proof;
   },
 
   verifyProof: async (
