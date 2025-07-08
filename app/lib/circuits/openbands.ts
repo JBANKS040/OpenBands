@@ -169,6 +169,10 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
     console.log(`Proof generated in ${provingTime}ms`);
 
+    // @dev - TEST proof verification with NoirJS
+    //const isValidProof = await backend.verifyProof(proof, { keccak: true });
+    //console.log(`isValidProof: ${ isValidProof }`); // @dev - [Result]: True
+
     return proof;
   },
 
