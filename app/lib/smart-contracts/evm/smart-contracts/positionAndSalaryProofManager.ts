@@ -51,7 +51,7 @@ export async function storePublicInputsOfPositionAndSalaryProof(
     publicInputs
     //[proofHex, publicInputs]
   );
-  console.log(`isValidProof (TEST): ${isValidProof}`);
+  console.log(`isValidProof (TEST): ${JSON.stringify(isValidProof, null, 2)}`);
 
   // @dev - Call the recordPublicInputsOfPositionAndSalaryProof() function in the PositionAndSalaryProofManager.sol
   let tx: any;
