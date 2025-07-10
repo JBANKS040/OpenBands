@@ -288,6 +288,15 @@ export default function Home() {
 
   const fetchSubmissions = async () => {
     try {
+      // @dev - Get the public inputs of position and salary proof from the blockchain (BASE)
+      const publicInputsOfAllProofs = await getPublicInputsOfAllProofs(
+        provider,
+        artifactOfPositionAndSalaryProofManager.abi,
+        process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "",
+      );
+      console.log(`publicInputsOfAllProofs (in the index.tsx): ${JSON.stringify(publicInputsOfAllProofs, null, 2)}`);
+
+      // @dev - The following code is to fetch the submissions from the Supabase database.
       const { data, error } = await supabase
         //.from('submissions')        // @dev - The "production" environment should use 'submissions' table.
         .from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
