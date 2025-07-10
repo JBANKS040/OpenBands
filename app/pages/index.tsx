@@ -17,7 +17,7 @@ import Layout from '../components/layout';
 // @dev - Blockchain related imports
 import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
 import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
-import { storePublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
+import { storePublicInputsOfPositionAndSalaryProof, getPublicInputsOfPositionAndSalaryProof, getPublicInputsOfAllProofs } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
 import { encodeBase64, toUtf8Bytes, zeroPadBytes } from 'ethers';
 import { convertBytes32ToString } from '../lib/converters/bytes32ToStringConverter';
 
@@ -474,7 +474,7 @@ export default function Home() {
     try {
       const proofToVerify = recentSubmissions[submissionIndex];
       const modulus = await pubkeyModulusFromJWK(proofToVerify.jwtPubKey);
-      
+
       const result = await OPENBANDS_CIRCUIT_HELPER.verifyProof(
         proofToVerify.proof,
         {

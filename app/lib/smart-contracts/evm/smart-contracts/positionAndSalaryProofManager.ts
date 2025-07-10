@@ -7,9 +7,10 @@ import artifactOfHonkVerifier2048 from './artifacts/honk_vk_for_2048-bit-dkim.so
 //import { encodeBase64, toUtf8Bytes, zeroPadBytes, parseEther } from 'ethers';
 //import { EthereumProvider, Window } from "../dataTypes";
 
-import { proofToUint8Array } from "./utils/proofToUint8ArrayConverter";
-import { uint8ArrayToHex } from "./utils/uint8ArrayProofToHexStringProofConverter";
-import { sliceHexStringProof } from "./utils/sliceHexStringProof";
+// @dev - Utility functions
+//import { proofToUint8Array } from "./utils/proofToUint8ArrayConverter";
+//import { uint8ArrayToHex } from "./utils/uint8ArrayProofToHexStringProofConverter";
+//import { sliceHexStringProof } from "./utils/sliceHexStringProof";
 
 /**
  * @notice - PositionAndSalaryProofManager# recordPublicInputsOfPositionAndSalaryProof()
@@ -23,7 +24,7 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   separatedPublicInputs: any,
   rsaSignatureLength: number
 ): Promise<{ txReceipt: any }> {
-  // Connected to a Signer; can make state changing transactions, which will cost the account ether
+  // @dev - Create the PositionAndSalaryProofManager contract instance
   const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
 
   // @dev - Logs of arguments
@@ -64,6 +65,54 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   return { txReceipt };
 }
 
+/**
+ * @notice - PositionAndSalaryProofManager# getPublicInputsOfPositionAndSalaryProof()
+ */
+export async function getPublicInputsOfPositionAndSalaryProof(
+  signer: any,
+  abi: Array<any>, 
+  positionAndSalaryProofManagerContractAddress: string,
+  nullifierHash: string
+): Promise<{ publicInputsOfPositionAndSalaryProof: any }> {
+  // @dev - Create the PositionAndSalaryProofManager contract instance
+  const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
+
+  // @dev - Call the recordPublicInputsOfPositionAndSalaryProof() function in the PositionAndSalaryProofManager.sol
+  let publicInputsOfPositionAndSalaryProof: any;
+  try {
+    publicInputsOfPositionAndSalaryProof = await positionAndSalaryProofManager.getPublicInputsOfPositionAndSalaryProof(nullifierHash);
+    console.log(`publicInputsOfPositionAndSalaryProof: ${publicInputsOfPositionAndSalaryProof}`);
+  } catch (err) {
+    console.error(`Failed to get a PublicInputsOfPositionAndSalaryProof: ${err}`);
+    throw new Error(`Failed to get a PublicInputsOfPositionAndSalaryProof: ${err}`); // @dev - To display a full error message on UI
+  }
+
+  return { publicInputsOfPositionAndSalaryProof };
+}
+
+/**
+ * @notice - PositionAndSalaryProofManager# getPublicInputsOfAllProofs()
+ */
+export async function getPublicInputsOfAllProofs(
+  signer: any,
+  abi: Array<any>, 
+  positionAndSalaryProofManagerContractAddress: string
+): Promise<{ publicInputsOfAllProofs: any }> {
+  // @dev - Create the PositionAndSalaryProofManager contract instance
+  const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
+
+  // @dev - Call the getPublicInputsOfAllProofs() function in the PositionAndSalaryProofManager.sol
+  let publicInputsOfAllProofs: any;
+  try {
+    publicInputsOfAllProofs = await positionAndSalaryProofManager.getPublicInputsOfAllProofs();
+    console.log(`publicInputsOfAllProofs: ${JSON.stringify(publicInputsOfAllProofs, null, 2)}`);
+  } catch (err) {
+    console.error(`Failed to get a PublicInputsOfAllProofs: ${err}`);
+    throw new Error(`Failed to get a PublicInputsOfAllProofs: ${err}`); // @dev - To display a full error message on UI
+  }
+
+  return { publicInputsOfAllProofs };
+}
 
 /**
  * @notice - HonkVerifier# verify()
@@ -78,7 +127,7 @@ export async function verifyProof(signer: any, proofHex: any, publicInputs: any)
   
   // @dev - Call the verify() in the HonkVerifier.sol
   const isValidProof = await verifier.verify(proofHex, publicInputs);
-  console.log("Proof valid?", isValidProof);
+  console.log(`Is a proof valid?: ${isValidProof}`);
 
   return { isValidProof };
 }
