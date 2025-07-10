@@ -3,11 +3,8 @@ import { BrowserProvider, parseUnits } from "ethers";
 import { HDNodeWallet } from "ethers/wallet";
 
 // @dev - Blockchain related imports
-//import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
-//import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
 import artifactOfHonkVerifier2048 from './artifacts/honk_vk_for_2048-bit-dkim.sol/HonkVerifier.json';
-//import { recordPublicInputsOfPositionAndSalaryProof } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
-import { encodeBase64, toUtf8Bytes, zeroPadBytes, parseEther } from 'ethers';
+//import { encodeBase64, toUtf8Bytes, zeroPadBytes, parseEther } from 'ethers';
 //import { EthereumProvider, Window } from "../dataTypes";
 
 import { proofToUint8Array } from "./utils/proofToUint8ArrayConverter";
@@ -37,19 +34,11 @@ export async function storePublicInputsOfPositionAndSalaryProof(
   //const proofHex = uint8ArrayToHex(proof);
   console.log(`proofHex: ${proofHex}`);
 
-  // @dev - Cut off the first 32 bytes of the proof in hex. (NOTE: Each byte is 2 * hex characters)
-  //const byteOffset = 32; // in bytes
-  //const proofHexSliced = sliceHexStringProof(proofHex, byteOffset);
-  //const proofHexSliced = proofHex.slice(2 + byteOffset * 2); // Remove "0x" + 64 chars (32 bytes)
-  //console.log(`proofHexSliced: ${proofHexSliced}`);
-
   // @dev - TEST
   const isValidProof = await verifyProof(
     signer,
-    //proof,
     proofHex, 
     publicInputs
-    //[proofHex, publicInputs]
   );
   console.log(`isValidProof (TEST): ${JSON.stringify(isValidProof, null, 2)}`);
 
@@ -60,7 +49,6 @@ export async function storePublicInputsOfPositionAndSalaryProof(
     tx = await positionAndSalaryProofManager.recordPublicInputsOfPositionAndSalaryProof(
       proofHex, 
       publicInputs,
-      //[proofHex, publicInputs],
       separatedPublicInputs,
       rsaSignatureLength
       //{ value: parseEther("0.001") }  // @dev - Send a TX with 0.01 ETH -> This is not a gas fee. Hence, this is commented out.
@@ -81,24 +69,14 @@ export async function storePublicInputsOfPositionAndSalaryProof(
  * @notice - HonkVerifier# verify()
  */
 export async function verifyProof(signer: any, proofHex: any, publicInputs: any): Promise<{ isValidProof: boolean }> {
-  // 1. Setup provider and contract
-  //const provider = new ethers.JsonRpcProvider("YOUR_RPC_URL");
+  // @dev - Store the deployed HonkVerifier contract address and its ABI
   const honkVerifier2048Address: string = process.env.NEXT_PUBLIC_HONKVERIFIER_2048_ON_BASE_TESTNET || "";
-  //const verifierAddress = "YOUR_VERIFIER_CONTRACT_ADDRESS";
   const honkVerifier2048Abi: Array<any> = artifactOfHonkVerifier2048.abi; 
-  // const honkVerifier2048Abi = [
-  //   "function verify(bytes calldata _proof, bytes32[] calldata _publicInputs) external view returns (bool)"
-  // ];
+
+  // @dev - Create the HonkVerifier contract instance
   const verifier = new Contract(honkVerifier2048Address, honkVerifier2048Abi, signer);
-  //const verifier = new ethers.Contract(verifierAddress, verifierAbi, provider);
-
-  // 2. Prepare proof and public inputs
-  // const proofHex = "0x..."; // Your hex string proof
-  // const publicInputs = [
-  //   "0x...", // Each should be a 32-byte hex string
-  //   // ...
-  // ];
-
+  
+  // @dev - Call the verify() in the HonkVerifier.sol
   const isValidProof = await verifier.verify(proofHex, publicInputs);
   console.log("Proof valid?", isValidProof);
 
