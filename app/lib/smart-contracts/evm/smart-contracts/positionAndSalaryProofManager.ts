@@ -94,12 +94,12 @@ export async function getPublicInputsOfPositionAndSalaryProof(
  * @notice - PositionAndSalaryProofManager# getPublicInputsOfAllProofs()
  */
 export async function getPublicInputsOfAllProofs(
-  signer: any,
+  provider: any,
   abi: Array<any>, 
   positionAndSalaryProofManagerContractAddress: string
 ): Promise<{ publicInputsOfAllProofs: any }> {
   // @dev - Create the PositionAndSalaryProofManager contract instance
-  const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
+  const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, provider);
 
   // @dev - Call the getPublicInputsOfAllProofs() function in the PositionAndSalaryProofManager.sol
   let publicInputsOfAllProofs: any;

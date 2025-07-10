@@ -290,7 +290,7 @@ export default function Home() {
     try {
       // @dev - Get the public inputs of position and salary proof from the blockchain (BASE)
       const publicInputsOfAllProofs = await getPublicInputsOfAllProofs(
-        signer,
+        provider,
         artifactOfPositionAndSalaryProofManager.abi,
         process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "",
       );
