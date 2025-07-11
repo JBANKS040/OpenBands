@@ -18,7 +18,7 @@ import Layout from '../components/layout';
 import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
 import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
 import { storePublicInputsOfPositionAndSalaryProof, getPublicInputsOfPositionAndSalaryProof, getPublicInputsOfAllProofs } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
-import { encodeBase64, toUtf8Bytes, zeroPadBytes } from 'ethers';
+//import { encodeBase64, toUtf8Bytes, zeroPadBytes } from 'ethers';
 import { convertBytes32ToString } from '../lib/converters/bytes32ToStringConverter';
 
 interface GoogleJwtPayload {
@@ -158,7 +158,8 @@ export default function Home() {
       const { provider, signer } = await connectToEvmWallet(); // @dev - Connect to EVM wallet (i.e. MetaMask) on page load
       setProvider(provider);
       setSigner(signer);
-      fetchSubmissions();
+      fetchSubmissions(provider, signer);
+      //fetchSubmissions();
     }
     init();
   }, []);
@@ -286,15 +287,16 @@ export default function Home() {
     setError(null);
   };
 
-  const fetchSubmissions = async () => {
+  const fetchSubmissions = async (provider, signer) => {
     try {
       // @dev - Get the public inputs of position and salary proof from the blockchain (BASE)
       const publicInputsOfAllProofs = await getPublicInputsOfAllProofs(
-        provider,
+        signer,
         artifactOfPositionAndSalaryProofManager.abi,
         process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "",
       );
-      console.log(`publicInputsOfAllProofs (in the index.tsx): ${JSON.stringify(publicInputsOfAllProofs, null, 2)}`);
+      console.log(`publicInputsOfAllProofs (in the index.tsx): ${publicInputsOfAllProofs}`);
+      //console.log(`publicInputsOfAllProofs (in the index.tsx): ${JSON.stringify(publicInputsOfAllProofs, null, 2)}`);
 
       // @dev - The following code is to fetch the submissions from the Supabase database.
       const { data, error } = await supabase

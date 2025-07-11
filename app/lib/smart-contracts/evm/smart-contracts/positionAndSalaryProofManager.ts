@@ -94,12 +94,16 @@ export async function getPublicInputsOfPositionAndSalaryProof(
  * @notice - PositionAndSalaryProofManager# getPublicInputsOfAllProofs()
  */
 export async function getPublicInputsOfAllProofs(
-  provider: any,
+  signer: any,
   abi: Array<any>, 
   positionAndSalaryProofManagerContractAddress: string
 ): Promise<{ publicInputsOfAllProofs: any }> {
+  // @dev - Logs of arguments
+  console.log(`signer: ${JSON.stringify(signer, null, 2)}`);
+
   // @dev - Create the PositionAndSalaryProofManager contract instance
-  const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, provider);
+  const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);
+  //const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, provider);
 
   // @dev - Call the getPublicInputsOfAllProofs() function in the PositionAndSalaryProofManager.sol
   let publicInputsOfAllProofs: any;

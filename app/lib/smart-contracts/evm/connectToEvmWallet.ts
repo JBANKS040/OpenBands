@@ -37,7 +37,8 @@ export async function connectToEvmWallet(): Promise<{ provider: any, signer: any
   } else {
     // Connect to the MetaMask EIP-1193 object. 
     // This is a standard protocol that allows Ethers access to make all read-only requests through MetaMask.
-    provider = new ethers.BrowserProvider(window.ethereum)
+    provider = new ethers.BrowserProvider(window.ethereum);
+    console.log(`provider (in the connectToEvmWallet()): ${JSON.stringify(provider, null, 2)}`);
 
     // @dev - Check network info
     network = await provider.getNetwork();
