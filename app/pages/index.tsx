@@ -287,7 +287,7 @@ export default function Home() {
     setError(null);
   };
 
-  const fetchSubmissions = async (provider, signer) => {
+  const fetchSubmissions = async (provider: BrowserProvider, signer: JsonRpcSigner) => {
     try {
       // @dev - Get the public inputs of position and salary proof from the blockchain (BASE)
       const publicInputsOfAllProofs = await getPublicInputsOfAllProofs(
