@@ -17,19 +17,28 @@ echo "Gate count:"
 bb gates -b target/openbands.json | jq '.functions[0].circuit_size'
 
 # Create version-specific directory
-mkdir -p "../../app/assets/openbands-$VERSION"
+mkdir -p "../../app/assets/openbands-zkemail-1024-bit-dkim-$VERSION"
 #mkdir -p "../app/assets/openbands-$VERSION"
 mkdir -p "target/vk"
 
-echo "Copying circuit.json to app/assets/openbands-$VERSION..."
+echo "Copying circuit.json to app/assets/openbands-zkemail-1024-bit-dkim-$VERSION..."
 cp target/openbands.json "../../app/assets/openbands-zkemail-1024-bit-dkim-$VERSION/openbands.json"
 #cp target/openbands.json "../app/assets/openbands-$VERSION/openbands.json"
 
 echo "Generating verification key..."
-bb write_vk -b ./target/openbands.json -o ./target/vk
+bb write_vk -b ./target/openbands.json -o ./target/vk --oracle_hash keccak
 
 echo "Generating vk.json to app/assets/openbands-$VERSION..."
 node -e "const fs = require('fs'); fs.writeFileSync('../../app/assets/openbands-zkemail-1024-bit-dkim-$VERSION/vk.json', JSON.stringify(Array.from(Uint8Array.from(fs.readFileSync('./target/vk/vk')))));"
 #node -e "const fs = require('fs'); fs.writeFileSync('../app/assets/openbands-$VERSION/vk.json', JSON.stringify(Array.from(Uint8Array.from(fs.readFileSync('./target/vk/vk')))));"
+
+echo "Generate a Solidity Verifier contract from the vkey..."
+bb write_solidity_verifier -k ./target/vk/vk -o ./target/Verifier.sol
+
+echo "Copy a Solidity Verifier contract-generated (Verifier.sol) into the ./contracts/src/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier directory"
+cp ./target/Verifier.sol ../../contracts/src/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier
+
+echo "Rename the Verifier.sol with the honk_vk.sol in the ./contracts/circuit/ultra-verifier directory"
+mv ../../contracts/src/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier/Verifier.sol ../../contracts/src/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier/honk_vk_for_1024-bit-dkim.sol
 
 echo "Done" 

@@ -161,10 +161,17 @@ export const OPENBANDS_CIRCUIT_HELPER = {
     // Generate witness and prove
     const startTime = performance.now();
     const { witness } = await noir.execute(inputs as InputMap);
-    const proof = await backend.generateProof(witness);
+    const proof = await backend.generateProof(witness, { keccak: true }); // @dev - This is used when storing the proof/publicInputs into the EVM Blockchain via the Solidity Smart Contract.
+    //const proof = await backend.generateProof(witness);                 // @dev - This is used when storing the proof/publicInputs into the Web2 Database via Supabase.
+    console.log(`proof (in openbands.ts): ${JSON.stringify(proof, null, 2)}`);
+
     const provingTime = performance.now() - startTime;
 
     console.log(`Proof generated in ${provingTime}ms`);
+
+    // @dev - TEST proof verification with NoirJS
+    //const isValidProof = await backend.verifyProof(proof, { keccak: true });
+    //console.log(`isValidProof: ${ isValidProof }`); // @dev - [Result]: True
 
     return proof;
   },
@@ -308,7 +315,7 @@ export const OPENBANDS_CIRCUIT_HELPER = {
         }
         //const circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
         console.log("Loaded circuit artifact");
-        
+
         const backend = new UltraHonkBackend(circuitArtifact.bytecode, { threads: 8 });
         console.log("Initialized UltraHonkBackend");
         
