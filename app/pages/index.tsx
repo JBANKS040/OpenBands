@@ -295,8 +295,7 @@ export default function Home() {
         artifactOfPositionAndSalaryProofManager.abi,
         process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "",
       );
-      console.log(`publicInputsOfAllProofs (in the index.tsx): ${publicInputsOfAllProofs}`);
-      //console.log(`publicInputsOfAllProofs (in the index.tsx): ${JSON.stringify(publicInputsOfAllProofs, null, 2)}`);
+      console.log(`publicInputsOfAllProofs (in the index.tsx - already converted to string): ${JSON.stringify(publicInputsOfAllProofs, null, 2)}`);
 
       // @dev - The following code is to fetch the submissions from the Supabase database.
       const { data, error } = await supabase

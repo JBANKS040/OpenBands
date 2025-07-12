@@ -8,6 +8,7 @@ import artifactOfHonkVerifier2048 from './artifacts/honk_vk_for_2048-bit-dkim.so
 //import { EthereumProvider, Window } from "../dataTypes";
 
 // @dev - Utility functions
+import { bigIntToString } from "./utils/bigIntToStringConverter";
 //import { proofToUint8Array } from "./utils/proofToUint8ArrayConverter";
 //import { uint8ArrayToHex } from "./utils/uint8ArrayProofToHexStringProofConverter";
 //import { sliceHexStringProof } from "./utils/sliceHexStringProof";
@@ -97,7 +98,7 @@ export async function getPublicInputsOfAllProofs(
   signer: any,
   abi: Array<any>, 
   positionAndSalaryProofManagerContractAddress: string
-): Promise<{ publicInputsOfAllProofs: any }> {
+): Promise<{ _publicInputsOfAllProofs: string }> {
   // @dev - Logs of arguments
   console.log("signer:", signer); // [Log]: "JsonRpcSigner {provider: BrowserProvider, address: '0x...'}"
 
@@ -107,16 +108,26 @@ export async function getPublicInputsOfAllProofs(
 
   // @dev - Call the getPublicInputsOfAllProofs() function in the PositionAndSalaryProofManager.sol
   let publicInputsOfAllProofs: any;
+  let _publicInputsOfAllProofs: string;
   try {
     publicInputsOfAllProofs = await positionAndSalaryProofManager.getPublicInputsOfAllProofs();
-    console.log(`publicInputsOfAllProofs: ${JSON.stringify(publicInputsOfAllProofs, null, 2)}`);
+    console.log(`typeof publicInputsOfAllProofs: ${typeof publicInputsOfAllProofs}`); // [Log]: "object"
+    console.log("publicInputsOfAllProofs:", publicInputsOfAllProofs);
+
+    // @dev - Convert a "object" value to a "string" value
+    _publicInputsOfAllProofs = bigIntToString(publicInputsOfAllProofs);
+    console.log(`_publicInputsOfAllProofs (after conversiton from a 'object' value to a 'string' value): ${JSON.stringify(_publicInputsOfAllProofs, null, 2)}`);
   } catch (err) {
     console.error(`Failed to get a PublicInputsOfAllProofs: ${err}`);
     throw new Error(`Failed to get a PublicInputsOfAllProofs: ${err}`); // @dev - To display a full error message on UI
   }
 
-  return { publicInputsOfAllProofs };
+  return { _publicInputsOfAllProofs };   // @dev - Return the "String" value
+  //return { publicInputsOfAllProofs };  // @dev - Return the "object" value
 }
+
+
+
 
 /**
  * @notice - HonkVerifier# verify()
