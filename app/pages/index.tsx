@@ -452,7 +452,7 @@ export default function Home() {
           }]);
         
         // Refresh submissions only if storage succeeded
-        await fetchSubmissions();
+        await fetchSubmissions(provider, signer);
       } catch (storageErr) {
         console.error("Failed to store submission:", storageErr);
         // Don't throw here - we still generated the proof successfully
