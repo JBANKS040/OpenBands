@@ -307,18 +307,19 @@ export default function Home() {
       //if (_publicInputsOfAllProofs) {
         const submissions: ProofDetails[] = proofsArray.map((item: any) => ({
         //const submissions: ProofDetails[] = _publicInputsOfAllProofs.map((item: any) => ({
-          id: item.id ? item.id : "",
-          created_at: item.created_at ? new Date(item.created_at).toISOString() : undefined, 
-          proof: new Uint8Array(item.proof.split(',').map(Number)) ? new Uint8Array(item.proof.split(',').map(Number)) : emptyUint8Array,
-          domain: item.domain,
-          position: item.position,
-          salary: item.salary,
-          jwtPubKey: JSON.parse(item.jwt_pub_key),
-          timestamp: new Date(item.created_at).getTime() ? new Date(item.created_at).getTime() : undefined,
-          ratings: item.ratings ? JSON.parse(item.ratings) : undefined,
-          rsa_signature_length: item.rsa_signature_length // 9 or 18
+          id: "",
+          created_at: undefined, 
+          proof: emptyUint8Array,
+          domain: item[0],
+          position: item[1],
+          salary: item[2],
+          jwtPubKey: undefined,
+          timestamp: undefined,
+          ratings: item.ratings ? JSON.parse(item.ratings) : undefined, // [TODO]:
+          rsa_signature_length: item[9] // 9 or 18
         }));
-        console.log(`submissions: ${JSON.stringify(submissions, null, 2)}`);
+        console.log("submissions: ", submissions);
+        //console.log(`submissions: ${JSON.stringify(submissions, null, 2)}`);
         setRecentSubmissions(submissions);
       }
 

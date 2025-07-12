@@ -28,7 +28,7 @@ export interface Submission {
   salary: string;
   proof?: Uint8Array;
   //proof: Uint8Array;
-  jwt_pub_key: JsonWebKey;
+  jwt_pub_key?: JsonWebKey;
   ratings?: CompanyRatings;
   rsa_signature_length?: number;   // 9 or 18
 } 
