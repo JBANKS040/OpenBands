@@ -158,7 +158,7 @@ export default function Home() {
       const { provider, signer } = await connectToEvmWallet(); // @dev - Connect to EVM wallet (i.e. MetaMask) on page load
       setProvider(provider);
       setSigner(signer);
-      fetchSubmissions(provider, signer);
+      fetchSubmissions(signer);
       //fetchSubmissions();
     }
     init();
@@ -287,7 +287,7 @@ export default function Home() {
     setError(null);
   };
 
-  const fetchSubmissions = async (provider: BrowserProvider, signer: JsonRpcSigner) => {
+  const fetchSubmissions = async (signer: JsonRpcSigner) => {
     try {
       // @dev - Get the public inputs of position and salary proof from the blockchain (BASE)
       const publicInputsOfAllProofs = await getPublicInputsOfAllProofs(
@@ -451,7 +451,7 @@ export default function Home() {
           }]);
         
         // Refresh submissions only if storage succeeded
-        await fetchSubmissions(provider!, signer!);
+        await fetchSubmissions(signer!);
       } catch (storageErr) {
         console.error("Failed to store submission:", storageErr);
         // Don't throw here - we still generated the proof successfully
