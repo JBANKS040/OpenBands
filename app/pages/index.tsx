@@ -290,37 +290,64 @@ export default function Home() {
   const fetchSubmissions = async (signer: JsonRpcSigner) => {
     try {
       // @dev - Get the public inputs of position and salary proof from the blockchain (BASE)
-      const publicInputsOfAllProofs = await getPublicInputsOfAllProofs(
+      const _publicInputsOfAllProofs = await getPublicInputsOfAllProofs(
         signer,
         artifactOfPositionAndSalaryProofManager.abi,
         process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "",
       );
-      console.log(`publicInputsOfAllProofs (in the index.tsx - already converted to string): ${JSON.stringify(publicInputsOfAllProofs, null, 2)}`);
+      console.log(`publicInputsOfAllProofs (in the index.tsx - already converted to string): ${JSON.stringify(_publicInputsOfAllProofs, null, 2)}`);
 
-      // @dev - The following code is to fetch the submissions from the Supabase database.
-      const { data, error } = await supabase
-        //.from('submissions')        // @dev - The "production" environment should use 'submissions' table.
-        .from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
-        .select('*')
-        .order('created_at', { ascending: false });
+      // @dev - If _publicInputsOfAllProofs is a JSON string, parse it:
+      const proofsArray = typeof _publicInputsOfAllProofs === "string"
+        ? JSON.parse(_publicInputsOfAllProofs)
+        : _publicInputsOfAllProofs;
 
-      if (error) throw error;
-
-      if (data) {
-        const submissions: ProofDetails[] = data.map(item => ({
-          id: item.id,
-          created_at: item.created_at,
-          proof: new Uint8Array(item.proof.split(',').map(Number)),
+      // @dev - Store the public inputs of position and salary proof to the "submissions" variable to be stored into the setRecentSubmissions().
+      if (Array.isArray(proofsArray)) {
+      //if (_publicInputsOfAllProofs) {
+        const submissions: ProofDetails[] = proofsArray.map((item: any) => ({
+        //const submissions: ProofDetails[] = _publicInputsOfAllProofs.map((item: any) => ({
+          id: item.id ? item.id : "",
+          created_at: item.created_at ? new Date(item.created_at).toISOString() : undefined, 
+          proof: new Uint8Array(item.proof.split(',').map(Number)) ? new Uint8Array(item.proof.split(',').map(Number)) : emptyUint8Array,
           domain: item.domain,
           position: item.position,
           salary: item.salary,
           jwtPubKey: JSON.parse(item.jwt_pub_key),
-          timestamp: new Date(item.created_at).getTime(),
+          timestamp: new Date(item.created_at).getTime() ? new Date(item.created_at).getTime() : undefined,
           ratings: item.ratings ? JSON.parse(item.ratings) : undefined,
           rsa_signature_length: item.rsa_signature_length // 9 or 18
         }));
+        console.log(`submissions: ${JSON.stringify(submissions, null, 2)}`);
         setRecentSubmissions(submissions);
       }
+
+
+
+      // @dev - The following code is to fetch the submissions from the Supabase database.
+      // const { data, error } = await supabase
+      //   //.from('submissions')        // @dev - The "production" environment should use 'submissions' table.
+      //   .from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
+      //   .select('*')
+      //   .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      // if (data) {
+      //   const submissions: ProofDetails[] = data.map(item => ({
+      //     id: item.id,
+      //     created_at: item.created_at,
+      //     proof: new Uint8Array(item.proof.split(',').map(Number)),
+      //     domain: item.domain,
+      //     position: item.position,
+      //     salary: item.salary,
+      //     jwtPubKey: JSON.parse(item.jwt_pub_key),
+      //     timestamp: new Date(item.created_at).getTime(),
+      //     ratings: item.ratings ? JSON.parse(item.ratings) : undefined,
+      //     rsa_signature_length: item.rsa_signature_length // 9 or 18
+      //   }));
+      //   setRecentSubmissions(submissions);
+      // }
     } catch (err) {
       console.error('Error fetching submissions:', err);
     }
