@@ -99,7 +99,7 @@ export async function getPublicInputsOfAllProofs(
   positionAndSalaryProofManagerContractAddress: string
 ): Promise<{ publicInputsOfAllProofs: any }> {
   // @dev - Logs of arguments
-  console.log(`signer: ${JSON.stringify(signer, null, 2)}`);
+  console.log("signer:", signer); // [Log]: "JsonRpcSigner {provider: BrowserProvider, address: '0x...'}"
 
   // @dev - Create the PositionAndSalaryProofManager contract instance
   const positionAndSalaryProofManager = new Contract(positionAndSalaryProofManagerContractAddress, abi, signer);

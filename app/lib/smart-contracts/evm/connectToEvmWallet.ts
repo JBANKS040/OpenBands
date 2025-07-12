@@ -27,8 +27,7 @@ export async function connectToEvmWallet(): Promise<{ provider: any, signer: any
   let network: any = null;
 
   //let window: Window = { ethereum: undefined };
-  console.log("window.ethereum:", window.ethereum);
-  //console.log(`window.ethereum: ${window.ethereum}`);  // @dev - [Result]: 
+  console.log("window.ethereum:", window.ethereum); // [Log]: Successfully retrieved the log
 
   if (window.ethereum == null) {
     // If MetaMask is not installed, we use the default provider, which is backed by a variety of third-party services (such as INFURA). 
@@ -40,11 +39,11 @@ export async function connectToEvmWallet(): Promise<{ provider: any, signer: any
     // Connect to the MetaMask EIP-1193 object. 
     // This is a standard protocol that allows Ethers access to make all read-only requests through MetaMask.
     provider = new ethers.BrowserProvider(window.ethereum);
-    console.log(`provider (in the connectToEvmWallet()): ${JSON.stringify(provider, null, 2)}`);
+    console.log("provider (in the connectToEvmWallet():", provider); // [Log]: Successfully retrieved the log
 
     // @dev - Check network info
     network = await provider.getNetwork();
-    console.log(`network: ${ JSON.stringify(network, null, 2) }`);
+    console.log(`network: ${ JSON.stringify(network, null, 2) }`);   
 
     // [Log]: Network info retrieved
     // 
@@ -55,6 +54,7 @@ export async function connectToEvmWallet(): Promise<{ provider: any, signer: any
 
     // It also provides an opportunity to request access to write operations, which will be performed by the private key that MetaMask manages for the user.
     signer = await provider.getSigner();
+    console.log("signer (in the connectToEvmWallet():", signer); // [Log]: "JsonRpcSigner {provider: BrowserProvider, address: '0x...'}"
   }
 
   return { provider, signer }; // Return the resolved value
