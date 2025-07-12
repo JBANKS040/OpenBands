@@ -19,12 +19,15 @@ export interface CompanyRatings {
 }
 
 export interface Submission {
-  id: string;
-  created_at: string;
+  id?: string;
+  //id: string;
+  created_at?: string;
+  //created_at: string;
   domain: string;
   position: string;
   salary: string;
-  proof: Uint8Array;
+  proof?: Uint8Array;
+  //proof: Uint8Array;
   jwt_pub_key: JsonWebKey;
   ratings?: CompanyRatings;
   rsa_signature_length?: number;   // 9 or 18
