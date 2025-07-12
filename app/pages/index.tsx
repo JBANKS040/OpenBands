@@ -18,7 +18,7 @@ import Layout from '../components/layout';
 import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
 import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
 import { storePublicInputsOfPositionAndSalaryProof, getPublicInputsOfPositionAndSalaryProof, getPublicInputsOfAllProofs } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
-//import { encodeBase64, toUtf8Bytes, zeroPadBytes } from 'ethers';
+import { BrowserProvider, JsonRpcSigner } from 'ethers';
 import { convertBytes32ToString } from '../lib/converters/bytes32ToStringConverter';
 
 interface GoogleJwtPayload {
