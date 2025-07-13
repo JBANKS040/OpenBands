@@ -313,7 +313,7 @@ export default function Home() {
           domain: item[0],
           position: item[1],
           salary: item[2],
-          jwtPubKey: undefined,
+          jwtPubKey: {} as JsonWebKey,
           timestamp: undefined,
           ratings: item.ratings ? JSON.parse(item.ratings) : undefined, // [TODO]:
           rsa_signature_length: item[9] // 9 or 18
