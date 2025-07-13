@@ -298,6 +298,7 @@ export default function Home() {
       const publicInputsOfAllProofsArray = publicInputsOfAllProofs._publicInputsOfAllProofs;
       console.log(`publicInputsOfAllProofs (in the index.tsx - already converted to string): ${JSON.stringify(publicInputsOfAllProofsArray, null, 2)}`);
       console.log(`publicInputsOfAllProofsArray.length: ${publicInputsOfAllProofsArray.length}`); // @dev - [Return]: "object"
+      console.log(`typeof publicInputsOfAllProofsArray: ${typeof publicInputsOfAllProofsArray}`); // @dev - [Return]: "object"
 
       // @dev - Store the public inputs of position and salary proof to the "submissions" variable to be stored into the setRecentSubmissions().
       if (publicInputsOfAllProofsArray.length > 0) {
@@ -311,15 +312,20 @@ export default function Home() {
           salary: item[2],
           jwtPubKey: {} as JsonWebKey,
           timestamp: 0,
-          ratings: item.ratings ? JSON.parse(item.ratings) : undefined, // [TODO]:
+          ratings: {
+            work_life_balance: item[3],
+            culture_values: item[4],
+            career_growth: item[5],
+            compensation_benefits: item[6],
+            leadership_quality: item[7],
+            operational_efficiency: item[8]
+          },
           rsa_signature_length: item[9] // 9 or 18
         }));
         console.log("submissions: ", submissions);
         //console.log(`submissions: ${JSON.stringify(submissions, null, 2)}`);
         setRecentSubmissions(submissions);
       }
-
-
 
       // @dev - The following code is to fetch the submissions from the Supabase database.
       // const { data, error } = await supabase
