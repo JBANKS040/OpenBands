@@ -6,6 +6,14 @@ import CompanyRatings from "../components/CompanyRatings";
 import Layout from '../components/layout';
 import { CompanyRatings as CompanyRatingsType } from '../lib/supabase';
 
+// @dev - Blockchain related imports
+import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
+import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
+import { storePublicInputsOfPositionAndSalaryProof, getPublicInputsOfPositionAndSalaryProof, getPublicInputsOfAllProofs } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
+import { BrowserProvider, JsonRpcSigner } from 'ethers';
+import { convertBytes32ToString } from '../lib/converters/bytes32ToStringConverter';
+
+
 interface Submission {
   domain: string;
   position: string;
@@ -64,32 +72,62 @@ const calculateAverageRatings = (submissions: Submission[]): CompanyRatingsType 
 };
 
 export default function Submissions() {
+  const emptyUint8Array = new Uint8Array(0);
+
   const [loading, setLoading] = useState(false);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [submissionsByCompany, setSubmissionsByCompany] = useState<CompanyData[]>([]);
   const [viewMode, setViewMode] = useState<'all' | 'byCompany'>('all');
 
   useEffect(() => {
-    fetchSubmissions();
+    async function init() {
+      const { provider, signer } = await connectToEvmWallet(); // @dev - Connect to EVM wallet (i.e. MetaMask) on page load
+      fetchSubmissions(signer);
+    }
+    init();
+    //fetchSubmissions();
   }, []);
 
-  const fetchSubmissions = async () => {
+  const fetchSubmissions = async (signer: JsonRpcSigner) => {
+  //const fetchSubmissions = async () => {
     try {
-      const { data, error } = await supabase
-        //.from('submissions')        // @dev - The "production" environment should use 'submissions' table.
-        .from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
-        .select('*')
-        .order('created_at', { ascending: false });
+      // @dev - Get the public inputs of position and salary proof from the blockchain (BASE)
+      const publicInputsOfAllProofs = await getPublicInputsOfAllProofs(
+        signer,
+        artifactOfPositionAndSalaryProofManager.abi,
+        process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "",
+      );
+      const publicInputsOfAllProofsArray = publicInputsOfAllProofs._publicInputsOfAllProofs;
+      console.log(`publicInputsOfAllProofs (in the index.tsx - already converted to string): ${JSON.stringify(publicInputsOfAllProofsArray, null, 2)}`);
+      console.log(`publicInputsOfAllProofsArray.length: ${publicInputsOfAllProofsArray.length}`); // @dev - [Return]: "object"
+      console.log(`typeof publicInputsOfAllProofsArray: ${typeof publicInputsOfAllProofsArray}`); // @dev - [Return]: "object"
 
-      if (error) throw error;
-
-      if (data) {
-        const submissionsWithVerification = data.map(submission => ({
-          ...submission,
-          isVerifying: false,
-          verificationResult: null,
-          ratings: submission.ratings ? JSON.parse(submission.ratings) : undefined
+      // @dev - Store the public inputs of position and salary proof to the "submissions" variable to be stored into the setRecentSubmissions().
+      if (publicInputsOfAllProofsArray.length > 0) {
+        const submissions: ProofDetails[] = publicInputsOfAllProofsArray.map((item: any) => ({
+        //const submissions: ProofDetails[] = _publicInputsOfAllProofs.map((item: any) => ({
+          id: "",
+          created_at: "", 
+          proof: emptyUint8Array,
+          domain: item[0],
+          position: item[1],
+          salary: item[2],
+          jwtPubKey: {} as JsonWebKey,
+          timestamp: 0,
+          ratings: {
+            work_life_balance: item[3],
+            culture_values: item[4],
+            career_growth: item[5],
+            compensation_benefits: item[6],
+            leadership_quality: item[7],
+            operational_efficiency: item[8]
+          },
+          rsa_signature_length: item[9] // 9 or 18
         }));
+        console.log("submissions: ", submissions);
+        //console.log(`submissions: ${JSON.stringify(submissions, null, 2)}`);
+    
+        const submissionsWithVerification = submissions;
         
         setSubmissions(submissionsWithVerification);
         
@@ -113,6 +151,45 @@ export default function Submissions() {
 
         setSubmissionsByCompany(companiesData);
       }
+
+      // const { data, error } = await supabase
+      //   //.from('submissions')        // @dev - The "production" environment should use 'submissions' table.
+      //   .from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
+      //   .select('*')
+      //   .order('created_at', { ascending: false });
+      
+      // if (error) throw error;
+
+      // if (data) {
+      //   const submissionsWithVerification = data.map(submission => ({
+      //     ...submission,
+      //     isVerifying: false,
+      //     verificationResult: null,
+      //     ratings: submission.ratings ? JSON.parse(submission.ratings) : undefined
+      //   }));
+        
+      //   setSubmissions(submissionsWithVerification);
+        
+      //   // Group by company
+      //   const groupedByCompany = submissionsWithVerification.reduce((acc: { [key: string]: Submission[] }, curr) => {
+      //     if (!acc[curr.domain]) {
+      //       acc[curr.domain] = [];
+      //     }
+      //     acc[curr.domain].push(curr);
+      //     return acc;
+      //   }, {});
+
+      //   const companiesData = Object.entries(groupedByCompany)
+      //     .sort(([domainA], [domainB]) => domainA.localeCompare(domainB))
+      //     .map(([domain, submissions]) => ({
+      //       domain,
+      //       submissions,
+      //       isExpanded: false,
+      //       averageRatings: calculateAverageRatings(submissions)
+      //     }));
+
+      //   setSubmissionsByCompany(companiesData);
+      // }
     } catch (err) {
       console.error('Error fetching submissions:', err);
     }
