@@ -36,12 +36,12 @@ interface JWK {
 }
 
 interface ProofDetails extends Omit<Submission, 'proof' | 'jwt_pub_key'> {
-  proof: Uint8Array;
-  jwtPubKey: JsonWebKey;
+  proof?: Uint8Array;
+  jwtPubKey?: JsonWebKey;
   timestamp?: number;
   verificationResult?: boolean | null;
   isVerifying?: boolean;
-  rsa_signature_length: number; // 9 or 18
+  rsa_signature_length?: number; // 9 or 18
 }
 
 interface UserInfo {
@@ -308,13 +308,13 @@ export default function Home() {
         const submissions: ProofDetails[] = proofsArray.map((item: any) => ({
         //const submissions: ProofDetails[] = _publicInputsOfAllProofs.map((item: any) => ({
           id: "",
-          created_at: undefined, 
+          created_at: "", 
           proof: emptyUint8Array,
           domain: item[0],
           position: item[1],
           salary: item[2],
           jwtPubKey: {} as JsonWebKey,
-          timestamp: undefined,
+          timestamp: 0,
           ratings: item.ratings ? JSON.parse(item.ratings) : undefined, // [TODO]:
           rsa_signature_length: item[9] // 9 or 18
         }));
