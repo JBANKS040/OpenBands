@@ -290,22 +290,18 @@ export default function Home() {
   const fetchSubmissions = async (signer: JsonRpcSigner) => {
     try {
       // @dev - Get the public inputs of position and salary proof from the blockchain (BASE)
-      const _publicInputsOfAllProofs = await getPublicInputsOfAllProofs(
+      const publicInputsOfAllProofs = await getPublicInputsOfAllProofs(
         signer,
         artifactOfPositionAndSalaryProofManager.abi,
         process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "",
       );
-      console.log(`publicInputsOfAllProofs (in the index.tsx - already converted to string): ${JSON.stringify(_publicInputsOfAllProofs, null, 2)}`);
-
-      // @dev - If _publicInputsOfAllProofs is a JSON string, parse it:
-      const proofsArray = typeof _publicInputsOfAllProofs === "string"
-        ? JSON.parse(_publicInputsOfAllProofs)
-        : _publicInputsOfAllProofs;
+      const publicInputsOfAllProofsArray = publicInputsOfAllProofs._publicInputsOfAllProofs;
+      console.log(`publicInputsOfAllProofs (in the index.tsx - already converted to string): ${JSON.stringify(publicInputsOfAllProofsArray, null, 2)}`);
+      console.log(`publicInputsOfAllProofsArray.length: ${publicInputsOfAllProofsArray.length}`); // @dev - [Return]: "object"
 
       // @dev - Store the public inputs of position and salary proof to the "submissions" variable to be stored into the setRecentSubmissions().
-      if (Array.isArray(proofsArray)) {
-      //if (_publicInputsOfAllProofs) {
-        const submissions: ProofDetails[] = proofsArray.map((item: any) => ({
+      if (publicInputsOfAllProofsArray.length > 0) {
+        const submissions: ProofDetails[] = publicInputsOfAllProofsArray.map((item: any) => ({
         //const submissions: ProofDetails[] = _publicInputsOfAllProofs.map((item: any) => ({
           id: "",
           created_at: "", 

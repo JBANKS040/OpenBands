@@ -108,6 +108,7 @@ export async function getPublicInputsOfAllProofs(
 
   // @dev - Call the getPublicInputsOfAllProofs() function in the PositionAndSalaryProofManager.sol
   let publicInputsOfAllProofs: any;
+  //let _publicInputsOfAllProofs: Array<string>;
   let _publicInputsOfAllProofs: string;
   try {
     publicInputsOfAllProofs = await positionAndSalaryProofManager.getPublicInputsOfAllProofs();
@@ -116,6 +117,7 @@ export async function getPublicInputsOfAllProofs(
 
     // @dev - Convert a "object" value to a "string" value
     _publicInputsOfAllProofs = bigIntToString(publicInputsOfAllProofs);
+    console.log(`typeof _publicInputsOfAllProofs: ${typeof _publicInputsOfAllProofs}`);
     console.log(`_publicInputsOfAllProofs (after conversiton from a 'object' value to a 'string' value): ${JSON.stringify(_publicInputsOfAllProofs, null, 2)}`);
   } catch (err) {
     console.error(`Failed to get a PublicInputsOfAllProofs: ${err}`);
