@@ -18,7 +18,8 @@ const ratingLabels = {
 
 export default function CompanyRatings({ ratings, showLabels = true }: CompanyRatingsProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const averageRating = Object.values(ratings).reduce((a, b) => a + b, 0) / 6;
+  const averageRating = Object.values(ratings).reduce((a, b) => Number(a) + Number(b), 0) / 6;
+  //const averageRating = Object.values(ratings).reduce((a, b) => a + b, 0) / 6;
 
   return (
     <div 
