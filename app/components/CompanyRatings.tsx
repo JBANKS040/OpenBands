@@ -42,7 +42,8 @@ export default function CompanyRatings({ ratings, showLabels = true }: CompanyRa
               <div className="text-sm text-gray-600">{ratingLabels[key]}</div>
               <div className="flex items-center space-x-2">
                 <StarRating rating={value} size="sm" />
-                <span className="text-sm font-medium text-gray-700">{value.toFixed(1)}</span>
+                <span className="text-sm font-medium text-gray-700">{Number(value).toFixed(1)}</span>
+                {/* <span className="text-sm font-medium text-gray-700">{value.toFixed(1)}</span> */}
               </div>
             </div>
           ))}
