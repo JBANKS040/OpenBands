@@ -313,12 +313,12 @@ export default function Home() {
           jwtPubKey: {} as JsonWebKey,
           timestamp: 0,
           ratings: {
-            work_life_balance: item[3],
-            culture_values: item[4],
-            career_growth: item[5],
-            compensation_benefits: item[6],
-            leadership_quality: item[7],
-            operational_efficiency: item[8]
+            work_life_balance: Number(item[3]),
+            culture_values: Number(item[4]),
+            career_growth: Number(item[5]),
+            compensation_benefits: Number(item[6]),
+            leadership_quality: Number(item[7]),
+            operational_efficiency: Number(item[8])
           },
           rsa_signature_length: item[9] // 9 or 18
         }));
