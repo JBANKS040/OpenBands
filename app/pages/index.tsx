@@ -21,6 +21,7 @@ import { storePublicInputsOfPositionAndSalaryProof, getPublicInputsOfPositionAnd
 import { BrowserProvider, JsonRpcSigner } from 'ethers';
 import { convertBytes32ToString } from '../lib/converters/bytes32ToStringConverter';
 
+
 interface GoogleJwtPayload {
   email: string;
   kid: string;

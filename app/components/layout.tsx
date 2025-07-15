@@ -2,6 +2,9 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
+// @dev - Connecting a Browser Wallet button
+import ConnectWalletButton from './ConnectWalletButton';
+
 interface LayoutProps {
   children: React.ReactNode;
 }
@@ -47,6 +50,10 @@ export default function Layout({ children }: LayoutProps) {
             </Link>
           </nav>
           
+          <div className="flex justify-center items-center h-screen">
+            <ConnectWalletButton />
+          </div>
+
           {/* GitHub Link - Added at the bottom */}
           <div className="mt-auto p-4 border-t border-gray-700">
             <a
