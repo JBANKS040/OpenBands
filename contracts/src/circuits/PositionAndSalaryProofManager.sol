@@ -58,6 +58,7 @@ contract PositionAndSalaryProofManager {
         publicInput.compensationBenefits = separatedPublicInputs.compensationBenefits;
         publicInput.leadershipQuality = separatedPublicInputs.leadershipQuality;
         publicInput.operationalEfficiency = separatedPublicInputs.operationalEfficiency;
+        publicInput.createdAt = separatedPublicInputs.createdAt;
         publicInput.nullifierHash = separatedPublicInputs.nullifierHash;
 
         // @dev - Store the publicInput of a given PositionAndSalaryProof

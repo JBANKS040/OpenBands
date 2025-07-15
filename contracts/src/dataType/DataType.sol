@@ -13,6 +13,7 @@ library DataType {
         uint8 compensationBenefits; 
         uint8 leadershipQuality;
         uint8 operationalEfficiency;
+        string createdAt;
         bytes32 nullifierHash;
     }
 
