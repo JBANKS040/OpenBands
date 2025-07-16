@@ -306,7 +306,7 @@ export default function Home() {
         const submissions: ProofDetails[] = publicInputsOfAllProofsArray.map((item: any) => ({
         //const submissions: ProofDetails[] = _publicInputsOfAllProofs.map((item: any) => ({
           id: "",
-          created_at: "", 
+          created_at: item[10], 
           proof: emptyUint8Array,
           domain: item[0],
           position: item[1],
