@@ -518,15 +518,15 @@ export default function Home() {
 
     try {
       const proofToVerify = recentSubmissions[submissionIndex];
-      const modulus = await pubkeyModulusFromJWK(proofToVerify.jwtPubKey);
+      const modulus = await pubkeyModulusFromJWK(proofToVerify.jwtPubKey); // @dev - [TODO]: A "jwtPubKey" is no longer to be returned as a publicInput. Hence, this should be removed with the following OPENBANDS_CIRCUIT_HELPER.verifyProof().
 
       const result = await OPENBANDS_CIRCUIT_HELPER.verifyProof(
-        proofToVerify.proof,
+        proofToVerify.proof,  // @dev - [TODO]: A "proof" is no longer to be returned as a publicInput. Hence, this should be removed.
         {
           domain: proofToVerify.domain,
           position: proofToVerify.position,
           salary: proofToVerify.salary,
-          jwtPubKey: modulus,
+          jwtPubKey: modulus, // @dev - [TODO]: A "jwtPubKey" is no longer to be returned as a publicInput.  Hence, this should be removed.
           ratings: proofToVerify.ratings || {
             work_life_balance: 3,
             culture_values: 3,
