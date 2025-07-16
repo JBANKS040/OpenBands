@@ -312,7 +312,7 @@ export default function Home() {
           position: item[1],
           salary: item[2],
           jwtPubKey: {} as JsonWebKey,
-          timestamp: 0,
+          timestamp: item[10],
           ratings: {
             work_life_balance: Number(item[3]),
             culture_values: Number(item[4]),

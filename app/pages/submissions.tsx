@@ -113,7 +113,7 @@ export default function Submissions() {
           position: item[1],
           salary: item[2],
           jwtPubKey: {} as JsonWebKey,
-          timestamp: 0,
+          timestamp: item[10],
           ratings: {
             work_life_balance: item[3],
             culture_values: item[4],
