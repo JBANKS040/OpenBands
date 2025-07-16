@@ -300,11 +300,14 @@ export default function Home() {
       console.log(`publicInputsOfAllProofs (in the index.tsx - already converted to string): ${JSON.stringify(publicInputsOfAllProofsArray, null, 2)}`);
       console.log(`publicInputsOfAllProofsArray.length: ${publicInputsOfAllProofsArray.length}`); // @dev - [Return]: "object"
       console.log(`typeof publicInputsOfAllProofsArray: ${typeof publicInputsOfAllProofsArray}`); // @dev - [Return]: "object"
+      
+      // @dev - Store into the array
+      const _publicInputsOfAllProofsArray: any[] = [publicInputsOfAllProofsArray.split(",")];
 
       // @dev - Store the public inputs of position and salary proof to the "submissions" variable to be stored into the setRecentSubmissions().
       if (publicInputsOfAllProofsArray.length > 0) {
-        const submissions: ProofDetails[] = publicInputsOfAllProofsArray.map((item: any) => ({
-        //const submissions: ProofDetails[] = _publicInputsOfAllProofs.map((item: any) => ({
+        //const submissions: ProofDetails[] = publicInputsOfAllProofsArray.map((item: any) => ({
+        const submissions: ProofDetails[] = _publicInputsOfAllProofsArray.map((item: any) => ({
           id: "",
           created_at: item[10], 
           proof: emptyUint8Array,
