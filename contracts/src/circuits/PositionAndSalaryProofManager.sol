@@ -59,7 +59,8 @@ contract PositionAndSalaryProofManager {
         publicInput.leadershipQuality = separatedPublicInputs.leadershipQuality;
         publicInput.operationalEfficiency = separatedPublicInputs.operationalEfficiency;
         publicInput.nullifierHash = separatedPublicInputs.nullifierHash;
-        publicInput.createdAt = block.timestamp;
+        publicInput.createdAt = separatedPublicInputs.createdAt;
+        //publicInput.createdAt = block.timestamp;
 
         // @dev - Store the publicInput of a given PositionAndSalaryProof
         publicInputsOfPositionAndSalaryProofs[publicInput.nullifierHash] = publicInput;

@@ -435,7 +435,8 @@ export default function Home() {
         compensationBenefits: ratings.compensation_benefits,
         leadershipQuality: ratings.leadership_quality,
         operationalEfficiency: ratings.operational_efficiency,
-        nullifierHash: nullifier
+        nullifierHash: nullifier,
+        createdAt: new Date().toISOString()
       };
       console.log(`separatedPublicInputs: ${ JSON.stringify(separatedPublicInputs, null, 2) }`);
 
