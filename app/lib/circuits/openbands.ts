@@ -6,6 +6,13 @@ import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH, MAX_BODY_TRIMMED_LENGTH } from '../
 //import { MAX_HEADER_LENGTH, MAX_BODY_LENGTH } from "../zkemail/zkEmailTestValueGenerator.tsx";
 import { convertUint8ArrayToString } from "../converters/uint8ArrayToStringConverter";
 
+// @dev - Blockchain related imports
+import { connectToEvmWallet } from '../../lib/smart-contracts/evm/connectToEvmWallet';
+import artifactOfPositionAndSalaryProofManager from '../../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
+import { storePublicInputsOfPositionAndSalaryProof, getPublicInputsOfPositionAndSalaryProof, getPublicInputsOfAllProofs } from '../../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
+import { BrowserProvider, JsonRpcSigner } from 'ethers';
+import { bigIntToString } from "../../lib/smart-contracts/evm/smart-contracts/utils/bigIntToStringConverter";
+
 const MAX_DOMAIN_LENGTH = 64;
 const MAX_POSITION_LENGTH = 128;
 const MAX_SALARY_LENGTH = 32;
@@ -177,151 +184,178 @@ export const OPENBANDS_CIRCUIT_HELPER = {
   },
 
   verifyProof: async (
-    proof: Uint8Array,
-    { 
-      domain,
-      position,
-      salary,
-      jwtPubKey,
-      ratings,
-    }: {
-      domain: string;
-      position: string;
-      salary: string;
-      jwtPubKey: bigint;
-      ratings: {
-        work_life_balance: number;
-        culture_values: number;
-        career_growth: number;
-        compensation_benefits: number;
-        leadership_quality: number;
-        operational_efficiency: number;
-      };
-    },
-    rsa_signature_length: number // 9 or 18
+    signer: any,
+    // proof: Uint8Array,
+    // { 
+    //   domain,
+    //   position,
+    //   salary,
+    //   jwtPubKey,
+    //   ratings,
+    // }: {
+    //   domain: string;
+    //   position: string;
+    //   salary: string;
+    //   jwtPubKey: bigint;
+    //   ratings: {
+    //     work_life_balance: number;
+    //     culture_values: number;
+    //     career_growth: number;
+    //     compensation_benefits: number;
+    //     leadership_quality: number;
+    //     operational_efficiency: number;
+    //   };
+    // },
+    nullifier: string
+    // rsa_signature_length: number // 9 or 18
   ) => {
     try {
-      if (!domain || !position || !salary || !jwtPubKey || !ratings) {
+      if (!nullifier) {
+      //if (!domain || !position || !salary || !jwtPubKey || !ratings) {
         throw new Error(
-          "[JWT Circuit] Proof verification failed: invalid public inputs"
+          "[Circuit] Proof verification failed: invalid nullifier "
+          //"[JWT Circuit] Proof verification failed: invalid public inputs"
         );
       }
 
-      console.log("Verifying proof with inputs:", {
-        domain,
-        position,
-        salary,
-        ratings: {
-          work_life_balance: ratings.work_life_balance,
-          culture_values: ratings.culture_values,
-          career_growth: ratings.career_growth,
-          compensation_benefits: ratings.compensation_benefits,
-          leadership_quality: ratings.leadership_quality,
-          operational_efficiency: ratings.operational_efficiency
-        }
-      });
+      // console.log("Verifying proof with inputs:", {
+      //   domain,
+      //   position,
+      //   salary,
+      //   ratings: {
+      //     work_life_balance: ratings.work_life_balance,
+      //     culture_values: ratings.culture_values,
+      //     career_growth: ratings.career_growth,
+      //     compensation_benefits: ratings.compensation_benefits,
+      //     leadership_quality: ratings.leadership_quality,
+      //     operational_efficiency: ratings.operational_efficiency
+      //   }
+      // });
 
-      const { UltraHonkBackend } = await initVerifier();
+      // const { UltraHonkBackend } = await initVerifier();
 
-      let vkey;
+      // let vkey;
+      // try {
+      //   if (rsa_signature_length == 0 || !rsa_signature_length) { // @dev - For verifying the proofs, which was generated with the old version of the circuit (v0.0.1)
+      //     vkey = await import(`../../assets/openbands-0.0.1/vk.json`);
+      //   } else if (rsa_signature_length == 9) {
+      //     vkey = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.1.1/vk.json`);
+      //   } else if (rsa_signature_length == 18) {
+      //     vkey = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.1.1/vk.json`);
+      //   } else {
+      //     throw new Error("Invalid rsa_signature_length value. Must be 9 or 18.");
+      //   }
+      //   //const vkey = await import(`../../assets/openbands-0.0.1/vk.json`);
+      //   console.log("Loaded verification key");
+      // } catch (err) {
+      //   console.error("Failed to load verification key:", err);
+      //   throw new Error("Failed to load verification key");
+      // }
+
+      // // Public Inputs = pubkey_limbs(18) + domain(64) + position(128) + salary(32) + ratings(6) = 248
+      // const publicInputs: string[] = [];
+
+      // // Push modulus limbs as 64 char hex strings (18 Fields)
+      // const modulusLimbs = splitBigIntToLimbs(jwtPubKey, 120, 18);
+      // publicInputs.push(
+      //   ...modulusLimbs.map((s) => "0x" + s.toString(16).padStart(64, "0"))
+      // );
+
+      // // Push domain + domain length (BoundedVec of 64 bytes)
+      // const domainUint8Array = new Uint8Array(64);
+      // domainUint8Array.set(Uint8Array.from(new TextEncoder().encode(domain)));
+      // publicInputs.push(
+      //   ...Array.from(domainUint8Array).map(
+      //     (s) => "0x" + s.toString(16).padStart(64, "0")
+      //   )
+      // );
+      // publicInputs.push("0x" + domain.length.toString(16).padStart(64, "0"));
+
+      // // Push position + position length (BoundedVec of 128 bytes)
+      // const positionUint8Array = new Uint8Array(128);
+      // positionUint8Array.set(Uint8Array.from(new TextEncoder().encode(position)));
+      // publicInputs.push(
+      //   ...Array.from(positionUint8Array).map(
+      //     (s) => "0x" + s.toString(16).padStart(64, "0")
+      //   )
+      // );
+      // publicInputs.push("0x" + position.length.toString(16).padStart(64, "0"));
+
+      // // Push salary + salary length (BoundedVec of 32 bytes)
+      // const salaryUint8Array = new Uint8Array(32);
+      // salaryUint8Array.set(Uint8Array.from(new TextEncoder().encode(salary)));
+      // publicInputs.push(
+      //   ...Array.from(salaryUint8Array).map(
+      //     (s) => "0x" + s.toString(16).padStart(64, "0")
+      //   )
+      // );
+      // publicInputs.push("0x" + salary.length.toString(16).padStart(64, "0"));
+
+      // console.log("Adding ratings to public inputs:", {
+      //   work_life_balance: ratings.work_life_balance,
+      //   culture_values: ratings.culture_values,
+      //   career_growth: ratings.career_growth,
+      //   compensation_benefits: ratings.compensation_benefits,
+      //   leadership_quality: ratings.leadership_quality,
+      //   operational_efficiency: ratings.operational_efficiency
+      // });
+
+      // // Push ratings as public inputs
+      // publicInputs.push("0x" + ratings.work_life_balance.toString(16).padStart(64, "0"));
+      // publicInputs.push("0x" + ratings.culture_values.toString(16).padStart(64, "0"));
+      // publicInputs.push("0x" + ratings.career_growth.toString(16).padStart(64, "0"));
+      // publicInputs.push("0x" + ratings.compensation_benefits.toString(16).padStart(64, "0"));
+      // publicInputs.push("0x" + ratings.leadership_quality.toString(16).padStart(64, "0"));
+      // publicInputs.push("0x" + ratings.operational_efficiency.toString(16).padStart(64, "0"));
+
+      // const proofData = {
+      //   proof: proof,
+      //   publicInputs,
+      // };
+
+      // let circuitArtifact;
       try {
-        if (rsa_signature_length == 0 || !rsa_signature_length) { // @dev - For verifying the proofs, which was generated with the old version of the circuit (v0.0.1)
-          vkey = await import(`../../assets/openbands-0.0.1/vk.json`);
-        } else if (rsa_signature_length == 9) {
-          vkey = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.1.1/vk.json`);
-        } else if (rsa_signature_length == 18) {
-          vkey = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.1.1/vk.json`);
-        } else {
-          throw new Error("Invalid rsa_signature_length value. Must be 9 or 18.");
-        }
-        //const vkey = await import(`../../assets/openbands-0.0.1/vk.json`);
-        console.log("Loaded verification key");
-      } catch (err) {
-        console.error("Failed to load verification key:", err);
-        throw new Error("Failed to load verification key");
-      }
+        // if (rsa_signature_length == 0 || !rsa_signature_length) { // @dev - For verifying the proofs, which was generated with the old version of the circuit (v0.0.1)
+        //   circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
+        // } else if (rsa_signature_length == 9) {
+        //   circuitArtifact = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.1.1/openbands.json`);
+        // } else if (rsa_signature_length == 18) {
+        //   circuitArtifact = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.1.1/openbands.json`);
+        // } else {
+        //   throw new Error("Invalid rsa_signature_length value. Must be 9 or 18.");
+        // }
+        // //const circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
+        // console.log("Loaded circuit artifact");
 
-      // Public Inputs = pubkey_limbs(18) + domain(64) + position(128) + salary(32) + ratings(6) = 248
-      const publicInputs: string[] = [];
-
-      // Push modulus limbs as 64 char hex strings (18 Fields)
-      const modulusLimbs = splitBigIntToLimbs(jwtPubKey, 120, 18);
-      publicInputs.push(
-        ...modulusLimbs.map((s) => "0x" + s.toString(16).padStart(64, "0"))
-      );
-
-      // Push domain + domain length (BoundedVec of 64 bytes)
-      const domainUint8Array = new Uint8Array(64);
-      domainUint8Array.set(Uint8Array.from(new TextEncoder().encode(domain)));
-      publicInputs.push(
-        ...Array.from(domainUint8Array).map(
-          (s) => "0x" + s.toString(16).padStart(64, "0")
-        )
-      );
-      publicInputs.push("0x" + domain.length.toString(16).padStart(64, "0"));
-
-      // Push position + position length (BoundedVec of 128 bytes)
-      const positionUint8Array = new Uint8Array(128);
-      positionUint8Array.set(Uint8Array.from(new TextEncoder().encode(position)));
-      publicInputs.push(
-        ...Array.from(positionUint8Array).map(
-          (s) => "0x" + s.toString(16).padStart(64, "0")
-        )
-      );
-      publicInputs.push("0x" + position.length.toString(16).padStart(64, "0"));
-
-      // Push salary + salary length (BoundedVec of 32 bytes)
-      const salaryUint8Array = new Uint8Array(32);
-      salaryUint8Array.set(Uint8Array.from(new TextEncoder().encode(salary)));
-      publicInputs.push(
-        ...Array.from(salaryUint8Array).map(
-          (s) => "0x" + s.toString(16).padStart(64, "0")
-        )
-      );
-      publicInputs.push("0x" + salary.length.toString(16).padStart(64, "0"));
-
-      console.log("Adding ratings to public inputs:", {
-        work_life_balance: ratings.work_life_balance,
-        culture_values: ratings.culture_values,
-        career_growth: ratings.career_growth,
-        compensation_benefits: ratings.compensation_benefits,
-        leadership_quality: ratings.leadership_quality,
-        operational_efficiency: ratings.operational_efficiency
-      });
-
-      // Push ratings as public inputs
-      publicInputs.push("0x" + ratings.work_life_balance.toString(16).padStart(64, "0"));
-      publicInputs.push("0x" + ratings.culture_values.toString(16).padStart(64, "0"));
-      publicInputs.push("0x" + ratings.career_growth.toString(16).padStart(64, "0"));
-      publicInputs.push("0x" + ratings.compensation_benefits.toString(16).padStart(64, "0"));
-      publicInputs.push("0x" + ratings.leadership_quality.toString(16).padStart(64, "0"));
-      publicInputs.push("0x" + ratings.operational_efficiency.toString(16).padStart(64, "0"));
-
-      const proofData = {
-        proof: proof,
-        publicInputs,
-      };
-
-      let circuitArtifact;
-      try {
-        if (rsa_signature_length == 0 || !rsa_signature_length) { // @dev - For verifying the proofs, which was generated with the old version of the circuit (v0.0.1)
-          circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
-        } else if (rsa_signature_length == 9) {
-          circuitArtifact = await import(`../../assets/openbands-zkemail-1024-bit-dkim-0.1.1/openbands.json`);
-        } else if (rsa_signature_length == 18) {
-          circuitArtifact = await import(`../../assets/openbands-zkemail-2048-bit-dkim-0.1.1/openbands.json`);
-        } else {
-          throw new Error("Invalid rsa_signature_length value. Must be 9 or 18.");
-        }
-        //const circuitArtifact = await import(`../../assets/openbands-0.0.1/openbands.json`);
-        console.log("Loaded circuit artifact");
-
-        const backend = new UltraHonkBackend(circuitArtifact.bytecode, { threads: 8 });
-        console.log("Initialized UltraHonkBackend");
+        // const backend = new UltraHonkBackend(circuitArtifact.bytecode, { threads: 8 });
+        // console.log("Initialized UltraHonkBackend");
         
-        const result = await backend.verifyProof(proofData);
-        console.log("Proof verification result:", result);
+        // const result = await backend.verifyProof(proofData);
+        // console.log("Proof verification result:", result);
+
+        // @dev - Store the data into the blockchain (BASE)
+        let abi: Array<any> = artifactOfPositionAndSalaryProofManager.abi;
+        let positionAndSalaryProofManagerContractAddress: string = process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "";
+        console.log(`positionAndSalaryProofManagerContractAddress: ${ positionAndSalaryProofManagerContractAddress }`);
+
+        const publicInputsOfPositionAndSalaryProof = await getPublicInputsOfPositionAndSalaryProof( // @dev - Record the public inputs of position and salary proof to the blockchain (BASE) using the "recordPublicInputsOfPositionAndSalaryProof" function.
+          signer, 
+          abi, 
+          positionAndSalaryProofManagerContractAddress,
+          nullifier
+        );
+        console.log(`publicInputsOfPositionAndSalaryProof: ${ publicInputsOfPositionAndSalaryProof }`);
+
+        // @dev - Convert "object" value to "bigInt" value. 
+        const _publicInputsOfPositionAndSalaryProof = bigIntToString(publicInputsOfPositionAndSalaryProof);
+        console.log(`_publicInputsOfPositionAndSalaryProof: ${ JSON.stringify(_publicInputsOfPositionAndSalaryProof, null, 2) }`);
         
+        const _nullifier = _publicInputsOfPositionAndSalaryProof.publicInputsOfPositionAndSalaryProof[9];
+        const result = _nullifier !== "" || undefined ? true : false;
+        //const result = true;
+        console.log(`_nullifier: ${ _nullifier }`);
+        console.log(`result: ${ result }`);
+
         return result;
       } catch (err) {
         console.error("Failed during proof verification:", err);

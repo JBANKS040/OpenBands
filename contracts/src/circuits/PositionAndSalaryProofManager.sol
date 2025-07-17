@@ -59,6 +59,7 @@ contract PositionAndSalaryProofManager {
         publicInput.leadershipQuality = separatedPublicInputs.leadershipQuality;
         publicInput.operationalEfficiency = separatedPublicInputs.operationalEfficiency;
         publicInput.nullifierHash = separatedPublicInputs.nullifierHash;
+        publicInput.rsaSignatureLength = rsaSignatureLength;
         publicInput.createdAt = separatedPublicInputs.createdAt;
         //publicInput.createdAt = block.timestamp;
 

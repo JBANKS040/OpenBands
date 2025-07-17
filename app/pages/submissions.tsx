@@ -13,7 +13,6 @@ import { storePublicInputsOfPositionAndSalaryProof, getPublicInputsOfPositionAnd
 import { BrowserProvider, JsonRpcSigner } from 'ethers';
 import { convertBytes32ToString } from '../lib/converters/bytes32ToStringConverter';
 
-
 interface Submission {
   domain: string;
   position: string;
@@ -24,6 +23,7 @@ interface Submission {
   isVerifying?: boolean;
   verificationResult?: boolean | null;
   ratings?: CompanyRatingsType;
+  nullifier: string;
   rsa_signature_length: number;    // 9 or 18
   //rsa_signature_length?: number; // 9 or 18
 }
@@ -78,10 +78,14 @@ export default function Submissions() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [submissionsByCompany, setSubmissionsByCompany] = useState<CompanyData[]>([]);
   const [viewMode, setViewMode] = useState<'all' | 'byCompany'>('all');
+  const [provider, setProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
 
   useEffect(() => {
     async function init() {
       const { provider, signer } = await connectToEvmWallet(); // @dev - Connect to EVM wallet (i.e. MetaMask) on page load
+      setProvider(provider);
+      setSigner(signer);
       fetchSubmissions(signer);
     }
     init();
@@ -107,13 +111,13 @@ export default function Submissions() {
         const submissions: ProofDetails[] = publicInputsOfAllProofsArray.map((item: any) => ({
         //const submissions: ProofDetails[] = _publicInputsOfAllProofs.map((item: any) => ({
           id: "",
-          created_at: item[10], 
+          created_at: item[11], 
           proof: emptyUint8Array,
           domain: item[0],
           position: item[1],
           salary: item[2],
           jwtPubKey: {} as JsonWebKey,
-          timestamp: item[10],
+          timestamp: item[11],
           ratings: {
             work_life_balance: item[3],
             culture_values: item[4],
@@ -122,7 +126,8 @@ export default function Submissions() {
             leadership_quality: item[7],
             operational_efficiency: item[8]
           },
-          rsa_signature_length: item[9] // 9 or 18
+          nullifier: item[9],
+          rsa_signature_length: item[10] // 9 or 18
         }));
         console.log("submissions: ", submissions);
         //console.log(`submissions: ${JSON.stringify(submissions, null, 2)}`);
@@ -239,27 +244,29 @@ export default function Submissions() {
     try {
       updateSubmissionState(true, null, submission);
 
-      const proof = new Uint8Array(submission.proof.split(',').map(Number));
-      const jwtPubKey = JSON.parse(submission.jwt_pub_key);
-      const modulus = await pubkeyModulusFromJWK(jwtPubKey);
+      // const proof = new Uint8Array(submission.proof.split(',').map(Number));
+      // const jwtPubKey = JSON.parse(submission.jwt_pub_key);
+      // const modulus = await pubkeyModulusFromJWK(jwtPubKey);
       
       const result = await OPENBANDS_CIRCUIT_HELPER.verifyProof(
-        proof,
-        {
-          domain: submission.domain,
-          position: submission.position,
-          salary: submission.salary,
-          jwtPubKey: modulus,
-          ratings: submission.ratings || {
-            work_life_balance: 3,
-            culture_values: 3,
-            career_growth: 3,
-            compensation_benefits: 3,
-            leadership_quality: 3,
-            operational_efficiency: 3
-          }
-        },
-        submission.rsa_signature_length
+        signer,
+        // proof,
+        // {
+        //   domain: submission.domain,
+        //   position: submission.position,
+        //   salary: submission.salary,
+        //   jwtPubKey: modulus,
+        //   ratings: submission.ratings || {
+        //     work_life_balance: 3,
+        //     culture_values: 3,
+        //     career_growth: 3,
+        //     compensation_benefits: 3,
+        //     leadership_quality: 3,
+        //     operational_efficiency: 3
+        //   }
+        // },
+        submission.nullifier
+        // submission.rsa_signature_length
       );
 
       updateSubmissionState(false, result, submission);

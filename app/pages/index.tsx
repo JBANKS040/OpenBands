@@ -42,6 +42,7 @@ interface ProofDetails extends Omit<Submission, 'proof' | 'jwt_pub_key'> {
   timestamp?: number;
   verificationResult?: boolean | null;
   isVerifying?: boolean;
+  nullifier: string;
   rsa_signature_length?: number; // 9 or 18
 }
 
@@ -310,13 +311,13 @@ export default function Home() {
         //const submissions: ProofDetails[] = publicInputsOfAllProofsArray.map((item: any) => ({
         const submissions: ProofDetails[] = _publicInputsOfAllProofsArray.map((item: any) => ({
           id: "",
-          created_at: item[10], 
+          created_at: item[11], 
           proof: emptyUint8Array,
           domain: item[0],
           position: item[1],
           salary: item[2],
           jwtPubKey: {} as JsonWebKey,
-          timestamp: item[10],
+          timestamp: item[11],
           ratings: {
             work_life_balance: Number(item[3]),
             culture_values: Number(item[4]),
@@ -325,7 +326,8 @@ export default function Home() {
             leadership_quality: Number(item[7]),
             operational_efficiency: Number(item[8])
           },
-          rsa_signature_length: item[9] // 9 or 18
+          nullifier: item[9],
+          rsa_signature_length: item[10] // 9 or 18
         }));
         console.log("submissions: ", submissions);
         //console.log(`submissions: ${JSON.stringify(submissions, null, 2)}`);
@@ -440,6 +442,7 @@ export default function Home() {
         leadershipQuality: ratings.leadership_quality,
         operationalEfficiency: ratings.operational_efficiency,
         nullifierHash: nullifier,
+        rsaSignatureLength: zkEmailInputData.signature.length,
         createdAt: new Date().toISOString()
       };
       console.log(`separatedPublicInputs: ${ JSON.stringify(separatedPublicInputs, null, 2) }`);
@@ -520,26 +523,27 @@ export default function Home() {
     try {
       const proofToVerify = recentSubmissions[submissionIndex];
       //const modulus = await pubkeyModulusFromJWK(proofToVerify.jwtPubKey);
+      const nullifier = proofToVerify.nullifier;
 
       const result = await OPENBANDS_CIRCUIT_HELPER.verifyProof(
-        emptyUint8Array,        // @dev - an empty value is stored into as a "proof".
-        //proofToVerify.proof,  // @dev - The original value to be stored into the Supabase DB as a "proof"..
-        {
-          domain: proofToVerify.domain,
-          position: proofToVerify.position,
-          salary: proofToVerify.salary,
-          jwtPubKey: emptyJwtPubKey, // @dev - an empty value is stored into as a "jwtPubKey".
-          //jwtPubKey: modulus,      // @dev - The original value to be stored into the Supabase DB as a "jwtPubKey".
-          ratings: proofToVerify.ratings || {
-            work_life_balance: 3,
-            culture_values: 3,
-            career_growth: 3,
-            compensation_benefits: 3,
-            leadership_quality: 3,
-            operational_efficiency: 3
-          }
-        },
-        proofToVerify.rsa_signature_length, // 9 or 18
+        signer,
+        // proofToVerify.proof,  // @dev - The original value to be stored into the Supabase DB as a "proof".
+        // {
+        //   domain: proofToVerify.domain,
+        //   position: proofToVerify.position,
+        //   salary: proofToVerify.salary,
+        //   jwtPubKey: modulus,      // @dev - The original value to be stored into the Supabase DB as a "jwtPubKey".
+        //   ratings: proofToVerify.ratings || {
+        //     work_life_balance: 3,
+        //     culture_values: 3,
+        //     career_growth: 3,
+        //     compensation_benefits: 3,
+        //     leadership_quality: 3,
+        //     operational_efficiency: 3
+        //   }
+        // },
+        nullifier
+        // proofToVerify.rsa_signature_length, // 9 or 18
       );
 
       setRecentSubmissions(prevSubmissions => {
