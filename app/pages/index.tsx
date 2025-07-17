@@ -108,6 +108,7 @@ async function getGooglePublicKey(kid: string): Promise<JsonWebKey> {
 
 export default function Home() {
   const emptyUint8Array = new Uint8Array(0);
+  const emptyJwtPubKey = {} as JsonWebKey;
 
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: null, idToken: null });
   const [zkEmailInputData, setZkEmailInputData] = useState<ZkEmailInputData>({
@@ -518,15 +519,17 @@ export default function Home() {
 
     try {
       const proofToVerify = recentSubmissions[submissionIndex];
-      const modulus = await pubkeyModulusFromJWK(proofToVerify.jwtPubKey); // @dev - [TODO]: A "jwtPubKey" is no longer to be returned as a publicInput. Hence, this should be removed with the following OPENBANDS_CIRCUIT_HELPER.verifyProof().
+      //const modulus = await pubkeyModulusFromJWK(proofToVerify.jwtPubKey);
 
       const result = await OPENBANDS_CIRCUIT_HELPER.verifyProof(
-        proofToVerify.proof,  // @dev - [TODO]: A "proof" is no longer to be returned as a publicInput. Hence, this should be removed.
+        emptyUint8Array,        // @dev - an empty value is stored into as a "proof".
+        //proofToVerify.proof,  // @dev - The original value to be stored into the Supabase DB as a "proof"..
         {
           domain: proofToVerify.domain,
           position: proofToVerify.position,
           salary: proofToVerify.salary,
-          jwtPubKey: modulus, // @dev - [TODO]: A "jwtPubKey" is no longer to be returned as a publicInput.  Hence, this should be removed.
+          jwtPubKey: emptyJwtPubKey, // @dev - an empty value is stored into as a "jwtPubKey".
+          //jwtPubKey: modulus,      // @dev - The original value to be stored into the Supabase DB as a "jwtPubKey".
           ratings: proofToVerify.ratings || {
             work_life_balance: 3,
             culture_values: 3,
