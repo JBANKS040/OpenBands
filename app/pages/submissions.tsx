@@ -13,6 +13,9 @@ import { storePublicInputsOfPositionAndSalaryProof, getPublicInputsOfPositionAnd
 import { BrowserProvider, JsonRpcSigner } from 'ethers';
 import { convertBytes32ToString } from '../lib/converters/bytes32ToStringConverter';
 
+// @dev - Utility functions
+import { bigIntToString } from "../lib/smart-contracts/evm/smart-contracts/utils/bigIntToStringConverter";
+
 interface Submission {
   domain: string;
   position: string;
@@ -95,6 +98,8 @@ export default function Submissions() {
   const fetchSubmissions = async (signer: JsonRpcSigner) => {
   //const fetchSubmissions = async () => {
     try {
+      console.log("signer (in the submission.tsx):", signer); // [Log]: "JsonRpcSigner {provider: BrowserProvider, address: '0x...'}"
+
       // @dev - Get the public inputs of position and salary proof from the blockchain (BASE)
       const publicInputsOfAllProofs = await getPublicInputsOfAllProofs(
         signer,
@@ -243,6 +248,9 @@ export default function Submissions() {
 
     try {
       updateSubmissionState(true, null, submission);
+
+      // @dev - [NOTE]: Somehow, since a signer, which is set in the useEffect() in this submission.tsx, is not properly stored into the global "signer" variable, the connectToEvmWallet() is needed to be called again to retrieve a "signer" value at this line. 
+      const { provider, signer } = await connectToEvmWallet();
 
       // const proof = new Uint8Array(submission.proof.split(',').map(Number));
       // const jwtPubKey = JSON.parse(submission.jwt_pub_key);
