@@ -6,6 +6,8 @@ import CompanyRatings from "../components/CompanyRatings";
 import Layout from '../components/layout';
 import { CompanyRatings as CompanyRatingsType } from '../lib/supabase';
 
+import ProofDetails from "./index";
+
 // @dev - Blockchain related imports
 import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
 import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
