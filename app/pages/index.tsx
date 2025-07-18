@@ -36,7 +36,7 @@ interface JWK {
   use: string;
 }
 
-interface ProofDetails extends Omit<Submission, 'proof' | 'jwt_pub_key'> {
+export interface ProofDetails extends Omit<Submission, 'proof' | 'jwt_pub_key'> {
   proof?: Uint8Array;
   jwtPubKey?: JsonWebKey;
   timestamp?: number;
