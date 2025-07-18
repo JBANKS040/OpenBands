@@ -304,7 +304,14 @@ export default function Home() {
       console.log(`typeof publicInputsOfAllProofsArray: ${typeof publicInputsOfAllProofsArray}`); // @dev - [Return]: "object"
       
       // @dev - Store into the array
-      const _publicInputsOfAllProofsArray: any[] = [publicInputsOfAllProofsArray.split(",")];
+      let _publicInputsOfAllProofsArray: any[] = [];
+      if (typeof publicInputsOfAllProofsArray === "string") {
+        _publicInputsOfAllProofsArray = [publicInputsOfAllProofsArray.split(",")];
+      } else if (Array.isArray(publicInputsOfAllProofsArray)) {
+        _publicInputsOfAllProofsArray = publicInputsOfAllProofsArray;
+      } else { // fallback for unexpected types
+        _publicInputsOfAllProofsArray = []; 
+      }
 
       // @dev - Store the public inputs of position and salary proof to the "submissions" variable to be stored into the setRecentSubmissions().
       if (publicInputsOfAllProofsArray.length > 0) {
