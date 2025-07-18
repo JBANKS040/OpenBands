@@ -2,7 +2,10 @@
 'use client'
 
 import { useState } from 'react';
-import { BrowserProvider } from 'ethers';
+//import { BrowserProvider } from 'ethers';
+
+// @dev - Blockchain related imports
+import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
 
 export default function ConnectWalletButton() {
   const [account, setAccount] = useState<string | null>(null);
@@ -14,7 +17,9 @@ export default function ConnectWalletButton() {
     }
 
     try {
-      const provider = new BrowserProvider(window.ethereum);
+      const { provider, signer } = await connectToEvmWallet();
+      //const provider = new BrowserProvider(window.ethereum);
+      
       const accounts = await provider.send("eth_requestAccounts", []);
       setAccount(accounts[0]);
     } catch (error) {
