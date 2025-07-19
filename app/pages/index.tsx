@@ -303,7 +303,7 @@ export default function Home() {
       console.log(`publicInputsOfAllProofsArray.length: ${publicInputsOfAllProofsArray.length}`); // @dev - [Return]: "object"
       console.log(`typeof publicInputsOfAllProofsArray: ${typeof publicInputsOfAllProofsArray}`); // @dev - [Return]: "object"
       
-      // @dev - Store into the array
+      // @dev - Store into the array (to avoid the "TypeError: Property 'map' does not exist on type 'string'" error)
       let _publicInputsOfAllProofsArray: any[] = [];
       if (typeof publicInputsOfAllProofsArray === "string") {
         _publicInputsOfAllProofsArray = [publicInputsOfAllProofsArray.split(",")];
