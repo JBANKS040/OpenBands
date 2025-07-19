@@ -52,6 +52,9 @@ export async function connectToEvmWallet(): Promise<{ provider: any, signer: any
     //   "chainId": "84532"
     // }
 
+    // @dev - Request account access first (in order to avoid a "empty signer/provider" error due to lack of setting a signer/provider - particularly when a user open the index page on a web browser at the first time of the day).
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+
     // It also provides an opportunity to request access to write operations, which will be performed by the private key that MetaMask manages for the user.
     signer = await provider.getSigner();
     console.log("signer (in the connectToEvmWallet():", signer); // [Log]: "JsonRpcSigner {provider: BrowserProvider, address: '0x...'}"
