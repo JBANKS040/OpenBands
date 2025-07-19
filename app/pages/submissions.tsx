@@ -113,9 +113,19 @@ export default function Submissions() {
       console.log(`publicInputsOfAllProofsArray.length: ${publicInputsOfAllProofsArray.length}`); // @dev - [Return]: "object"
       console.log(`typeof publicInputsOfAllProofsArray: ${typeof publicInputsOfAllProofsArray}`); // @dev - [Return]: "object"
 
+      // @dev - Store into the array
+      let _publicInputsOfAllProofsArray: any[] = [];
+      if (typeof publicInputsOfAllProofsArray === "string") {
+        _publicInputsOfAllProofsArray = [publicInputsOfAllProofsArray.split(",")];
+      } else if (Array.isArray(publicInputsOfAllProofsArray)) {
+        _publicInputsOfAllProofsArray = publicInputsOfAllProofsArray;
+      } else { // fallback for unexpected types
+        _publicInputsOfAllProofsArray = []; 
+      }
+
       // @dev - Store the public inputs of position and salary proof to the "submissions" variable to be stored into the setRecentSubmissions().
-      if (publicInputsOfAllProofsArray.length > 0) {
-        const submissions: ProofDetails[] = publicInputsOfAllProofsArray.map((item: any) => ({
+      if (_publicInputsOfAllProofsArray.length > 0) {
+        const submissions: ProofDetails[] = _publicInputsOfAllProofsArray.map((item: any) => ({
         //const submissions: ProofDetails[] = _publicInputsOfAllProofs.map((item: any) => ({
           id: "",
           created_at: item[11], 
