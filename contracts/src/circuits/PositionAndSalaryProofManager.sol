@@ -66,6 +66,9 @@ contract PositionAndSalaryProofManager {
         // @dev - Store the publicInput of a given PositionAndSalaryProof
         publicInputsOfPositionAndSalaryProofs[publicInput.nullifierHash] = publicInput;
 
+        // @dev - Checking whether a given nullifierHash is already used or not for preventing from double spending of a given proof.
+        require(nullifiers[publicInput.nullifierHash] == false, "A given nullifierHash is already used, which means a given proof is already used");
+
         // @dev - Store the nullifierHash to prevent double submission of the same email
         nullifiers[publicInput.nullifierHash] = true;
 
