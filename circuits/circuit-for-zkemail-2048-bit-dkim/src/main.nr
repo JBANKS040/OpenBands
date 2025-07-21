@@ -1,6 +1,7 @@
 mod tests;
 mod utils;
 
+use std::hash::pedersen_hash;
 use jwt::JWT;
 
 use zkemail::{
@@ -167,8 +168,20 @@ fn main(
     let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(salary, body_trimmed) };
     assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
 
+    // @dev - Convert domain, position, and salary to a Field type and then hashing them.
+    let domain_field = domain.storage().map(|x| x as Field);
+    let position_field = position.storage().map(|x| x as Field);
+    let salary_field = salary.storage().map(|x| x as Field);
+    let domain_hash = pedersen_hash(domain_field);
+    let position_hash = pedersen_hash(position_field);
+    let salary_hash = pedersen_hash(salary_field);
+
+    // @dev - Generate a comprehensive nullifier. (icl. Email nullifer, domain hash, position hash, and salary hash)
+    let nullifier = pedersen_hash([email_nullifier, domain_hash, position_hash, salary_hash]);
+
     // @dev - Return value
-    email_nullifier
+    nullifier
+    //email_nullifier
 }
 
 
