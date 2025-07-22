@@ -21,6 +21,7 @@ base_testnet = "${BASE_TESTNET_RPC}"
 
 [etherscan]
 #sepolia = { key = "${SEPOLIA_PRIVATE_KEY}" }
+base_testnet = { key = "${BASESCAN_API_KEY}" }
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
 

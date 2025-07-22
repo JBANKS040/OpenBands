@@ -27,7 +27,7 @@ contract DeploymentForHonkVerifier1024 is Script {
 
         //vm.startBroadcast();
         verifier = new HonkVerifier();
-        positionAndSalaryProof1024Verifier = new PositionAndSalaryProof1024Verifier(verifier);
+        //positionAndSalaryProof1024Verifier = new PositionAndSalaryProof1024Verifier(verifier);
 
         vm.stopBroadcast();
 
