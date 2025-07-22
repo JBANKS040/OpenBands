@@ -4,7 +4,7 @@ import "forge-std/Script.sol";
 
 /// @dev - ZK circuit, which is generated in Noir.
 import { HonkVerifier } from "../../../src/circuits/circuit-for-zkemail-1024-bit-dkim/honk-verifier/honk_vk_for_1024-bit-dkim.sol";
-import { PositionAndSalaryProof1024Verifier } from "../../../src/circuits/circuit-for-zkemail-1024-bit-dkim/PositionAndSalaryProof1024Verifier.sol";
+//import { PositionAndSalaryProof1024Verifier } from "../../../src/circuits/circuit-for-zkemail-1024-bit-dkim/PositionAndSalaryProof1024Verifier.sol";
 
 
 /**
@@ -15,7 +15,7 @@ contract DeploymentForHonkVerifier1024 is Script {
     //using SafeERC20 for MockRewardToken;
 
     HonkVerifier public verifier;
-    PositionAndSalaryProof1024Verifier public positionAndSalaryProof1024Verifier;
+    //PositionAndSalaryProof1024Verifier public positionAndSalaryProof1024Verifier;
 
     function setUp() public {}
 

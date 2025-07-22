@@ -4,7 +4,7 @@ import "forge-std/Script.sol";
 
 /// @dev - ZK circuit, which is generated in Noir.
 import { HonkVerifier } from "../../../src/circuits/circuit-for-zkemail-2048-bit-dkim/honk-verifier/honk_vk_for_2048-bit-dkim.sol";
-import { PositionAndSalaryProof2048Verifier } from "../../../src/circuits/circuit-for-zkemail-2048-bit-dkim/PositionAndSalaryProof2048Verifier.sol";
+//import { PositionAndSalaryProof2048Verifier } from "../../../src/circuits/circuit-for-zkemail-2048-bit-dkim/PositionAndSalaryProof2048Verifier.sol";
 
 
 /**
@@ -15,7 +15,7 @@ contract DeploymentForHonkVerifier2048 is Script {
     //using SafeERC20 for MockRewardToken;
 
     HonkVerifier public verifier;
-    PositionAndSalaryProof2048Verifier public positionAndSalaryProof2048Verifier;
+    //PositionAndSalaryProof2048Verifier public positionAndSalaryProof2048Verifier;
 
     function setUp() public {}
 
@@ -27,13 +27,13 @@ contract DeploymentForHonkVerifier2048 is Script {
 
         //vm.startBroadcast();
         verifier = new HonkVerifier();
-        positionAndSalaryProof2048Verifier = new PositionAndSalaryProof2048Verifier(verifier);
+        //positionAndSalaryProof2048Verifier = new PositionAndSalaryProof2048Verifier(verifier);
 
         vm.stopBroadcast();
 
         /// @dev - Logs of the deployed-contracts on Base Sepolia Testnet
-        console.logString("Logs of the deployed-contracts on BASE Sepolia Testnet");
-        console.logString("\n");
+        //console.logString("Logs of the deployed-contracts on BASE Sepolia Testnet");
+        //console.logString("\n");
     }
 }
 

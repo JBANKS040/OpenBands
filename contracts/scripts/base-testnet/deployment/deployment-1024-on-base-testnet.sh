@@ -19,7 +19,7 @@ source .env
 #     ./contracts/src/circuits/circuit-for-zkemail-1024-bit-dkim/PositionAndSalaryProof1024Verifier.sol:PositionAndSalaryProof1024Verifier --skip-simulation --legacy
 
 # @notice - [Result]: Successfully deployed + "verified" the HonkVerifier contract on Base Sepolia Testnet. (NOTE: Only single SC - Not multiple SCs)
-echo "Deploying the HonkVerifier and PositionAndSalaryProof1024Verifier contract on Base Sepolia Testnet..."
+echo "Deploying & Verifying the HonkVerifier and PositionAndSalaryProof1024Verifier contract on Base Sepolia Testnet..."
 forge script scripts/base-testnet/deployment/DeploymentForHonkVerifier1024.s.sol --slow --multi --broadcast --private-key ${BASE_TESTNET_PRIVATE_KEY} --verify --etherscan-api-key ${BASESCAN_API_KEY}
 
 
@@ -31,13 +31,13 @@ forge script scripts/base-testnet/deployment/DeploymentForHonkVerifier1024.s.sol
 # @notice - The following commands are used to verify the deployed contracts on Base Sepolia Testnet Explorer. #
 ################################################################################################################
 
-echo "Verify the deployed-HonkVerifier and PositionAndSalaryProof1024Verifier contract on Base Sepolia Testnet Explorer..."
-forge script contracts/scripts/base-testnet/deployment/DeploymentForHonkVerifier1024.s.sol \
-    --rpc-url ${BASE_TESTNET_RPC} \
-    --chain-id ${BASE_TESTNET_CHAIN_ID} \
-    --private-key ${BASE_TESTNET_PRIVATE_KEY} \
-    --resume \
-    --verify \
-    --verifier etherscan \
-    --verifier-url https://api-sepolia.basescan.org/api \
-    --etherscan-api-key ${BASESCAN_API_KEY} \
+# echo "Verify the deployed-HonkVerifier and PositionAndSalaryProof1024Verifier contract on Base Sepolia Testnet Explorer..."
+# forge script contracts/scripts/base-testnet/deployment/DeploymentForHonkVerifier1024.s.sol \
+#     --rpc-url ${BASE_TESTNET_RPC} \
+#     --chain-id ${BASE_TESTNET_CHAIN_ID} \
+#     --private-key ${BASE_TESTNET_PRIVATE_KEY} \
+#     --resume \
+#     --verify \
+#     --verifier etherscan \
+#     --verifier-url https://api-sepolia.basescan.org/api \
+#     --etherscan-api-key ${BASESCAN_API_KEY} \
