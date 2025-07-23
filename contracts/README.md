@@ -55,6 +55,16 @@ sh scripts/base-testnet/deployment/deployment-2048-on-base-testnet.sh
 ```
 ```bash
 cd contracts
+sh scripts/base-testnet/deployment/deployment-position-and-salary-proof-1024-verifier-on-base-testnet.sh
+```
+```bash
+cd contracts
+sh scripts/base-testnet/deployment/deployment-position-and-salary-proof-2048-verifier-on-base-testnet.sh
+```
+
+- All
+```bash
+cd contracts
 sh scripts/base-testnet/deployment/deployment-on-base-testnet.sh
 ```
 

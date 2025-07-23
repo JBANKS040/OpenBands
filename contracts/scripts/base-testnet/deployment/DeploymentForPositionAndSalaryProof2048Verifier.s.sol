@@ -9,11 +9,8 @@ import { PositionAndSalaryProof2048Verifier } from "../../../src/circuits/circui
 
 /**
  * @notice - Deployment script to deploy the PositionAndSalaryProof2048Verifier contract on BASE Testnet
- * @dev - [CLI]: Using the CLI, which is written in the bottom of this file, to deploy all SCs
  */
-contract DeploymentForHonkVerifier2048 is Script {
-    //using SafeERC20 for MockRewardToken;
-
+contract DeploymentForPositionAndSalaryProof2048Verifier is Script {
     HonkVerifier public verifier;
     PositionAndSalaryProof2048Verifier public positionAndSalaryProof2048Verifier;
 
@@ -21,13 +18,14 @@ contract DeploymentForHonkVerifier2048 is Script {
 
     function run() public {
         vm.createSelectFork("base_testnet");
-
         uint256 deployerPrivateKey = vm.envUint("BASE_TESTNET_PRIVATE_KEY");
         //uint256 deployerPrivateKey = vm.envUint("LOCALHOST_PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
-
         //vm.startBroadcast();
-        verifier = new HonkVerifier();
+
+        address HONKVERIFIER_2048_ON_BASE_TESTNET = vm.envAddress("HONKVERIFIER_2048_ON_BASE_TESTNET");
+        verifier = HonkVerifier(HONKVERIFIER_2048_ON_BASE_TESTNET);
+        //verifier = new HonkVerifier();
         positionAndSalaryProof2048Verifier = new PositionAndSalaryProof2048Verifier(verifier);
 
         vm.stopBroadcast();
@@ -35,10 +33,10 @@ contract DeploymentForHonkVerifier2048 is Script {
         /// @dev - Logs of the deployed-contracts on Base Sepolia Testnet
         console.logString("Logs of the deployed-contracts on BASE Sepolia Testnet");
         console.logString("\n");
-        console.log("%s: %s", "UltraVerifier SC", address(verifier));
+        console.log("%s: %s", "UltraVerifier SC (2048)", address(verifier));
         console.logString("\n");
         console.log("%s: %s", "PositionAndSalaryProof2048Verifier SC", address(positionAndSalaryProof2048Verifier));
-
+        console.logString("\n");
     }
 }
 
