@@ -123,6 +123,24 @@ export default function Submissions() {
         _publicInputsOfAllProofsArray = []; 
       }
 
+
+      // interface Submission {
+      //   domain: string;
+      //   position: string;
+      //   salary: string;
+      //   created_at: string;
+      //   proof: string;
+      //   jwt_pub_key: string;
+      //   isVerifying?: boolean;
+      //   verificationResult?: boolean | null;
+      //   ratings?: CompanyRatingsType;
+      //   nullifier: string;
+      //   rsa_signature_length: number;    // 9 or 18
+      //   //rsa_signature_length?: number; // 9 or 18
+      // }
+
+
+
       // @dev - Store the public inputs of position and salary proof to the "submissions" variable to be stored into the setRecentSubmissions().
       if (_publicInputsOfAllProofsArray.length > 0) {
         const submissions: Submission[] = _publicInputsOfAllProofsArray.map((item: any) => ({  // [TODO]: Next
@@ -130,20 +148,21 @@ export default function Submissions() {
           position: item[1],
           salary: item[2],
           created_at: item[11],
-          proof: emptyUint8Array,
-          jwt_pub_key: item[12],
+          proof: Array.from(emptyUint8Array).join(','), // Convert Uint8Array to string
+          //proof: emptyUint8Array,
+          jwt_pub_key: String(item[12]),
           isVerifying: false,
           verificationResult: null,
           ratings: {
-            work_life_balance: item[3],
-            culture_values: item[4],
-            career_growth: item[5],
-            compensation_benefits: item[6],
-            leadership_quality: item[7],
-            operational_efficiency: item[8]
+            work_life_balance: Number(item[3]),
+            culture_values: Number(item[4]),
+            career_growth: Number(item[5]),
+            compensation_benefits: Number(item[6]),
+            leadership_quality: Number(item[7]),
+            operational_efficiency: Number(item[8])
           },
-          nullifier: item[9],
-          rsa_signature_length: item[10] // 9 or 18
+          nullifier: String(item[9]),
+          rsa_signature_length: Number(item[10]) // 9 or 18
         }));
         //console.log(`submissions: ${JSON.stringify(submissions, null, 2)}`);
     
