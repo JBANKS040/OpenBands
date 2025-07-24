@@ -123,35 +123,17 @@ export default function Submissions() {
         _publicInputsOfAllProofsArray = []; 
       }
 
-
-      // interface Submission {
-      //   domain: string;
-      //   position: string;
-      //   salary: string;
-      //   created_at: string;
-      //   proof: string;
-      //   jwt_pub_key: string;
-      //   isVerifying?: boolean;
-      //   verificationResult?: boolean | null;
-      //   ratings?: CompanyRatingsType;
-      //   nullifier: string;
-      //   rsa_signature_length: number;    // 9 or 18
-      // }
-
-
       // @dev - Store the public inputs of position and salary proof to the "submissions" variable to be stored into the setRecentSubmissions().
       if (_publicInputsOfAllProofsArray.length > 0) {
-        //const submissions: Submission[] = _publicInputsOfAllProofsArray.map((item: any) => ({  // [TODO]: Next
-        const submissions: ProofDetails[] = _publicInputsOfAllProofsArray.map((item: any) => ({  // Orignal
-        //const submissions: ProofDetails[] = _publicInputsOfAllProofs.map((item: any) => ({
-          id: "",
-          created_at: item[11], 
-          proof: emptyUint8Array,
+        const submissions: Submission[] = _publicInputsOfAllProofsArray.map((item: any) => ({  // [TODO]: Next
           domain: item[0],
           position: item[1],
           salary: item[2],
-          jwtPubKey: {} as JsonWebKey,
-          timestamp: item[11],
+          created_at: item[11],
+          proof: emptyUint8Array,
+          jwt_pub_key: item[12],
+          isVerifying: false,
+          verificationResult: null,
           ratings: {
             work_life_balance: item[3],
             culture_values: item[4],
@@ -163,7 +145,6 @@ export default function Submissions() {
           nullifier: item[9],
           rsa_signature_length: item[10] // 9 or 18
         }));
-        console.log("submissions: ", submissions);
         //console.log(`submissions: ${JSON.stringify(submissions, null, 2)}`);
     
         const submissionsWithVerification = submissions;
