@@ -123,24 +123,6 @@ export default function Submissions() {
         _publicInputsOfAllProofsArray = []; 
       }
 
-
-      // interface Submission {
-      //   domain: string;
-      //   position: string;
-      //   salary: string;
-      //   created_at: string;
-      //   proof: string;
-      //   jwt_pub_key: string;
-      //   isVerifying?: boolean;
-      //   verificationResult?: boolean | null;
-      //   ratings?: CompanyRatingsType;
-      //   nullifier: string;
-      //   rsa_signature_length: number;    // 9 or 18
-      //   //rsa_signature_length?: number; // 9 or 18
-      // }
-
-
-
       // @dev - Store the public inputs of position and salary proof to the "submissions" variable to be stored into the setRecentSubmissions().
       if (_publicInputsOfAllProofsArray.length > 0) {
         const submissions: Submission[] = _publicInputsOfAllProofsArray.map((item: any) => ({  // [TODO]: Next
