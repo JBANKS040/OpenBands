@@ -6,6 +6,18 @@ import CompanyRatings from "../components/CompanyRatings";
 import Layout from '../components/layout';
 import { CompanyRatings as CompanyRatingsType } from '../lib/supabase';
 
+import type { ProofDetails } from "./index";
+
+// @dev - Blockchain related imports
+import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
+import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
+import { storePublicInputsOfPositionAndSalaryProof, getPublicInputsOfPositionAndSalaryProof, getPublicInputsOfAllProofs } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
+import { BrowserProvider, JsonRpcSigner } from 'ethers';
+import { convertBytes32ToString } from '../lib/converters/bytes32ToStringConverter';
+
+// @dev - Utility functions
+import { bigIntToString } from "../lib/smart-contracts/evm/smart-contracts/utils/bigIntToStringConverter";
+
 interface Submission {
   domain: string;
   position: string;
@@ -16,6 +28,7 @@ interface Submission {
   isVerifying?: boolean;
   verificationResult?: boolean | null;
   ratings?: CompanyRatingsType;
+  nullifier: string;
   rsa_signature_length: number;    // 9 or 18
   //rsa_signature_length?: number; // 9 or 18
 }
@@ -64,32 +77,78 @@ const calculateAverageRatings = (submissions: Submission[]): CompanyRatingsType 
 };
 
 export default function Submissions() {
+  const emptyUint8Array = new Uint8Array(0);
+
   const [loading, setLoading] = useState(false);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [submissionsByCompany, setSubmissionsByCompany] = useState<CompanyData[]>([]);
   const [viewMode, setViewMode] = useState<'all' | 'byCompany'>('all');
+  const [provider, setProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
 
   useEffect(() => {
-    fetchSubmissions();
+    async function init() {
+      const { provider, signer } = await connectToEvmWallet(); // @dev - Connect to EVM wallet (i.e. MetaMask) on page load
+      setProvider(provider);
+      setSigner(signer);
+      fetchSubmissions(signer);
+    }
+    init();
+    //fetchSubmissions();
   }, []);
 
-  const fetchSubmissions = async () => {
+  const fetchSubmissions = async (signer: JsonRpcSigner) => {
+  //const fetchSubmissions = async () => {
     try {
-      const { data, error } = await supabase
-        //.from('submissions')        // @dev - The "production" environment should use 'submissions' table.
-        .from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
-        .select('*')
-        .order('created_at', { ascending: false });
+      console.log("signer (in the submission.tsx):", signer); // [Log]: "JsonRpcSigner {provider: BrowserProvider, address: '0x...'}"
 
-      if (error) throw error;
+      // @dev - Get the public inputs of position and salary proof from the blockchain (BASE)
+      const publicInputsOfAllProofs = await getPublicInputsOfAllProofs(
+        signer,
+        artifactOfPositionAndSalaryProofManager.abi,
+        process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "",
+      );
+      const publicInputsOfAllProofsArray = publicInputsOfAllProofs._publicInputsOfAllProofs;
+      console.log(`publicInputsOfAllProofs (in the index.tsx - already converted to string): ${JSON.stringify(publicInputsOfAllProofsArray, null, 2)}`);
+      console.log(`publicInputsOfAllProofsArray.length: ${publicInputsOfAllProofsArray.length}`); // @dev - [Return]: "object"
+      console.log(`typeof publicInputsOfAllProofsArray: ${typeof publicInputsOfAllProofsArray}`); // @dev - [Return]: "object"
 
-      if (data) {
-        const submissionsWithVerification = data.map(submission => ({
-          ...submission,
+      // @dev - Store into the array (to avoid the "TypeError: Property 'map' does not exist on type 'string'" error)
+      let _publicInputsOfAllProofsArray: any[] = [];
+      if (typeof publicInputsOfAllProofsArray === "string") {
+        _publicInputsOfAllProofsArray = [publicInputsOfAllProofsArray.split(",")];
+      } else if (Array.isArray(publicInputsOfAllProofsArray)) {
+        _publicInputsOfAllProofsArray = publicInputsOfAllProofsArray;
+      } else { // fallback for unexpected types
+        _publicInputsOfAllProofsArray = []; 
+      }
+
+      // @dev - Store the public inputs of position and salary proof to the "submissions" variable to be stored into the setRecentSubmissions().
+      if (_publicInputsOfAllProofsArray.length > 0) {
+        const submissions: Submission[] = _publicInputsOfAllProofsArray.map((item: any) => ({  // [TODO]: Next
+          domain: item[0],
+          position: item[1],
+          salary: item[2],
+          created_at: item[11],
+          proof: Array.from(emptyUint8Array).join(','), // Convert Uint8Array to string
+          //proof: emptyUint8Array,
+          jwt_pub_key: String(item[12]),
           isVerifying: false,
           verificationResult: null,
-          ratings: submission.ratings ? JSON.parse(submission.ratings) : undefined
+          ratings: {
+            work_life_balance: Number(item[3]),
+            culture_values: Number(item[4]),
+            career_growth: Number(item[5]),
+            compensation_benefits: Number(item[6]),
+            leadership_quality: Number(item[7]),
+            operational_efficiency: Number(item[8])
+          },
+          nullifier: String(item[9]),
+          rsa_signature_length: Number(item[10]) // 9 or 18
         }));
+        //console.log(`submissions: ${JSON.stringify(submissions, null, 2)}`);
+    
+        const submissionsWithVerification = submissions;
         
         setSubmissions(submissionsWithVerification);
         
@@ -113,6 +172,45 @@ export default function Submissions() {
 
         setSubmissionsByCompany(companiesData);
       }
+
+      // const { data, error } = await supabase
+      //   //.from('submissions')        // @dev - The "production" environment should use 'submissions' table.
+      //   .from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
+      //   .select('*')
+      //   .order('created_at', { ascending: false });
+      
+      // if (error) throw error;
+
+      // if (data) {
+      //   const submissionsWithVerification = data.map(submission => ({
+      //     ...submission,
+      //     isVerifying: false,
+      //     verificationResult: null,
+      //     ratings: submission.ratings ? JSON.parse(submission.ratings) : undefined
+      //   }));
+        
+      //   setSubmissions(submissionsWithVerification);
+        
+      //   // Group by company
+      //   const groupedByCompany = submissionsWithVerification.reduce((acc: { [key: string]: Submission[] }, curr) => {
+      //     if (!acc[curr.domain]) {
+      //       acc[curr.domain] = [];
+      //     }
+      //     acc[curr.domain].push(curr);
+      //     return acc;
+      //   }, {});
+
+      //   const companiesData = Object.entries(groupedByCompany)
+      //     .sort(([domainA], [domainB]) => domainA.localeCompare(domainB))
+      //     .map(([domain, submissions]) => ({
+      //       domain,
+      //       submissions,
+      //       isExpanded: false,
+      //       averageRatings: calculateAverageRatings(submissions)
+      //     }));
+
+      //   setSubmissionsByCompany(companiesData);
+      // }
     } catch (err) {
       console.error('Error fetching submissions:', err);
     }
@@ -162,27 +260,32 @@ export default function Submissions() {
     try {
       updateSubmissionState(true, null, submission);
 
-      const proof = new Uint8Array(submission.proof.split(',').map(Number));
-      const jwtPubKey = JSON.parse(submission.jwt_pub_key);
-      const modulus = await pubkeyModulusFromJWK(jwtPubKey);
+      // @dev - [NOTE]: Somehow, since a signer, which is set in the useEffect() in this submission.tsx, is not properly stored into the global "signer" variable, the connectToEvmWallet() is needed to be called again to retrieve a "signer" value at this line. 
+      const { provider, signer } = await connectToEvmWallet();
+
+      // const proof = new Uint8Array(submission.proof.split(',').map(Number));
+      // const jwtPubKey = JSON.parse(submission.jwt_pub_key);
+      // const modulus = await pubkeyModulusFromJWK(jwtPubKey);
       
       const result = await OPENBANDS_CIRCUIT_HELPER.verifyProof(
-        proof,
-        {
-          domain: submission.domain,
-          position: submission.position,
-          salary: submission.salary,
-          jwtPubKey: modulus,
-          ratings: submission.ratings || {
-            work_life_balance: 3,
-            culture_values: 3,
-            career_growth: 3,
-            compensation_benefits: 3,
-            leadership_quality: 3,
-            operational_efficiency: 3
-          }
-        },
-        submission.rsa_signature_length
+        signer,
+        // proof,
+        // {
+        //   domain: submission.domain,
+        //   position: submission.position,
+        //   salary: submission.salary,
+        //   jwtPubKey: modulus,
+        //   ratings: submission.ratings || {
+        //     work_life_balance: 3,
+        //     culture_values: 3,
+        //     career_growth: 3,
+        //     compensation_benefits: 3,
+        //     leadership_quality: 3,
+        //     operational_efficiency: 3
+        //   }
+        // },
+        submission.nullifier
+        // submission.rsa_signature_length
       );
 
       updateSubmissionState(false, result, submission);

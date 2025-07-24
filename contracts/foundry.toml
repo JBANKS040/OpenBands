@@ -1,0 +1,27 @@
+[profile.default]
+#src = "contracts"
+src = "src"
+out = "out"
+libs = ["lib"]
+fs_permissions = [{ access = "read-write", path = "./"},{ access = "read-write", path = "/tmp/"}]
+ffi = true
+
+optimizer = true
+optimizer_runs = 200
+
+
+[profile.remappings]
+# ds-test = "lib/forge-std/lib/ds-test/src/"
+forge-std = "lib/foundry-noir-helper/lib/forge-std/src/"
+#foundry-noir-helper = "lib/foundry-noir-helper/src/"
+
+[rpc_endpoints]
+#sepolia = "${SEPOLIA_RPC}"
+base_testnet = "${BASE_TESTNET_RPC}"
+
+[etherscan]
+#sepolia = { key = "${SEPOLIA_PRIVATE_KEY}" }
+base_testnet = { key = "${BASESCAN_API_KEY}" }
+
+# See more config options https://github.com/foundry-rs/foundry/tree/master/config
+
