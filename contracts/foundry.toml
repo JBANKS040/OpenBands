@@ -18,10 +18,12 @@ forge-std = "lib/foundry-noir-helper/lib/forge-std/src/"
 [rpc_endpoints]
 #sepolia = "${SEPOLIA_RPC}"
 base_testnet = "${BASE_TESTNET_RPC}"
+base_mainnet = "${BASE_MAINNET_RPC}"
 
 [etherscan]
 #sepolia = { key = "${SEPOLIA_PRIVATE_KEY}" }
 base_testnet = { key = "${BASESCAN_API_KEY}" }
+base_mainnet = { key = "${BASESCAN_API_KEY}" }
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
 
