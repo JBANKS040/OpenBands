@@ -1,8 +1,8 @@
-echo "Compiling the smart contracts..."
-forge build --evm-version cancun
+#echo "Compiling the smart contracts..."
+#forge build --evm-version cancun
 
-echo "Copy the artifacts (icl. ABIs) and paste them into the ./app/lib/smart-contracts/evm/smart-contracts/artifacts directory"
-cp -r out/* ../app/lib/smart-contracts/evm/smart-contracts/artifacts
+#echo "Copy the artifacts (icl. ABIs) and paste them into the ./app/lib/smart-contracts/evm/smart-contracts/artifacts directory"
+#cp -r out/* ../app/lib/smart-contracts/evm/smart-contracts/artifacts
 
 # @notice - This script file must be run from the root directory of the project, where is the location of .env file.
 echo "Load the environment variables from the .env file..."
