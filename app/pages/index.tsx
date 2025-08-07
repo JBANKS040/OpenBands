@@ -14,6 +14,13 @@ import CompanyRatings from '../components/CompanyRatings';
 import InteractiveStarRating from '../components/InteractiveStarRating';
 import Layout from '../components/layout';
 
+// @dev - Blockchain related imports
+import { connectToEvmWallet } from '../lib/smart-contracts/evm/connectToEvmWallet';
+import artifactOfPositionAndSalaryProofManager from '../lib/smart-contracts/evm/smart-contracts/artifacts/PositionAndSalaryProofManager.sol/PositionAndSalaryProofManager.json';
+import { storePublicInputsOfPositionAndSalaryProof, getPublicInputsOfPositionAndSalaryProof, getPublicInputsOfAllProofs } from '../lib/smart-contracts/evm/smart-contracts/positionAndSalaryProofManager';
+import { BrowserProvider, JsonRpcSigner } from 'ethers';
+import { convertBytes32ToString } from '../lib/converters/bytes32ToStringConverter';
+
 
 interface GoogleJwtPayload {
   email: string;
@@ -29,13 +36,14 @@ interface JWK {
   use: string;
 }
 
-interface ProofDetails extends Omit<Submission, 'proof' | 'jwt_pub_key'> {
-  proof: Uint8Array;
-  jwtPubKey: JsonWebKey;
+export interface ProofDetails extends Omit<Submission, 'proof' | 'jwt_pub_key'> {
+  proof?: Uint8Array;
+  jwtPubKey?: JsonWebKey;
   timestamp?: number;
   verificationResult?: boolean | null;
   isVerifying?: boolean;
-  rsa_signature_length: number; // 9 or 18
+  nullifier: string;
+  rsa_signature_length?: number; // 9 or 18
 }
 
 interface UserInfo {
@@ -101,6 +109,7 @@ async function getGooglePublicKey(kid: string): Promise<JsonWebKey> {
 
 export default function Home() {
   const emptyUint8Array = new Uint8Array(0);
+  const emptyJwtPubKey = {} as JsonWebKey;
 
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: null, idToken: null });
   const [zkEmailInputData, setZkEmailInputData] = useState<ZkEmailInputData>({
@@ -140,12 +149,22 @@ export default function Home() {
     leadership_quality: 3,
     operational_efficiency: 3
   });
+  const [provider, setProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
   useEffect(() => {
-    fetchSubmissions();
+    // fetchSubmissions();
+    async function init() {
+      const { provider, signer } = await connectToEvmWallet(); // @dev - Connect to EVM wallet (i.e. MetaMask) on page load
+      setProvider(provider);
+      setSigner(signer);
+      fetchSubmissions(signer);
+      //fetchSubmissions();
+    }
+    init();
   }, []);
 
   const handleGoogleLogin = useCallback(async (credentialResponse: any) => {
@@ -271,31 +290,81 @@ export default function Home() {
     setError(null);
   };
 
-  const fetchSubmissions = async () => {
+  const fetchSubmissions = async (signer: JsonRpcSigner) => {
     try {
-      const { data, error } = await supabase
-        .from('submissions')            // @dev - The "production" environment should use 'submissions' table.
-        //.from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
-        .select('*')
-        .order('created_at', { ascending: false });
+      // @dev - Get the public inputs of position and salary proof from the blockchain (BASE)
+      const publicInputsOfAllProofs = await getPublicInputsOfAllProofs(
+        signer,
+        artifactOfPositionAndSalaryProofManager.abi,
+        process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "",
+      );
+      const publicInputsOfAllProofsArray = publicInputsOfAllProofs._publicInputsOfAllProofs;
+      console.log(`publicInputsOfAllProofs (in the index.tsx - already converted to string): ${JSON.stringify(publicInputsOfAllProofsArray, null, 2)}`);
+      console.log(`publicInputsOfAllProofsArray.length: ${publicInputsOfAllProofsArray.length}`); // @dev - [Return]: "object"
+      console.log(`typeof publicInputsOfAllProofsArray: ${typeof publicInputsOfAllProofsArray}`); // @dev - [Return]: "object"
+      
+      // @dev - Store into the array (to avoid the "TypeError: Property 'map' does not exist on type 'string'" error)
+      let _publicInputsOfAllProofsArray: any[] = [];
+      if (typeof publicInputsOfAllProofsArray === "string") {
+        _publicInputsOfAllProofsArray = [publicInputsOfAllProofsArray.split(",")];
+      } else if (Array.isArray(publicInputsOfAllProofsArray)) {
+        _publicInputsOfAllProofsArray = publicInputsOfAllProofsArray;
+      } else { // fallback for unexpected types
+        _publicInputsOfAllProofsArray = []; 
+      }
+
+      // @dev - Store the public inputs of position and salary proof to the "submissions" variable to be stored into the setRecentSubmissions().
+      if (publicInputsOfAllProofsArray.length > 0) {
+        //const submissions: ProofDetails[] = publicInputsOfAllProofsArray.map((item: any) => ({
+        const submissions: ProofDetails[] = _publicInputsOfAllProofsArray.map((item: any) => ({
+          id: "",
+          created_at: item[11], 
+          proof: emptyUint8Array,
+          domain: item[0],
+          position: item[1],
+          salary: item[2],
+          jwtPubKey: {} as JsonWebKey,
+          timestamp: item[11],
+          ratings: {
+            work_life_balance: Number(item[3]),
+            culture_values: Number(item[4]),
+            career_growth: Number(item[5]),
+            compensation_benefits: Number(item[6]),
+            leadership_quality: Number(item[7]),
+            operational_efficiency: Number(item[8])
+          },
+          nullifier: item[9],
+          rsa_signature_length: item[10] // 9 or 18
+        }));
+        console.log("submissions: ", submissions);
+        //console.log(`submissions: ${JSON.stringify(submissions, null, 2)}`);
+        setRecentSubmissions(submissions);
+      }
+
+      // @dev - The following code is to fetch the submissions from the Supabase database.
+      // const { data, error } = await supabase
+      //   //.from('submissions')        // @dev - The "production" environment should use 'submissions' table.
+      //   .from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
+      //   .select('*')
+      //   .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      if (data) {
-        const submissions: ProofDetails[] = data.map(item => ({
-          id: item.id,
-          created_at: item.created_at,
-          proof: new Uint8Array(item.proof.split(',').map(Number)),
-          domain: item.domain,
-          position: item.position,
-          salary: item.salary,
-          jwtPubKey: JSON.parse(item.jwt_pub_key),
-          timestamp: new Date(item.created_at).getTime(),
-          ratings: item.ratings ? JSON.parse(item.ratings) : undefined,
-          rsa_signature_length: item.rsa_signature_length // 9 or 18
-        }));
-        setRecentSubmissions(submissions);
-      }
+      // if (data) {
+      //   const submissions: ProofDetails[] = data.map(item => ({
+      //     id: item.id,
+      //     created_at: item.created_at,
+      //     proof: new Uint8Array(item.proof.split(',').map(Number)),
+      //     domain: item.domain,
+      //     position: item.position,
+      //     salary: item.salary,
+      //     jwtPubKey: JSON.parse(item.jwt_pub_key),
+      //     timestamp: new Date(item.created_at).getTime(),
+      //     ratings: item.ratings ? JSON.parse(item.ratings) : undefined,
+      //     rsa_signature_length: item.rsa_signature_length // 9 or 18
+      //   }));
+      //   setRecentSubmissions(submissions);
+      // }
     } catch (err) {
       console.error('Error fetching submissions:', err);
     }
@@ -343,7 +412,7 @@ export default function Home() {
       console.log(`emailBodyTrimmed: ${ emailBodyTrimmed }`);
 
       // First generate the proof
-      const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({  /// @dev - [TODO]: Add the zkEmail related input parameters to the generateProof() of the original file.
+      const generatedProof = await OPENBANDS_CIRCUIT_HELPER.generateProof({
         idToken: userInfo.idToken,
         jwtPubkey,
         domain,
@@ -359,12 +428,63 @@ export default function Home() {
         dkim_header_sequence: zkEmailInputData.dkim_header_sequence,
         bodyTrimmed: emailBodyTrimmed
       });
+      //console.log(`generatedProof: ${ JSON.stringify(generatedProof, null, 2) }`);
+      console.log(`generatedProof.proof: ${ JSON.stringify(generatedProof.proof, null, 2) }`);
+      console.log(`type of generatedProof.proof: ${ typeof generatedProof.proof }`); // @dev - [Return]: "object" 
+  
+      // @dev - Store a nullifier, which is the index number [0] of the "generatedProof.publicInputs" array
+      let nullifier = generatedProof.publicInputs[0];
+      console.log(`nullifier: ${ nullifier }`);
+
+      // @dev - Store the public inputs
+      let separatedPublicInputs = {
+        //jwtPubkeyModulusLimbs: jwtPubkey,
+        domain: domain,
+        position: position,
+        salary: salary,
+        workLifeBalance: ratings.work_life_balance,
+        cultureValues: ratings.culture_values,
+        careerGrowth: ratings.career_growth,
+        compensationBenefits: ratings.compensation_benefits,
+        leadershipQuality: ratings.leadership_quality,
+        operationalEfficiency: ratings.operational_efficiency,
+        nullifierHash: nullifier,
+        rsaSignatureLength: zkEmailInputData.signature.length,
+        createdAt: new Date().toISOString()
+      };
+      console.log(`separatedPublicInputs: ${ JSON.stringify(separatedPublicInputs, null, 2) }`);
+
+      // @dev - Store the data into the blockchain (BASE)
+      let abi: Array<any> = artifactOfPositionAndSalaryProofManager.abi;
+      let positionAndSalaryProofManagerContractAddress: string = process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "";
+      console.log(`positionAndSalaryProofManagerContractAddress: ${ positionAndSalaryProofManagerContractAddress }`);
+
+      const txReceipt = storePublicInputsOfPositionAndSalaryProof( // @dev - Record the public inputs of position and salary proof to the blockchain (BASE) using the "recordPublicInputsOfPositionAndSalaryProof" function.
+        signer, 
+        abi, 
+        positionAndSalaryProofManagerContractAddress,
+        generatedProof.proof, 
+        generatedProof.publicInputs,
+        separatedPublicInputs,
+        zkEmailInputData.signature.length // 9 or 18
+        // jwtPubkey,
+        // domain,
+        // position,
+        // salary,
+        // ratings.work_life_balance,
+        // ratings.culture_values,
+        // ratings.career_growth,
+        // ratings.compensation_benefits,
+        // ratings.leadership_quality,
+        // ratings.operational_efficiency,
+        // nullifier // email_nullifier
+      );
 
       // Then try to store it (this might fail due to schema issues)
       try {
         await supabase
-          .from('submissions')            // @dev - The "production" environment should use 'submissions' table.
-          //.from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
+          //.from('submissions')        // @dev - The "production" environment should use 'submissions' table.
+          .from('submissions_staging')  // @dev - The "staging" environment should use 'submissions_staging' table.
           .insert([{
             domain,
             position,
@@ -377,7 +497,7 @@ export default function Home() {
           }]);
         
         // Refresh submissions only if storage succeeded
-        await fetchSubmissions();
+        await fetchSubmissions(signer!);
       } catch (storageErr) {
         console.error("Failed to store submission:", storageErr);
         // Don't throw here - we still generated the proof successfully
@@ -409,25 +529,28 @@ export default function Home() {
 
     try {
       const proofToVerify = recentSubmissions[submissionIndex];
-      const modulus = await pubkeyModulusFromJWK(proofToVerify.jwtPubKey);
-      
+      //const modulus = await pubkeyModulusFromJWK(proofToVerify.jwtPubKey);
+      const nullifier = proofToVerify.nullifier;
+
       const result = await OPENBANDS_CIRCUIT_HELPER.verifyProof(
-        proofToVerify.proof,
-        {
-          domain: proofToVerify.domain,
-          position: proofToVerify.position,
-          salary: proofToVerify.salary,
-          jwtPubKey: modulus,
-          ratings: proofToVerify.ratings || {
-            work_life_balance: 3,
-            culture_values: 3,
-            career_growth: 3,
-            compensation_benefits: 3,
-            leadership_quality: 3,
-            operational_efficiency: 3
-          }
-        },
-        proofToVerify.rsa_signature_length, // 9 or 18
+        signer,
+        // proofToVerify.proof,  // @dev - The original value to be stored into the Supabase DB as a "proof".
+        // {
+        //   domain: proofToVerify.domain,
+        //   position: proofToVerify.position,
+        //   salary: proofToVerify.salary,
+        //   jwtPubKey: modulus,      // @dev - The original value to be stored into the Supabase DB as a "jwtPubKey".
+        //   ratings: proofToVerify.ratings || {
+        //     work_life_balance: 3,
+        //     culture_values: 3,
+        //     career_growth: 3,
+        //     compensation_benefits: 3,
+        //     leadership_quality: 3,
+        //     operational_efficiency: 3
+        //   }
+        // },
+        nullifier
+        // proofToVerify.rsa_signature_length, // 9 or 18
       );
 
       setRecentSubmissions(prevSubmissions => {

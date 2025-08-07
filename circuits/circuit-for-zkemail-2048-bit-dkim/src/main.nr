@@ -1,6 +1,7 @@
 mod tests;
 mod utils;
 
+use std::hash::pedersen_hash;
 use jwt::JWT;
 
 use zkemail::{
@@ -73,18 +74,18 @@ fn main(
     partial_hash: [u32; 8],
     full_data_length: u32,
     base64_decode_offset: u32,
-    jwt_pubkey_modulus_limbs: pub [u128; 18],
+    jwt_pubkey_modulus_limbs: [u128; 18],
     jwt_pubkey_redc_params_limbs: [u128; 18],
     jwt_signature_limbs: [u128; 18],
-    domain: pub BoundedVec<u8, MAX_DOMAIN_LENGTH>,
-    position: pub BoundedVec<u8, MAX_POSITION_LENGTH>,   // Position, which is part of Email Body-extracted from the Entire Email Body.
-    salary: pub BoundedVec<u8, MAX_SALARY_LENGTH>,       // Salary, which is part of Email Body-extracted from the Entire Email Body.
-    work_life_balance: pub u8,
-    culture_values: pub u8,
-    career_growth: pub u8,
-    compensation_benefits: pub u8,
-    leadership_quality: pub u8,
-    operational_efficiency: pub u8,
+    domain: BoundedVec<u8, MAX_DOMAIN_LENGTH>,
+    position: BoundedVec<u8, MAX_POSITION_LENGTH>,   // Position, which is part of Email Body-extracted from the Entire Email Body.
+    salary: BoundedVec<u8, MAX_SALARY_LENGTH>,       // Salary, which is part of Email Body-extracted from the Entire Email Body.
+    work_life_balance: u8,
+    culture_values: u8,
+    career_growth: u8,
+    compensation_benefits: u8,
+    leadership_quality: u8,
+    operational_efficiency: u8,
     // @dev - The following input parameters would be for email verification /w ZKEmail.nr
     header: BoundedVec<u8, MAX_EMAIL_HEADER_LENGTH>,  // Entire Email Header
     //body: BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>,    // Entire Email Body
@@ -93,7 +94,7 @@ fn main(
     //body_hash_index: u32,
     dkim_header_sequence: Sequence,
     body_trimmed: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH>, // Trimmed Email Body, which the Header and HTML parts are cut off.
-) {
+) -> pub Field {
     // Init JWT struct and verify signature
     let jwt = JWT::init_with_partial_hash(
         partial_data,
@@ -149,21 +150,38 @@ fn main(
         signature,
         dkim_header_sequence
     );
+    let pubkey_hash: Field = return_value[0];
+    let email_nullifier: Field = return_value[1];
 
     // @dev - [Log]:
     println(f"body_trimmed: {body_trimmed}\n");
     println(f"position: {position}\n");
     println(f"salary: {salary}\n");
 
-    /// @dev - Validate to check whether a given "position" is included in the entire email body or not.
-    /// @dev - Compare a given "position" (BoundedVec<u8, MAX_POSITION_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
+    // @dev - Validate to check whether a given "position" is included in the entire email body or not.
+    // @dev - Compare a given "position" (BoundedVec<u8, MAX_POSITION_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
     let is_position_found_in_email_body: bool = unsafe { is_position_found_in_email_body(position, body_trimmed) };
     assert(is_position_found_in_email_body == true, "Position can not be found in email body");
 
-    /// @dev - Validate to check whether a given "salary" is included in the entire email body or not.
-    /// @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
+    // @dev - Validate to check whether a given "salary" is included in the entire email body or not.
+    // @dev - Compare a given "salary" (BoundedVec<u8, MAX_SALARY_LENGTH>) and a given "body" (BoundedVec<u8, MAX_EMAIL_BODY_LENGTH>)
     let is_salary_found_in_email_body: bool = unsafe { is_salary_found_in_email_body(salary, body_trimmed) };
     assert(is_salary_found_in_email_body == true, "Salary can not be found in email body");
+
+    // @dev - Convert domain, position, and salary to a Field type and then hashing them.
+    let domain_field = domain.storage().map(|x| x as Field);
+    let position_field = position.storage().map(|x| x as Field);
+    let salary_field = salary.storage().map(|x| x as Field);
+    let domain_hash = pedersen_hash(domain_field);
+    let position_hash = pedersen_hash(position_field);
+    let salary_hash = pedersen_hash(salary_field);
+
+    // @dev - Generate a comprehensive nullifier. (icl. Email nullifer, domain hash, position hash, and salary hash)
+    let nullifier = pedersen_hash([email_nullifier, domain_hash, position_hash, salary_hash]);
+
+    // @dev - Return value
+    nullifier
+    //email_nullifier
 }
 
 
@@ -190,13 +208,13 @@ unconstrained fn is_position_found_in_email_body(
     position: BoundedVec<u8, MAX_POSITION_LENGTH>, 
     body: BoundedVec<u8, MAX_BODY_TRIMMED_LENGTH>
 ) -> bool {
-    /// @dev - Logging
+    // @dev - Logging
     let position_storage = position.storage(); 
     let body_storage = body.storage(); 
     println(f"position.storage(): {position_storage}\n");
     println(f"body.storage(): {body_storage}\n");
 
-    /// @dev - Look for "position" in "email_body"
+    // @dev - Look for "position" in "email_body"
     let mut is_position_found_in_email_body: bool = false;
     for i in 0..body.len() {
         if (position.storage()[0] == body.storage()[i]) {
@@ -212,14 +230,14 @@ unconstrained fn is_position_found_in_email_body(
                     position_array.push(position.storage()[j]);
                     println(f"position_array: {position_array}\n");
 
-                    /// @dev - Logging
+                    // @dev - Logging
                     let position_len = position.len() - 1;
                     let position_array_len = position_array.len();
                     println(f"position.len() - 1: {position_len}\n");
                     println(f"position_array.len(): {position_array_len}\n");
 
-                    /// @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "many" (Not "1"). 
-                    if ((j == position.len() - 1) & (position_array.len() == position.len() - 1)) { /// @dev - Since "j" get started from "1", "1" should be subtracted from the position.len()
+                    // @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "many" (Not "1"). 
+                    if ((j == position.len() - 1) & (position_array.len() == position.len() - 1)) { // @dev - Since "j" get started from "1", "1" should be subtracted from the position.len()
                         is_position_found_in_email_body = true;
                         break;
                     }
@@ -256,14 +274,14 @@ unconstrained fn is_salary_found_in_email_body(
                     salary_array.push(salary.storage()[j]);
                     println(f"salary_array: {salary_array}\n");
 
-                    /// @dev - Logging
+                    // @dev - Logging
                     let salary_len = salary.len() - 1;
                     let salary_array_len = salary_array.len();
                     println(f"salary.len() - 1: {salary_len}\n");
                     println(f"position_array.len(): {salary_array_len}\n");
 
                     // @dev - The position and the sentence in the Email Body would completely be matched - In the case that the number of vectors of "position" is "many" (Not "1"). 
-                    if ((j == salary.len() - 1) & (salary_array.len() == salary.len() - 1)) { /// @dev - Since "j" get started from "1", "1" should be subtracted from the position.len()
+                    if ((j == salary.len() - 1) & (salary_array.len() == salary.len() - 1)) { // @dev - Since "j" get started from "1", "1" should be subtracted from the position.len()
                         is_salary_found_in_email_body = true;
                         break;
                     }

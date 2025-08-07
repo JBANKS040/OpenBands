@@ -18,7 +18,8 @@ const ratingLabels = {
 
 export default function CompanyRatings({ ratings, showLabels = true }: CompanyRatingsProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const averageRating = Object.values(ratings).reduce((a, b) => a + b, 0) / 6;
+  const averageRating = Object.values(ratings).reduce((a, b) => Number(a) + Number(b), 0) / 6;
+  //const averageRating = Object.values(ratings).reduce((a, b) => a + b, 0) / 6;
 
   return (
     <div 
@@ -42,7 +43,8 @@ export default function CompanyRatings({ ratings, showLabels = true }: CompanyRa
               <div className="text-sm text-gray-600">{ratingLabels[key]}</div>
               <div className="flex items-center space-x-2">
                 <StarRating rating={value} size="sm" />
-                <span className="text-sm font-medium text-gray-700">{value.toFixed(1)}</span>
+                <span className="text-sm font-medium text-gray-700">{Number(value).toFixed(1)}</span>
+                {/* <span className="text-sm font-medium text-gray-700">{value.toFixed(1)}</span> */}
               </div>
             </div>
           ))}
