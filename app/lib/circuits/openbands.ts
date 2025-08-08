@@ -335,7 +335,8 @@ export const OPENBANDS_CIRCUIT_HELPER = {
 
         // @dev - Store the data into the blockchain (BASE)
         let abi: Array<any> = artifactOfPositionAndSalaryProofManager.abi;
-        let positionAndSalaryProofManagerContractAddress: string = process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "";
+        let positionAndSalaryProofManagerContractAddress: string = process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_MAINNET || "";    // @dev - BASE mainnet
+        //let positionAndSalaryProofManagerContractAddress: string = process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "";  // @dev - BASE testnet
         console.log(`positionAndSalaryProofManagerContractAddress: ${ positionAndSalaryProofManagerContractAddress }`);
 
         const publicInputsOfPositionAndSalaryProof = await getPublicInputsOfPositionAndSalaryProof( // @dev - Record the public inputs of position and salary proof to the blockchain (BASE) using the "recordPublicInputsOfPositionAndSalaryProof" function.
