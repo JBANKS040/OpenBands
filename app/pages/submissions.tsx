@@ -106,7 +106,8 @@ export default function Submissions() {
       const publicInputsOfAllProofs = await getPublicInputsOfAllProofs(
         signer,
         artifactOfPositionAndSalaryProofManager.abi,
-        process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "",
+        process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_MAINNET || "",    // @dev - BASE mainnet
+        //process.env.NEXT_PUBLIC_POSITION_AND_SALARY_PROOF_MANAGER_ON_BASE_TESTNET || "",  // @dev - BASE testnet
       );
       const publicInputsOfAllProofsArray = publicInputsOfAllProofs._publicInputsOfAllProofs;
       console.log(`publicInputsOfAllProofs (in the index.tsx - already converted to string): ${JSON.stringify(publicInputsOfAllProofsArray, null, 2)}`);
